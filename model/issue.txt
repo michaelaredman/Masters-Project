@@ -1,0 +1,151 @@
+Hi there,
+
+I'm trying to implement a reasonably complicated model where my Poisson r.v. has a variable rate. I've stored the rates by time in container form but I get a rather uninformative error when trying to pass this to the Poisson function.
+
+An excerpt from the code:
+
+`  mu_C = np.empty(shape=(numRegions, nt), dtype=object) #rate of the general trend
+    for i in range(numRegions):
+        mu_C[i,:] = alpha0 + eta[i] + gamma 
+
+    mu_AC = np.empty(shape=(numRegions, nt), dtype=object)
+    for i in range(numRegions):
+        mu_AC[i,:] = u[i] + xi_i_unnormed[i,:]
+    
+    mu = np.empty(shape=(numRegions, nt), dtype=object) #rates by region through time
+    full_mu = np.empty(shape=(numRegions, nt), dtype=object) 
+    for i in range(numRegions):
+        for t in range(nt):
+            mu[i,t] = mu_C[i,t]*z[i] + mu_AC[i,t]*(1 - z[i]) #mixture of the two rates
+            full_mu[i,t] = mu[i,t]*E[i] #rates multiplied by the expected counts
+
+    observed = np.empty(shape=(numRegions), dtype=object)
+    for i in range(numRegions):
+        observed[i] = pm.Poisson('observed_%i' % i, mu=full_mu[i,:], observed=observed_values[i,:])`
+
+And the error:
+
+`---------------------------------------------------------------------------
+KeyError                                  Traceback (most recent call last)
+/Users/Mike/anaconda/lib/python3.5/site-packages/theano/tensor/type.py in dtype_specs(self)
+    266                 'complex64': (complex, 'theano_complex64', 'NPY_COMPLEX64')
+--> 267             }[self.dtype]
+    268         except KeyError:
+
+KeyError: 'object'
+
+During handling of the above exception, another exception occurred:
+
+TypeError                                 Traceback (most recent call last)
+/Users/Mike/anaconda/lib/python3.5/site-packages/theano/tensor/basic.py in constant_or_value(x, rtype, name, ndim, dtype)
+    407             rval = rtype(
+--> 408                 TensorType(dtype=x_.dtype, broadcastable=bcastable),
+    409                 x_.copy(),
+
+/Users/Mike/anaconda/lib/python3.5/site-packages/theano/tensor/type.py in __init__(self, dtype, broadcastable, name, sparse_grad)
+     49         self.broadcastable = tuple(bool(b) for b in broadcastable)
+---> 50         self.dtype_specs()  # error checking is done there
+     51         self.name = name
+
+/Users/Mike/anaconda/lib/python3.5/site-packages/theano/tensor/type.py in dtype_specs(self)
+    269             raise TypeError("Unsupported dtype for %s: %s"
+--> 270                             % (self.__class__.__name__, self.dtype))
+    271
+
+TypeError: Unsupported dtype for TensorType: object
+
+During handling of the above exception, another exception occurred:
+
+TypeError                                 Traceback (most recent call last)
+/Users/Mike/anaconda/lib/python3.5/site-packages/theano/tensor/basic.py in as_tensor_variable(x, name, ndim)
+    201     try:
+--> 202         return constant(x, name=name, ndim=ndim)
+    203     except TypeError:
+
+/Users/Mike/anaconda/lib/python3.5/site-packages/theano/tensor/basic.py in constant(x, name, ndim, dtype)
+    421     ret = constant_or_value(x, rtype=TensorConstant, name=name, ndim=ndim,
+--> 422                             dtype=dtype)
+    423
+
+/Users/Mike/anaconda/lib/python3.5/site-packages/theano/tensor/basic.py in constant_or_value(x, rtype, name, ndim, dtype)
+    416     except Exception:
+--> 417         raise TypeError("Could not convert %s to TensorType" % x, type(x))
+    418
+
+TypeError: ('Could not convert [Elemwise{mul,no_inplace}.0 Elemwise{mul,no_inplace}.0\n Elemwise{mul,no_inplace}.0 Elemwise{mul,no_inplace}.0\n Elemwise{mul,no_inplace}.0 Elemwise{mul,no_inplace}.0\n Elemwise{mul,no_inplace}.0 Elemwise{mul,no_inplace}.0\n Elemwise{mul,no_inplace}.0 Elemwise{mul,no_inplace}.0\n Elemwise{mul,no_inplace}.0 Elemwise{mul,no_inplace}.0\n Elemwise{mul,no_inplace}.0 Elemwise{mul,no_inplace}.0\n Elemwise{mul,no_inplace}.0] to TensorType', <class 'numpy.ndarray'>)
+
+During handling of the above exception, another exception occurred:
+
+AsTensorError                             Traceback (most recent call last)
+/Users/Mike/4th Year/project/model/detect.py in <module>()
+    121     observed = np.empty(shape=(numRegions), dtype=object)
+    122     for i in range(numRegions):
+--> 123         observed[i] = pm.Poisson('observed_%i' % i, mu=full_mu[i,:], observed=observed_values[i,:])
+    124
+    125     print('Model created!')
+
+/Users/Mike/anaconda/lib/python3.5/site-packages/pymc3/distributions/distribution.py in __new__(cls, name, *args, **kwargs)
+     28         if isinstance(name, string_types):
+     29             data = kwargs.pop('observed', None)
+---> 30             dist = cls.dist(*args, **kwargs)
+     31             return model.Var(name, dist, data)
+     32         else:
+
+/Users/Mike/anaconda/lib/python3.5/site-packages/pymc3/distributions/distribution.py in dist(cls, *args, **kwargs)
+     39     def dist(cls, *args, **kwargs):
+     40         dist = object.__new__(cls)
+---> 41         dist.__init__(*args, **kwargs)
+     42         return dist
+     43
+
+/Users/Mike/anaconda/lib/python3.5/site-packages/pymc3/distributions/discrete.py in __init__(self, mu, *args, **kwargs)
+    195         super(Poisson, self).__init__(*args, **kwargs)
+    196         self.mu = mu
+--> 197         self.mode = tt.floor(mu).astype('int32')
+    198
+    199     def random(self, point=None, size=None, repeat=None):
+
+/Users/Mike/anaconda/lib/python3.5/site-packages/theano/gof/op.py in __call__(self, *inputs, **kwargs)
+    609         """
+    610         return_list = kwargs.pop('return_list', False)
+--> 611         node = self.make_node(*inputs, **kwargs)
+    612
+    613         if config.compute_test_value != 'off':
+
+/Users/Mike/anaconda/lib/python3.5/site-packages/theano/tensor/elemwise.py in make_node(self, *inputs)
+    541         using DimShuffle.
+    542         """
+--> 543         inputs = list(map(as_tensor_variable, inputs))
+    544         shadow = self.scalar_op.make_node(
+    545             *[get_scalar_type(dtype=i.type.dtype).make_variable()
+
+/Users/Mike/anaconda/lib/python3.5/site-packages/theano/tensor/basic.py in as_tensor_variable(x, name, ndim)
+    206         except Exception:
+    207             str_x = repr(x)
+--> 208         raise AsTensorError("Cannot convert %s to TensorType" % str_x, type(x))
+    209
+    210 # this has a different name, because _as_tensor_variable is the
+
+AsTensorError: ('Cannot convert [Elemwise{mul,no_inplace}.0 Elemwise{mul,no_inplace}.0\n Elemwise{mul,no_inplace}.0 Elemwise{mul,no_inplace}.0\n Elemwise{mul,no_inplace}.0 Elemwise{mul,no_inplace}.0\n Elemwise{mul,no_inplace}.0 Elemwise{mul,no_inplace}.0\n Elemwise{mul,no_inplace}.0 Elemwise{mul,no_inplace}.0\n Elemwise{mul,no_inplace}.0 Elemwise{mul,no_inplace}.0\n Elemwise{mul,no_inplace}.0 Elemwise{mul,no_inplace}.0\n Elemwise{mul,no_inplace}.0] to TensorType', <class 'numpy.ndarray'>)`
+
+Looking at some of the examples I thought the problem might be in not passing mu a tensor object so tried converting the Pymc objects one-by-one into a vector (as as_tensor_variable didn't work):
+
+`@theano.as_op(itypes=[T.dvector], otypes=[T.dvector])
+    def rateFunc(rates):
+        ''' Concatenate Poisson means '''
+        numDim = len(rates)
+        out = np.empty(numDim)
+        for i in numDim:
+            out[i] = rates[i]
+            return out
+
+    observed = np.empty(shape=(numRegions), dtype=object)
+    for i in range(numRegions):
+        observed[i] = pm.Poisson('observed_%i' % i, mu=rateFunc(full_mu[i,:]), observed=observed_values[i,:])`
+
+
+Which gives an error as I'm giving it a numpy array:
+
+`AttributeError: 'numpy.ndarray' object has no attribute 'type'`
+
+As you can tell, I'm not very familiar with the theano engine behind pymc so any help would be appreciated.

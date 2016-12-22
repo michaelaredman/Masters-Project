@@ -3,7 +3,6 @@ import numpy as np
 import pandas as pd
 import theano
 import theano.tensor as T
-from theano.printing import pydotprint
 
 theano.config.compute_test_value = 'raise'
 
@@ -89,7 +88,6 @@ with model:
         z[i] = pm.Bernoulli('z_%i' % i,prob_z)
 
     print('woah!')
-
     
     mu_C = np.empty(shape=(numRegions, nt), dtype=object) #rate of the general trend
     for i in range(numRegions):
@@ -100,15 +98,19 @@ with model:
         mu_AC[i,:] = u[i] + xi_i_unnormed[i,:]
     
     mu = np.empty(shape=(numRegions, nt), dtype=object) #rates by region through time
+    full_mu = np.empty(shape=(numRegions, nt), dtype=object) 
     for i in range(numRegions):
-        mu[i,:] = mu_C[i,:]*z[i] + mu_AC[i,:]*(1 - z[i])
+        for t in range(nt):
+            mu[i,t] = mu_C[i,t]*z[i] + mu_AC[i,t]*(1 - z[i]) #mixture of the two rates
+            full_mu[i,t] = pm.Deterministic("mu_%i_%i" %(i, t), mu[i,t]*E[i]) #rates multiplied by the expected counts
 
     print("Rates defined")
     
-    observed = np.empty(shape=(numRegions, nt), dtype=object)
+    test = T.as_tensor(full_mu[1,:])
+
+    observed = np.empty(shape=(numRegions), dtype=object)
     for i in range(numRegions):
-        observed[i] = pm.Poisson('observed_%i' % i, mu=mu[i]*E[i], value=observed_values[i,:], observed=True)
+        observed[i] = pm.Poisson('observed_%i' % i, mu=T.as_tensor(full_mu[i,:]), observed=observed_values[i,:])
 
     print('Model created!')
 
-pydotprint(model)
