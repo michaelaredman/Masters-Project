@@ -1,0 +1,28 @@
+Setting priors for variances... complete!
+Setting priors on hyperparameters... complete!
+Setting BYM prior... complete!
+made it further!
+eta defined
+Defining mixture component... complete!
+Setting rate parameters... complete!
+Model created!
+===============================
+===============================
+clang: error: unable to execute command: Segmentation fault: 11
+clang: error: clang frontend command failed due to signal (use -v to see invocation)
+Apple LLVM version 7.3.0 (clang-703.0.29)
+Target: x86_64-apple-darwin15.0.0
+Thread model: posix
+InstalledDir: /Library/Developer/CommandLineTools/usr/bin
+clang: note: diagnostic msg: PLEASE submit a bug report to http://developer.apple.com/bugreporter/ and include the crash backtrace, preprocessed source, and associated run script.
+clang: note: diagnostic msg: 
+********************
+
+PLEASE ATTACH THE FOLLOWING FILES TO THE BUG REPORT:
+Preprocessed source(s) and associated run script(s) are located at:
+clang: note: diagnostic msg: /var/folders/hy/0q21vbpn68s4vgmjv0z0trbw0000gn/T/mod-dc9fb3.cpp
+clang: note: diagnostic msg: /var/folders/hy/0q21vbpn68s4vgmjv0z0trbw0000gn/T/mod-dc9fb3.sh
+clang: note: diagnostic msg: 
+
+********************
+

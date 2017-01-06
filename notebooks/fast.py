@@ -9,7 +9,6 @@ from matplotlib import pyplot as plt
 
 theano.config.compute_test_value = 'raise'
 theano.config.gcc.cxxflags = "-fbracket-depth=16000 -O0" # default is 256 | compilation optimizations are turned off for faster compilation
-theano.config.exception_verbosity= 'high'
 #theano.config.openmp = True # this isn't working with gcc for some reason
 theano.config.optimizer = 'fast_compile'
 
@@ -47,74 +46,43 @@ print('Data loaded')
 
 print('Starting time: ', time.ctime())
 
+nt = 10
+numRegions = 30
 
 with model:
-    """
-    BYM prior on the spatial component
-
-        lambda ~ Normal(v_i, sigma_lambda)
-
-        v ~ CAR(W, sigma_v)
-
-    where W is the adjacency matrix.
     
-    The CAR model is equivalent to,
-
-        v ~ N(0, T^-1)
-
-    with,  T = (D - alpha*W)*sigma_v
-
-    D = diag(d_1, ..., d_n)
-    d_i = 'degree' of region i
-    alpha = level of spatial dependence 
-
-    We place vague priors on the variances.
-
-    """
-    sigma_v = pm.HalfNormal('sigma_v', sd=1) # change this to something more vague
-    sigma_lambda = pm.HalfNormal('sigma_lambda', sd=1)
+    sigma_reg = pm.HalfNormal('sigma_reg', sd=1)
+    sigma_time = pm.HalfNormal('sigma_time', sd=1)
     
-    Tau_v = Tau_v_unscaled*sigma_v #covariance matirx for v
-    v = pm.MvNormal('v',mu=np.zeros(numRegions), tau=Tau_v, shape=numRegions)
-    lmbda = pm.MvNormal('lambda', mu=v, cov=np.identity(numRegions)*sigma_lambda, shape=numRegions)
-
-    """
-    BYM prior on the time component
-
-    
-    """
-    sigma_gamma = pm.HalfNormal('sigma_gamma', sd=1)
-    sigma_xi = pm.HalfNormal('sigma_xi', sd=1)
-    Tau_gamma = Tau_gamma_unscaled*sigma_gamma #covariance matrix for xi
-    gamma = pm.MvNormal('gamma', mu=np.zeros(nt), cov=Tau_gamma, shape=nt)
-    xi = pm.MvNormal('xi', mu=gamma, cov=np.identity(nt)*sigma_xi, shape=nt)
-    
-    """
-    mu_it = Expected*exp(lambda_i + xi_t)
-    """
-
     mu = np.empty(shape=(numRegions, nt), dtype=object)
-    print('Defining mu')
+    
+    time_dev = pm.MvNormal('time_dev', mu=np.zeros(nt), cov=np.identity(nt)*sigma_time, shape=nt)
+    spatial_dev = pm.MvNormal('spatial_dev', mu=np.zeros(numRegions), cov=np.identity(numRegions)*sigma_reg, shape=numRegions)
+    
     for i in range(numRegions):
         for t in range(nt):
-            mu[i, t] = E[i]*T.exp(lmbda[i] + xi[t])
-
-    
-    print("Defining observed")
+            mu[i, t] = E[i]*T.exp(spatial_dev[i]+time_dev[t])
+        
     observed = np.empty(shape=(numRegions, nt), dtype=object)
     for i in range(numRegions):
         for t in range(nt):
             observed[i, t] = pm.Poisson('observed_{}_{}'.format(i,t), mu = mu[i,t], observed=observed_values[i,t])
 
+
 print('Model defined')
 
 with model:
-    step = pm.Slice(model.vars)
-    print('Slice sampler initialized')
-    trace = pm.sample(draws=10000, step=step)
+    step = pm.Metropolis(model.vars)
+    start = pm.find_MAP()
+    print('Time MAP found: ', time.ctime())
+    print(start)
+    trace = pm.sample(draws=10000, step=step, start=start)
 
 print('End time: ', time.ctime())
 
 trace_burn = trace[:][3000:]
 pm.traceplot(trace_burn)
 plt.savefig('trace.png')
+
+
+
