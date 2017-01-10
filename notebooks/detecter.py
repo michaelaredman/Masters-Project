@@ -18,7 +18,7 @@ def load_data():
     
     temp_sim = pd.read_csv('~/4th Year/project/data/csv/simulated.csv')
     temp_times = temp_sim[['Time1', 'Time2', 'Time3', 'Time4', 'Time5', 'Time6', 'Time7', 'Time8', 'Time9', 'Time10', 'Time11', 'Time12', 'Time13', 'Time14', 'Time15']]
-    observed_values = np.matrix(temp_times)
+    observed_values = np.matrix(temp_times, dtype=np.float64)
     
     adj = pd.read_csv('/Users/Mike/4th Year/project/data/csv/adjacency.csv', index_col=0)
     W = np.matrix(adj)
@@ -63,21 +63,19 @@ with model:
     for i in range(numRegions):
         for t in range(nt):
             mu.append(E[i]*T.exp(spatial_dev[i] + time_dev[t]))
-    mu = T.stack(mu, axis=0)
-            
+    mu = T.stack(mu)
 
     observed = []
     for i in range(numRegions):
         for t in range(nt):
             observed.append(pm.Poisson('observed_{}_{}'.format(i,t), mu = mu[i+numRegions*t], observed=observed_values[i,t]))
-    observed = T.stack(observed, axis=0)
 
 
 print('Model defined')
 
 with model:
-    step = pm.Metropolis(model.vars)
     start = pm.find_MAP()
+    step = pm.Metropolis(model.vars)
     print('Time MAP found: ', time.ctime())
     print(start)
     trace = pm.sample(draws=10000, step=step, start=start)

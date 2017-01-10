@@ -9,18 +9,19 @@ from matplotlib import pyplot as plt
 
 theano.config.compute_test_value = 'raise'
 theano.config.gcc.cxxflags = "-fbracket-depth=16000 -O0" # default is 256 | compilation optimizations are turned off for faster compilation
+theano.config.exception_verbosity= 'high'
 #theano.config.openmp = True # this isn't working with gcc for some reason
 theano.config.optimizer = 'fast_compile'
 
 def load_data():
-    temp_expected = pd.read_csv('~/4th Year/project/data/csv/expected.csv')
+    temp_expected = pd.read_csv('../data/csv/expected.csv')
     E = np.array(temp_expected['x'])
     
-    temp_sim = pd.read_csv('~/4th Year/project/data/csv/simulated.csv')
+    temp_sim = pd.read_csv('../data/csv/simulated.csv')
     temp_times = temp_sim[['Time1', 'Time2', 'Time3', 'Time4', 'Time5', 'Time6', 'Time7', 'Time8', 'Time9', 'Time10', 'Time11', 'Time12', 'Time13', 'Time14', 'Time15']]
     observed_values = np.matrix(temp_times)
     
-    adj = pd.read_csv('/Users/Mike/4th Year/project/data/csv/adjacency.csv', index_col=0)
+    adj = pd.read_csv('../data/csv/adjacency.csv', index_col=0)
     W = np.matrix(adj)
     
     numRegions = observed_values.shape[0] #number of regions
@@ -39,8 +40,6 @@ prob_z = 0.95 #probability of a region following the area specific model
 
 numRegions, nt, E, Tau_v_unscaled, Tau_gamma_unscaled, observed_values = load_data()
 
-observed_values = theano.shared(observed_values)
-
 model = pm.Model()
 
 
@@ -48,45 +47,71 @@ print('Data loaded')
 
 print('Starting time: ', time.ctime())
 
-#nt = 10
-#numRegions = 30
 
 with model:
-    
-    sigma_reg = pm.HalfNormal('sigma_reg', sd=1) 
-    sigma_time = pm.HalfNormal('sigma_time', sd=1)
-    
-    time_dev = pm.MvNormal('time_dev', mu=np.zeros(nt), cov=np.identity(nt)*sigma_time, shape=nt) #temporal component
-    spatial_dev = pm.MvNormal('spatial_dev', mu=np.zeros(numRegions), cov=np.identity(numRegions)*sigma_reg, shape=numRegions) #spatial component 
+    """
+    BYM prior on the spatial component
 
-    mu = []
+        lambda ~ Normal(v_i, sigma_lambda)
+
+        v ~ CAR(W, sigma_v)
+
+    where W is the adjacency matrix.
+    
+    The CAR model is equivalent to,
+
+        v ~ N(0, T^-1)
+
+    with,  T = (D - alpha*W)*sigma_v
+
+    D = diag(d_1, ..., d_n)
+    d_i = 'degree' of region i
+    alpha = level of spatial dependence 
+
+    We place vague priors on the variances.
+
+    """
+    sigma_v = pm.HalfNormal('sigma_v', sd=1) # change this to something more vague
+    sigma_lambda = pm.HalfNormal('sigma_lambda', sd=1)
+    
+    Tau_v = Tau_v_unscaled*sigma_v #covariance matirx for v
+    v = pm.MvNormal('v',mu=np.zeros(numRegions), tau=Tau_v, shape=numRegions)
+    lmbda = pm.MvNormal('lambda', mu=v, cov=np.identity(numRegions)*sigma_lambda, shape=numRegions)
+
+    """
+    BYM prior on the time component
+
+    
+    """
+    sigma_gamma = pm.HalfNormal('sigma_gamma', sd=1)
+    sigma_xi = pm.HalfNormal('sigma_xi', sd=1)
+    Tau_gamma = Tau_gamma_unscaled*sigma_gamma #covariance matrix for xi
+    gamma = pm.MvNormal('gamma', mu=np.zeros(nt), cov=Tau_gamma, shape=nt)
+    xi = pm.MvNormal('xi', mu=gamma, cov=np.identity(nt)*sigma_xi, shape=nt)
+    
+    """
+    mu_it = Expected*exp(lambda_i + xi_t)
+    """
+    
+    mu = np.empty(shape=numRegions*nt, dtype=object)
     for i in range(numRegions):
         for t in range(nt):
-            mu.append(E[i]*T.exp(spatial_dev[i] + time_dev[t]))
-    mu = T.stack(mu, axis=0)
+            mu[i+numRegions*t] = E[i]*T.exp(lmbda[i] + xi[t])
             
 
-    observed = []
+    observed = np.empty(shape=numRegions*nt, dtype=object)
     for i in range(numRegions):
         for t in range(nt):
-            observed.append(pm.Poisson('observed_{}_{}'.format(i,t), mu = mu[i+numRegions*t], observed=observed_values[i,t]))
-    observed = T.stack(observed, axis=0)
-
-
+            observed[i+numRegions*t] = pm.Poisson('observed_{}_{}'.format(i,t), mu = mu[i+numRegions*t], observed=observed_values[i,t])
+    
 print('Model defined')
 
 with model:
     step = pm.Metropolis(model.vars)
-    start = pm.find_MAP()
-    print('Time MAP found: ', time.ctime())
-    print(start)
-    trace = pm.sample(draws=10000, step=step, start=start)
+    trace = pm.sample(draws=10000, step=step)
 
 print('End time: ', time.ctime())
 
 trace_burn = trace[:][3000:]
 pm.traceplot(trace_burn)
 plt.savefig('trace.png')
-
-
-

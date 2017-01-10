@@ -14,14 +14,14 @@ theano.config.exception_verbosity= 'high'
 theano.config.optimizer = 'fast_compile'
 
 def load_data():
-    temp_expected = pd.read_csv('~/4th Year/project/data/csv/expected.csv')
+    temp_expected = pd.read_csv('../data/csv/expected.csv')
     E = np.array(temp_expected['x'])
     
-    temp_sim = pd.read_csv('~/4th Year/project/data/csv/simulated.csv')
+    temp_sim = pd.read_csv('../data/csv/simulated.csv')
     temp_times = temp_sim[['Time1', 'Time2', 'Time3', 'Time4', 'Time5', 'Time6', 'Time7', 'Time8', 'Time9', 'Time10', 'Time11', 'Time12', 'Time13', 'Time14', 'Time15']]
     observed_values = np.matrix(temp_times)
     
-    adj = pd.read_csv('/Users/Mike/4th Year/project/data/csv/adjacency.csv', index_col=0)
+    adj = pd.read_csv('../data/csv/adjacency.csv', index_col=0)
     W = np.matrix(adj)
     
     numRegions = observed_values.shape[0] #number of regions
@@ -92,12 +92,13 @@ with model:
     """
     mu_it = Expected*exp(lambda_i + xi_t)
     """
-
+    
     mu = np.empty(shape=(numRegions, nt), dtype=object)
     print('Defining mu')
     for i in range(numRegions):
         for t in range(nt):
             mu[i, t] = E[i]*T.exp(lmbda[i] + xi[t])
+            
 
     
     print("Defining observed")
