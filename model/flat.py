@@ -102,23 +102,24 @@ with model:
     mu_it = Expected*exp(lambda_i + xi_t)
     """
     
-    mu = [] #rate parameters over the time points
+    mu_temp = [] #rate parameters over the time points
     for i in range(numRegions):
-        mu.append(T.stack([E[i]*T.exp(lmbda[i] + xi[t]) for t in range(nt)]))    
+        mu_temp.append(T.stack([E[i]*T.exp(lmbda[i] + xi[t]) for t in range(nt)]))
+    mu = T.stack(mu_temp)
 
     
-    observed = []
-    for i in range(numRegions):
-        observed.append(pm.Poisson('observed_{}'.format(i), mu = mu[i], observed=observed_values[i, :], shape=nt))
+    observed = pm.Poisson('observed_{}'.format(i), mu = mu, observed=observed_values, shape=(numRegions, nt))
     
 print('Model defined at ', time.ctime())
 
 with model:
+    step = pm.Metropolis()
+    print('Metropolis initialized')
     db = pm.backends.Text('baystdetect_trace')
-    trace = pm.sample(draws=2000, trace=db)
+    trace = pm.sample(draws=2000, trace=db, step=step)
 
 print('End time: ', time.ctime())
 
-trace_burn = trace[:][3000:]
-pm.traceplot(trace_burn)
+#trace_burn = trace[:][3000:]
+pm.traceplot(trace)
 plt.savefig('trace.png')
