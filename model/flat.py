@@ -69,7 +69,7 @@ with model:
     alpha = level of spatial dependence 
 
     We place vague priors on the variances.
-
+    
     """
     sigma_v = pm.HalfNormal('sigma_v', sd=1) # change this to something more vague
     sigma_lambda = pm.HalfNormal('sigma_lambda', sd=1)
@@ -80,7 +80,8 @@ with model:
 
     """
     BYM prior on the time component
-
+    
+    
     
     """
     sigma_gamma = pm.HalfNormal('sigma_gamma', sd=1)
@@ -88,27 +89,31 @@ with model:
     Tau_gamma = Tau_gamma_unscaled*sigma_gamma #covariance matrix for xi
     gamma = pm.MvNormal('gamma', mu=np.zeros(nt), cov=Tau_gamma, shape=nt)
     xi = pm.MvNormal('xi', mu=gamma, cov=np.identity(nt)*sigma_xi, shape=nt)
+
+
+    """
+    We attempt to measure a regions deviations
+    """
+    
     
     """
     mu_it = Expected*exp(lambda_i + xi_t)
     """
     
-    mu = np.empty(shape=numRegions*nt, dtype=object)
+    mu = [] #rate parameters over the time points
     for i in range(numRegions):
-        for t in range(nt):
-            mu[i+numRegions*t] = E[i]*T.exp(lmbda[i] + xi[t])
-            
+        mu.append(T.stack([E[i]*T.exp(lmbda[i] + xi[t]) for t in range(nt)]))    
 
-    observed = np.empty(shape=numRegions*nt, dtype=object)
-    for i in range(numRegions):
-        for t in range(nt):
-            observed[i+numRegions*t] = pm.Poisson('observed_{}_{}'.format(i,t), mu = mu[i+numRegions*t], observed=observed_values[i,t])
     
-print('Model defined')
+    observed = []
+    for i in range(numRegions):
+        observed.append(pm.Poisson('observed_{}'.format(i), mu = mu[i], observed=observed_values[i, :], shape=nt))
+    
+print('Model defined at ', time.ctime())
 
 with model:
-    step = pm.Metropolis(model.vars)
-    trace = pm.sample(draws=10000, step=step)
+    db = pm.backends.Text('baystdetect_trace')
+    trace = pm.sample(draws=2000, trace=db)
 
 print('End time: ', time.ctime())
 

@@ -6,6 +6,7 @@ import theano.tensor as T
 
 theano.config.compute_test_value = 'raise'
 theano.config.gcc.cxxflags = "-fbracket-depth=16000"
+theano.config.optimizer = 'fast_compile'
 
 temp_observed = pd.read_csv('observed.txt', delimiter=',')
 temp_expected = pd.read_csv('exp.txt')
@@ -26,18 +27,34 @@ with model:
     time_dev = pm.MvNormal('time_dev', mu=np.zeros(nt), cov=np.identity(nt)*sigma_time, shape=nt) #temporal component
     spatial_dev = pm.MvNormal('spatial_dev', mu=np.zeros(numRegions), cov=np.identity(numRegions)*sigma_reg, shape=numRegions) #spatial component 
 
-    mu = []
+    print('starting mu def')
+    
+    #mu = []
+    #for t in range(nt):
+    #    for i in range(numRegions):
+    #        mu.append(pm.Deterministic('mu_{}_{}'.format(i, t), E[i]*T.exp(spatial_dev[i] + time_dev[t])))
+    #print('starting stack')
+    #mu_temp_stack = []
+    #for i in range(15):
+    #    mu_temp_stack.append(T.stack(mu[i*209:209*(i+1)]))
+    #    print('the {}th mu is stacked'.format(i))
+    #mu = T.stack(mu_temp_stack)
+    #mu = mu.flatten()
+
+    mu_alt = np.empty(nt*numRegions, dtype=object)
     for t in range(nt):
         for i in range(numRegions):
-            mu.append(E[i]*T.exp(spatial_dev[i] + time_dev[t]))
-    mu = T.stack(mu)
-
+            mu_alt[i + numRegions*t] = pm.Deterministic('mu_{}_{}'.format(i, t), E[i]*T.exp(spatial_dev[i] + time_dev[t]))
+    mu = T.stack(mu_alt)
+    
     print('mu defined')
 
     observed = []
     for i in range(numRegions):
         for t in range(nt):
             observed.append(pm.Poisson('observed_{}_{}'.format(i,t), mu = mu[i+numRegions*t], observed=observed_values[i,t]))
+
+    print('observed defined')
 
 with model:
     start = pm.find_MAP()
