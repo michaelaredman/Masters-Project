@@ -10,7 +10,7 @@ import time
 from matplotlib import pyplot as plt
 
 theano.config.compute_test_value = 'raise'
-theano.config.gcc.cxxflags = "-fbracket-depth=16000 -O0" # default is 256 | compilation optimizations are turned off for faster compilation
+#theano.config.gcc.cxxflags = "-fbracket-depth=16000 -O0" # default is 256 | compilation optimizations are turned off for faster compilation
 theano.config.exception_verbosity= 'high'
 #theano.config.openmp = True # this isn't working with gcc for some reason
 theano.config.optimizer = 'fast_compile'
