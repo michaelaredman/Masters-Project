@@ -9,7 +9,7 @@ import theano.tensor as T
 import time
 from matplotlib import pyplot as plt
 from pymc3.distributions.timeseries import GaussianRandomWalk
-from pymc3 import Continuous
+from pymc3.distributions import Continuous
 
 theano.config.compute_test_value = 'raise'
 #theano.config.gcc.cxxflags = "-fbracket-depth=16000 -O0" # default is 256 | compilation optimizations are turned off for faster compilation
@@ -52,7 +52,7 @@ print('Starting time: ', time.ctime())
 
 nt = 3
 
-class CAR(continuous):
+class CAR(Continuous):
     
     def __init__(self, adj=None, deg=None, tau=None, alpha=None, *args, **kwargs):
         super(CAR, self).__init__(*args, **kwargs)
@@ -93,6 +93,8 @@ class CAR(continuous):
         
         result = term_const + term_tau + term_detD + term_evals + term_phi
         return result
+
+print('CAR definition worked!')
 
 with model:
     """
