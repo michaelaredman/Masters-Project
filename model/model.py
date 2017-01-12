@@ -84,7 +84,7 @@ with model:
 
     
     sigma_temporal = pm.HalfNormal('sigma_xi', sd=1)
-    temporal  = GaussianRandomWalk('xi', sd=sigma_temporal, shape=nt)
+    temporal  = GaussianRandomWalk('temporal', sd=sigma_temporal, shape=nt)
     
     """
     We attempt to measure a regions deviations
