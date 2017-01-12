@@ -13,7 +13,7 @@ from pymc3.distributions.timeseries import GaussianRandomWalk
 theano.config.compute_test_value = 'raise'
 #theano.config.gcc.cxxflags = "-fbracket-depth=16000 -O0" # default is 256 | compilation optimizations are turned off for faster compilation
 theano.config.exception_verbosity= 'high'
-#theano.config.openmp = True # this isn't working with gcc for some reason
+theano.config.openmp = True # this isn't working with gcc for some reason
 theano.config.optimizer = 'fast_compile'
 
 def load_data():
@@ -50,6 +50,7 @@ print('Data loaded')
 
 print('Starting time: ', time.ctime())
 
+nt = 3
 
 with model:
     """
@@ -81,19 +82,10 @@ with model:
     v = pm.MvNormal('v',mu=np.zeros(numRegions), tau=Tau_v, shape=numRegions)
     lmbda = pm.MvNormal('lambda', mu=v, cov=np.identity(numRegions)*sigma_lambda, shape=numRegions)
 
-    """
-    BYM prior on the time component
     
-    
-    
-    """
-    sigma_gamma = pm.HalfNormal('sigma_gamma', sd=1)
     sigma_xi = pm.HalfNormal('sigma_xi', sd=1)
-    Tau_gamma = Tau_gamma_unscaled*sigma_gamma #covariance matrix for xi
-    gamma = pm.MvNormal('gamma', mu=np.zeros(nt), cov=Tau_gamma, shape=nt)
-    xi = pm.MvNormal('xi', mu=gamma, cov=np.identity(nt)*sigma_xi, shape=nt)
-
-
+    xi  = GaussianRandomWalk(sd=sigma_xi, shape=nt)
+    
     """
     We attempt to measure a regions deviations
     """
@@ -108,14 +100,14 @@ with model:
         mu_temp.append(T.stack([E[i]*T.exp(lmbda[i] + xi[t]) for t in range(nt)]))
     mu = T.stack(mu_temp)
 
-    observed = pm.Poisson('observed', mu = mu, observed=observed_values, shape=(numRegions, nt))
+    observed = pm.Poisson('observed', mu = mu, observed=observed_values[:, :nt], shape=(numRegions, nt))
     
 print('Model defined at ', time.ctime())
 
 with model:
     step = pm.Metropolis()
     print('Metropolis initialized')
-    db = pm.backends.Text('baystdetect_trace')
+    db = pm.backends.Text('trace_save')
     trace = pm.sample(draws=2000, trace=db, step=step)
 
 print('End time: ', time.ctime())
