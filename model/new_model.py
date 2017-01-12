@@ -9,6 +9,7 @@ import theano.tensor as T
 import time
 from matplotlib import pyplot as plt
 from pymc3.distributions.timeseries import GaussianRandomWalk
+from pymc3 import Continuous
 
 theano.config.compute_test_value = 'raise'
 #theano.config.gcc.cxxflags = "-fbracket-depth=16000 -O0" # default is 256 | compilation optimizations are turned off for faster compilation
@@ -33,24 +34,65 @@ def load_data():
     #making the inverse covariance matricies for the CAR models (ignoring their variances)
     alpha = 0.75 #this was 1 in the model but that makes the covariance matrix singular
     D = np.diag(np.array(W.sum(0))[0]) #diag(d_1,..,d_numRegions) with d_i the number of neighbours of region i
-    Tau_v_unscaled = theano.shared(np.array(D - alpha*W))
+    # Tau_v_unscaled = theano.shared(np.array(D - alpha*W)) # no longer needed with new code
 
-    return numRegions, nt, E, Tau_v_unscaled, observed_values
+    return numRegions, nt, E, W, D, alpha, observed_values 
 
 prob_z = 0.95 #probability of a region following the area specific model
 
-numRegions, nt, E, Tau_v_unscaled, observed_values = load_data()
+numRegions, nt, E, W, D, alpha, observed_values = load_data()
 
 model = pm.Model()
 
 observed_values = theano.shared(observed_values)
-
 
 print('Data loaded')
 
 print('Starting time: ', time.ctime())
 
 nt = 3
+
+class CAR(continuous):
+    
+    def __init__(self, adj=None, deg=None, tau=None, alpha=None, *args, **kwargs):
+        super(CAR, self).__init__(*args, **kwargs)
+        self.D = deg
+        self.adj = adj # adjacency matrix
+        self.tau = tau 
+        self.alpha = alpha
+        print('init CAR')
+
+    def calculations(self):
+        D = self.D
+        adj = self.adj
+        alpha = self.alpha
+        det_D = T.nlinalg.trace(D) # the determinant of D
+        D_inv = np.linalg.inv(D)
+        D_inv_sqrt = np.power(D_inv, 0.5)
+        temp_matrix = np.matmul(D_inv_sqrt, adj)
+        lambda_matrix = np.matmul(temp_matrix, D_inv_sqrt)
+        eigenvals = np.linalg.eigvals(lambda_matrix)
+        self.term_evals = 0.5*np.log(np.ones(self.shape) - alpha*eigenvals).sum()
+        self.term_detD = 0.5*np.log(det_D)
+        self.term_const = -self.shape * 0.5 * np.log(2.0*np.pi)
+        self.prec = D - alpha*W # precision matrix sans tau
+        
+
+    def logp(self, value):
+        tau = self.tau
+        prec = self.prec
+        term_evals = self.term_evals
+        term_detD = self.term_detD
+        term_const = self.term_const
+        
+        term_tau = self.shape * 0.5 * T.log(tau) 
+        
+        # this should be rewritten to use sparse matricies
+        term_phi_partial = T.dot(value, prec)
+        term_phi = - 0.5 * tau * T.dot(term_phi_partial, T.transpose(phi))
+        
+        result = term_const + term_tau + term_detD + term_evals + term_phi
+        return result
 
 with model:
     """
@@ -78,8 +120,7 @@ with model:
     sigma_v = pm.HalfNormal('sigma_v', sd=1) # change this to something more vague
     sigma_lambda = pm.HalfNormal('sigma_lambda', sd=1)
     
-    Tau_v = Tau_v_unscaled*sigma_v #covariance matirx for v
-    v = pm.MvNormal('v',mu=np.zeros(numRegions), tau=Tau_v, shape=numRegions)
+    v = CAR('v', adj=W, deg=D, tau=sigma_v, alpha=alpha, shape=numRegions)
     lmbda = pm.MvNormal('lambda', mu=v, cov=np.identity(numRegions)*sigma_lambda, shape=numRegions)
     
     
