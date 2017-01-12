@@ -83,8 +83,8 @@ with model:
     lmbda = pm.MvNormal('lambda', mu=v, cov=np.identity(numRegions)*sigma_lambda, shape=numRegions)
 
     
-    sigma_xi = pm.HalfNormal('sigma_xi', sd=1)
-    xi  = GaussianRandomWalk(sd=sigma_xi, shape=nt)
+    sigma_temporal = pm.HalfNormal('sigma_xi', sd=1)
+    temporal  = GaussianRandomWalk('xi', sd=sigma_temporal, shape=nt)
     
     """
     We attempt to measure a regions deviations
@@ -92,12 +92,12 @@ with model:
     
     
     """
-    mu_it = Expected*exp(lambda_i + xi_t)
+    mu_it = Expected*exp(lambda_i + temporal_t)
     """
     
     mu_temp = [] #rate parameters over the time points
     for i in range(numRegions):
-        mu_temp.append(T.stack([E[i]*T.exp(lmbda[i] + xi[t]) for t in range(nt)]))
+        mu_temp.append(T.stack([E[i]*T.exp(lmbda[i] + temporal[t]) for t in range(nt)]))
     mu = T.stack(mu_temp)
 
     observed = pm.Poisson('observed', mu = mu, observed=observed_values[:, :nt], shape=(numRegions, nt))
