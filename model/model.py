@@ -29,19 +29,17 @@ def load_data():
     
     numRegions = observed_values.shape[0] #number of regions
     nt = observed_values.shape[1] #number of time points
-    Q = np.diag(np.ones(nt-1), k=1) #'adjacency matrix' in time
     
     #making the inverse covariance matricies for the CAR models (ignoring their variances)
     alpha = 0.75 #this was 1 in the model but that makes the covariance matrix singular
     D = np.diag(np.array(W.sum(0))[0]) #diag(d_1,..,d_numRegions) with d_i the number of neighbours of region i
     Tau_v_unscaled = theano.shared(np.array(D - alpha*W))
-    Tau_gamma_unscaled = theano.shared(np.identity(n=nt) - Q)
 
-    return numRegions, nt, E, Tau_v_unscaled, Tau_gamma_unscaled, observed_values
+    return numRegions, nt, E, Tau_v_unscaled, observed_values
 
 prob_z = 0.95 #probability of a region following the area specific model
 
-numRegions, nt, E, Tau_v_unscaled, Tau_gamma_unscaled, observed_values = load_data()
+numRegions, nt, E, Tau_v_unscaled, observed_values = load_data()
 
 model = pm.Model()
 
