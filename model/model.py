@@ -22,7 +22,7 @@ def load_data():
     
     temp_sim = pd.read_csv('../data/csv/simulated.csv')
     temp_times = temp_sim[['Time1', 'Time2', 'Time3', 'Time4', 'Time5', 'Time6', 'Time7', 'Time8', 'Time9', 'Time10', 'Time11', 'Time12', 'Time13', 'Time14', 'Time15']]
-    observed_values = theano.shared(np.matrix(temp_times))
+    observed_values = np.matrix(temp_times)
     
     adj = pd.read_csv('../data/csv/adjacency.csv', index_col=0)
     W = np.matrix(adj)
@@ -42,6 +42,8 @@ prob_z = 0.95 #probability of a region following the area specific model
 numRegions, nt, E, Tau_v_unscaled, observed_values = load_data()
 
 model = pm.Model()
+
+observed_values = theano.shared(observed_values)
 
 
 print('Data loaded')
