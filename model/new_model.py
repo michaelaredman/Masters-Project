@@ -50,7 +50,7 @@ print('Data loaded')
 
 print('Starting time: ', time.ctime())
 
-nt = 3
+nt = 7
 
 class CAR(Continuous):
     
@@ -60,6 +60,7 @@ class CAR(Continuous):
         self.adj = adj # adjacency matrix
         self.tau = tau 
         self.alpha = alpha
+        self.calculations()
         print('init CAR')
 
     def calculations(self):
@@ -75,7 +76,8 @@ class CAR(Continuous):
         self.term_evals = 0.5*np.log(np.ones(self.shape) - alpha*eigenvals).sum()
         self.term_detD = 0.5*np.log(det_D)
         self.term_const = -self.shape * 0.5 * np.log(2.0*np.pi)
-        self.prec = D - alpha*W # precision matrix sans tau
+        self.prec = theano.shared(D - alpha*W) # precision matrix sans tau
+        print('Calculations calculated')
         
 
     def logp(self, value):
@@ -89,7 +91,7 @@ class CAR(Continuous):
         
         # this should be rewritten to use sparse matricies
         term_phi_partial = T.dot(value, prec)
-        term_phi = - 0.5 * tau * T.dot(term_phi_partial, T.transpose(phi))
+        term_phi = - 0.5 * tau * T.dot(term_phi_partial, T.transpose(value))
         
         result = term_const + term_tau + term_detD + term_evals + term_phi
         return result
@@ -120,13 +122,13 @@ with model:
     
     """
     sigma_v = pm.HalfNormal('sigma_v', sd=1) # change this to something more vague
-    sigma_lambda = pm.HalfNormal('sigma_lambda', sd=1)
+    #sigma_lambda = pm.HalfNormal('sigma_lambda', sd=1)
     
-    v = CAR('v', adj=W, deg=D, tau=sigma_v, alpha=alpha, shape=numRegions)
-    lmbda = pm.MvNormal('lambda', mu=v, cov=np.identity(numRegions)*sigma_lambda, shape=numRegions)
+    v = CAR('v', adj=W, deg=D, tau=sigma_v, alpha=alpha, shape=numRegions, testval=np.ones(numRegions))
+    #lmbda = pm.MvNormal('lambda', mu=v, cov=np.identity(numRegions)*sigma_lambda, shape=numRegions)
     
     
-    sigma_temporal = pm.HalfNormal('sigma_xi', sd=1)
+    sigma_temporal = pm.HalfNormal('sigma_temporal', sd=1)
     temporal  = GaussianRandomWalk('temporal', sd=sigma_temporal, shape=nt)
     
     
@@ -134,7 +136,7 @@ with model:
     
     mu_temp = [] #rate parameters over the time points
     for i in range(numRegions):
-        mu_temp.append(T.stack([E[i]*T.exp(lmbda[i] + temporal[t]) for t in range(nt)]))
+        mu_temp.append(T.stack([E[i]*T.exp(v[i] + temporal[t]) for t in range(nt)]))
     mu = T.stack(mu_temp)
     
     observed = pm.Poisson('observed', mu = mu, observed=observed_values[:, :nt], shape=(numRegions, nt))
@@ -143,14 +145,14 @@ print('Model defined at ', time.ctime())
 
 with model:
     step = pm.Metropolis()
-    print('Metropolis initialized')
-    db = pm.backends.Text('trace_save')
-    trace = pm.sample(draws=2000, trace=db, step=step)
+    print('Metropolis initialized at', time.ctime())
+    db = pm.backends.Text('blah_trace')
+    trace = pm.sample(draws=8000, trace=db, step = step)
 
 print('End time: ', time.ctime())
 
 #trace_burn = trace[:][3000:]
 pm.traceplot(trace)
-plt.savefig('trace.png')
+plt.savefig('tr.png')
 
 #trace = pm.backends.text.load('test')
