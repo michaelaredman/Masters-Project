@@ -10,13 +10,12 @@ import time
 from matplotlib import pyplot as plt
 from pymc3.distributions.timeseries import GaussianRandomWalk
 from pymc3.distributions import Continuous
+from spatial_models import CAR
 
 theano.config.compute_test_value = 'raise'
 #theano.config.gcc.cxxflags = "-fbracket-depth=16000 -O0" # default is 256 | compilation optimizations are turned off for faster compilation
 theano.config.exception_verbosity= 'high'
 #theano.config.openmp = True # this isn't working with gcc on mac for some reason
-theano.config.optimizer = 'fast_run'
-theano.config.profiler = True
 #theano.config.profile_memory = True
 
 def load_data():
@@ -52,58 +51,11 @@ print('Data loaded')
 
 print('Starting time: ', time.ctime())
 
-# nt = 10
+nt = 5
 
 def sum_to_zero(variable):
     return variable - variable.mean()
     
-
-class CAR(Continuous):
-    
-    def __init__(self, adj=None, deg=None, tau=None, alpha=None, *args, **kwargs):
-        super(CAR, self).__init__(*args, **kwargs)
-        self.D = deg
-        self.adj = adj # adjacency matrix
-        self.tau = tau 
-        self.alpha = alpha
-        self.calculations()
-        print('init CAR')
-
-    def calculations(self):
-        D = self.D
-        adj = self.adj
-        alpha = self.alpha
-        det_D = T.nlinalg.trace(D) # the determinant of D
-        D_inv = np.linalg.inv(D)
-        D_inv_sqrt = np.power(D_inv, 0.5)
-        temp_matrix = np.matmul(D_inv_sqrt, adj)
-        lambda_matrix = np.matmul(temp_matrix, D_inv_sqrt)
-        eigenvals = np.linalg.eigvals(lambda_matrix)
-        self.term_evals = 0.5*np.log(np.ones(self.shape) - alpha*eigenvals).sum()
-        self.term_detD = 0.5*np.log(det_D)
-        self.term_const = -self.shape * 0.5 * np.log(2.0*np.pi)
-        self.prec = theano.shared(D - alpha*W) # precision matrix sans tau
-        print('Calculations calculated')
-        
-
-    def logp(self, value):
-        tau = self.tau
-        prec = self.prec
-        term_evals = self.term_evals
-        term_detD = self.term_detD
-        term_const = self.term_const
-        
-        term_tau = self.shape * 0.5 * T.log(tau) 
-        
-        # this should be rewritten to use sparse matricies
-        term_phi_partial = T.dot(value, prec)
-        term_phi = - 0.5 * tau * T.dot(term_phi_partial, T.transpose(value))
-        
-        result = term_const + term_tau + term_detD + term_evals + term_phi
-        return result
-
-print('CAR definition worked!')
-
 with model:
     """
     BYM prior on the spatial component
@@ -151,17 +103,29 @@ print('Model defined at ', time.ctime())
 
 with model:
     #step = pm.Metropolis()
-    #comp_step = pm.CompoundStep()
+    #comp_step = pm.CompoundStep([
+        
     #print('Metropolis initialized at', time.ctime())
-    db = pm.backends.Text('nuts_trace')
+    #db = pm.backends.Text('metropolis/nuts_trace')
     #trace = pm.sample(draws=10000, step = step, trace=db)
-    trace = pm.sample(draws=2000, init='nuts', n_init=100, trace=db)
+
+    step = pm.NUTS(scaling=np.ones(217))
+
+    print('first step defined')
+    
+    trace = pm.sample(5000, step)
+    cov = pm.trace_cov(trace[1000:])
+
+    
+    step2 = pm.NUTS(scaling=cov, is_cov=True)
+    print('2nd step defined')
+    trace2 = pm.sample(5000, step2)
     
 
 print('End time: ', time.ctime())
 
 #trace_burn = trace[:][3000:]
-pm.traceplot(trace)
-plt.savefig('nuts.png')
+#pm.traceplot(trace)
+#plt.savefig('nuts.png')
 
 #trace = pm.backends.text.load('test')
