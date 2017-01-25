@@ -1,4 +1,3 @@
-
 \documentclass{article}
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -33,15 +32,224 @@
 
 The correct identification of blah insert stuff here.
 
-\section{The Model}
+\section{Naive/Other models}
 
-Consider
+\subsection{SATScan}
+
+\subsection{CUSUM}
+
+\section{Bayesian Model Construction}
+
+\begin{itemize}
+
+\item Space-time seperability
+
+\item Identification issuses in mixture model
+
+\item Bayesian model selection
+
+\item Prior on mixture component probability
+
+\item Bayesian classification
+
+\item Compositional models
+
+\item Posterior simulations + ML classifier e.g. \ k - NN \?
+
+\end{itemize}
+
+\subsection{Hyperparameter priors}
+
+\begin{itemize}
+
+\item Gelman 2006 for variance parameters
+
+\item Stan wiki for others
+
+\end{itemize}
+
+\subsection{Convergence statistics}
+
+\begin{itemize}
+
+\item Trace plot
+
+\item Gelman-Rubin statistic
+
+\item Multiple-chains are run not for computational benefits but to assess convergence
+
+\item Gelman-Rubin-brooks plot
+
+\item Lack of divergences \- which are ``incredibly sensitive to the kind of pathologies that can obstruct geometric ergodicity'' 
+
+
+\end{itemize}
+
 
 \section{Smoothing}
 
-Ideally we wish to identify potential local risk factors in the aetiology of a disease, say, carcenogenic hazard from industrial polution. So it's clear that the ability to incorporate a high level of spatial granularity in our model is of value in these contexts. However this comes with the trade-off of greater variance in the counts making identification of abnormal temporal trends difficult, especially for diseases with low incidence. Therefore we need to employ an element of smoothing over the neibourhoods of the 
+Ideally we wish to identify potential local risk factors in the aetiology of a disease, say, carcenogenic hazard from industrial polution. So it's clear that the ability to incorporate a high level of spatial granularity in our model is of value in these contexts. However this comes with the trade-off of greater variance in the counts, making identification of abnormal temporal trends difficult, especially for diseases with low incidence. Therefore we need to employ an element of smoothing over the local neighbourhoods of each region. This can be done in a variety of methods. One possibility is the use of splines such as in (source here) but in this project we will primarily look at using a conditionally autoregressive prior.
+
+\subsection{CAR models}
+
+Markov random field.
+
+Conditionally autoregressive models can be best understood when specified in terms in terms of their conditional distribution. 
+
+\begin{equation}
+v_i \ | \ v_j \ j \neq i \sim N(\alpha \cdot \bar{\mu_i}, \ \sigma_v^2/k_i)
+\end{equation}
+
+where $k_i$ is the number of neighbours adjacent to region $i$,
+
+\begin{equation}
+\bar{\mu_i} = \sum_{j \in \partial i} \frac{\mu_j}{k_i}
+\end{equation}
+
+and $\alpha$ is a parameter measuring the degree of spatial dependence. 
+
+However as this specification is a markov random field and not a directed acyclic graph we can't use this definition in non-gibbs sampling methods \- we need the $v_i$ to be jointly specified. Thankfully it is possible for it to be expressed in terms of a multivariate normal distribution as follows,
+
+\begin{equation}
+v \ \sim \ N(0, \ \sigma_v^2 \cdot {[D(I_n - \alpha B)]}^{-1})
+\end{equation}
+
+where
+
+\begin{align}
+D &= \operatorname{diag}(k_i) \\
+B &= D^{-1} W \\
+{(W)}_{ij} &= 
+\begin{cases}
+1, \ \ i \leftrightarrow j \\
+0, \ \ \textrm{otherwise}
+\end{cases}
+\end{align} 
+
+It is intuitively clear that the precision matrix here is sparse and so naive calculations will be very inefficient \- see the section on computational considerations for some more sophisticated methods that we will use to simulate the distribution.
+
+\begin{itemize}
+
+\item Cite http://www.biostat.umn.edu/~brad/software/jbc.proofs.pdf
+
+\item Write in terms of join distribution for non-gibs samplers.
+
+\item Spatial dependence parameter $\alpha$ \- to prior or not to prior?
+
+\item Intrinsically autoregressive model \- improper as covariance matrix is semi-definite
+
+\end{itemize}
+
+\subsection{BYM prior}
+
+\subsection{Temporal smoothing}
+
+Similarly to in the spatial setting we can use a prior on the temporal component that assumes a level of similarity between adjacent regions - here consecutive time points. The prior prefered here is the one dimensional random walk prior, which we will denote by
+
+\begin{equation}
+\xi_{1:T} \sim \operatorname{RW}(1)
+\end{equation}
+
+where the dimensionality will often be infered from the context.
 
 
+\section{Individual trend model}
+
+The first Bayesian model we wil consider is similar to that which is formed in Someone et al. In this setting we construct two alternate hypothesis for each region, one where the counts at the region are broadly in keeping with some ``global'' temporal trend (subject to localised spatial deviations captured with a conditionally autoregressive prior), and in the other the region has its own individual temporal trend. Then by some method of classification we sort the regions into those deemed most likely to follow the global model and those exhibiting behaviour more typical of the second model - and label these regions ``unusual''.
+
+\subsection{Baystdetect and the cut function}
+
+In the original paper \emph{Baystdetect} the use of the cut function in the \emph{BUGS} language is employed to fit the two models to the data seperately and then the model selection is undertaken afterward. This method, which prevents the flow of information between the two models is defended in (Nicky Best presentation here) but has been met with some level of skepticism in the community, for example in Andrew Gelmans posts to the Stan mailing list here (insert link), as the analysis is not ``truly Bayesian''. Nethertheless, we examine this paradigm and compare it to fully Bayesian methods. 
+
+\subsubsection{Model specification}
+
+We denote the counts at region $i$ at time $t$ by $Y_{i,t}$ and model them by a Poisson process
+
+\begin{equation}
+Y_{i,t} \sim \operatorname{Poisson}(E_{i,t} \cdot \mu_{i,t})
+\end{equation}
+
+where $E_{it}$ is the expected count based on population numbers, demographics etc and $\mu_{i,t}$ is the rate parameter by which we impute the two models behaviours. This rate variable we parameterize additively on the log scale for both models as follows
+
+\begin{equation}
+\log{(\mu_{i,t})} = \begin{cases}
+\ \lambda_{i} + \gamma_{t} \  (+ \  \alpha_0) & \textrm{Model 1 for all } i, t \\
+\ u_{i} + \xi_{i,t} & \textrm{Model 2 for all } i, t
+\end{cases}
+\end{equation} 
+
+Here we see that for Model 1 we assume space-time seperability in the rate paramater with the components given the following priors
+
+\begin{align}
+\alpha_0 &\sim \operatorname{Flat}(\mathbb{R}) \\
+v_{1:N} &\sim \operatorname{CAR}(W, \sigma_v) \\
+\lambda_{1:N} &\sim \operatorname{Normal}(v, \sigma_\lambda) \\
+\gamma_{1:T} &\sim \operatorname{RW}(1)
+\end{align}
+
+We see here the BYM prior on the spatial component, imposing a smoothing constraint, and a one-dimensional random walk prior on the temporal component. 
+
+The variance hyperparameters are given (insert prior here) as recomended in (possibly Gelman 2006). \\
+
+For the second model we drop the assumption of space-time seperability and each region gets its own temporal trend as follows
+
+\begin{align}
+u_i &\sim \operatorname{Normal}(0, 1000) &&\textrm{for } i = 1, \ldots, N  \\
+\xi_{i, 1:T} &\sim \operatorname{RW}(1) &&\textrm{for } i = 1, \ldots, N
+\end{align}
+
+\section{Excess variability model}
+
+
+
+
+\section{Computational considerations}
+
+\subsection{Sampling methods}
+
+\begin{itemize}
+
+\item Mainly using stan for the model
+
+\item Also used BUGS for mixing and speed comparison
+
+\item Discuss pymc3 too and compare with stan's parameter tuning/ initilization with ADVI
+
+\end{itemize}
+
+\subsubsection{Gibbs sampling}
+
+\subsubsection{Metropolis}
+
+\subsubsection{Hamiltonian Monte-Carlo}
+
+\begin{itemize}
+
+\item Rotational invariance
+
+\item Include some diagrams from MIchael Betancourt's papers
+
+\end{itemize}
+
+\subsubsection{Autodiff/black-box variational inference?}
+
+\subsection{Reparamterization of the models}
+
+Removing conditional dependencies e.g.
+
+\begin{align*}
+\lambda \sim N(v, \sigma^2_\lambda) = N(0, 1) \cdot \sigma_\lambda^2 + v
+\end{align*}
+
+\subsection{Marginilizing over the mixture component}
+
+\begin{itemize}
+
+\item Rao-Blackwellization? 
+
+\end{itemize}
+
+\subsection{Timing data?}
 
 
 \end{document}
