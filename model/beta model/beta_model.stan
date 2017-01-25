@@ -85,7 +85,7 @@ parameters {
     matrix[numRegions, nt] ind_temporal; // The temporal trend of an individual region
     vector[numRegions] ind_constant;
 
-    vector[numRegions] prop_unusual;
+    vector<lower=0, upper=1>[numRegions] prop_unusual;
 
     real a;
     real<lower = 0> b;
@@ -95,8 +95,13 @@ parameters {
 transformed parameters {
     matrix[numRegions, nt] mu_general;
     matrix[numRegions, nt] mu_specific;
+
+    // reparameterize mu_general
+    // lmbda(v, sigma_l) == v + N(0, 1) * sigma_l
+
+    // change variance parameters to be Gamma(2, 0) maybe? as in http://www.stat.columbia.edu/~gelman/research/published/chung_etal_Pmetrika2013.pdf
     
-    mu_general = rep_matrix(temporal, numRegions)' + rep_matrix(lmbda, nt) + rep_matrix(log_expected, nt) + rep_matrix(constant, numRegions, nt);
+    mu_general = rep_matrix(temporal, numRegions)' + rep_matrix(lmbda, nt) + rep_matrix(log_expected, nt);
     mu_specific = ind_temporal + rep_matrix(ind_constant, nt) + rep_matrix(log_expected, nt);
     
 }
@@ -118,7 +123,7 @@ model {
     a ~ normal(0, 30);
     b ~ normal(0, 2.5);
 
-    prop_unusual ~ beta(1, 19);
+    prop_unusual ~ beta(2, 40);
     
     v ~ sparse_car(sigma_v, alpha, W_sparse, D_sparse, lambda, numRegions, W_n);
     lmbda ~ normal(v, sigma_l);
