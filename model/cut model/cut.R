@@ -22,7 +22,7 @@ cut_model <- jags.model('cut.jags',
 
 predict_mcarray <- coda.samples(cut_model,
                                 c('z'),
-                                n.iter = 100000)
+                                n.iter = 10000)
 
 #predict_mcmc <- as.mcmc.list(predict_mcarray)
 predict <- as.matrix(predict_mcarray)
@@ -33,6 +33,7 @@ predict_values <- predict_sorted$x
 predict_regions <- predict_sorted$ix
 
 write.csv(predict_regions, 'predicted.csv')
+write.csv(predict_values, 'values.csv')
 
-plot(predict_mcarray[,18,])
+#plot(predict_mcarray[,18,])
 

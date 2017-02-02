@@ -75,12 +75,12 @@ transformed data{
 parameters {
     vector[nt] temporal;
     vector[numRegions] v; // Spatial smoothing component
-    vector[numRegions] lmbda; 
+    vector[numRegions] lmbda;
+    //real cons;
     real<lower = 0> sigma_v; // Variance of spatial component, v
     real<lower = 0> sigma_temporal; // Variance of temporal component
     real<lower = 0> sigma_l;
     real<lower=0, upper=1> alpha;
-    # real constant;
 
 }
 transformed parameters {
@@ -88,8 +88,7 @@ transformed parameters {
     matrix[numRegions, nt] mu_general;
     
     mu_general = rep_matrix(log_expected, nt) + rep_matrix(lmbda, nt) + rep_matrix(temporal, numRegions)';
-    // mu_general = rep_matrix(log_expected, nt) + rep_matrix(lmbda, nt) + rep_matrix(temporal, numRegions)' + rep_matrix(constant, numRegions, nt);
-    // mu_general = rep_matrix(log_expected, nt) + rep_matrix(v, nt) + rep_matrix(temporal, numRegions)' + rep_matrix(constant, numRegions, nt);
+    //mu_general = rep_matrix(log_expected, nt) + rep_matrix(lmbda, nt) + rep_matrix(temporal, numRegions)' + rep_matrix(cons, numRegions, nt);
     
 }
 model {
@@ -102,7 +101,7 @@ model {
 	temporal[t] ~ normal(temporal[t - 1], sigma_temporal);
     }
     
-    # constant ~ normal(0, 30); // constant term for general
+    //cons ~ normal(0, 30); // constant term for general
     
     v ~ sparse_car(sigma_v, alpha, W_sparse, D_sparse, lambda, numRegions, W_n);
     lmbda ~ normal(v, sigma_l);

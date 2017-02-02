@@ -6,6 +6,7 @@
 \usepackage{amssymb}
 \usepackage{framed}
 \usepackage{relsize}
+\usepackage{subfig}
 \usepackage{graphicx}
 \graphicspath{ {images/}}
 \usepackage{subcaption}
@@ -22,7 +23,7 @@
 \fancyhead[R]{Michael Redman, CID:\ 00826863}
 \fancyfoot[C]{\thepage}
 \begin{document}
-\title{Modelling spatiotemporal variance in epidemiological contexts}
+\title{Modeling spatiotemporal variance in epidemiological contexts}
 \author{Michael Redman, CID:\ 0082686\textbf{3}}
 \date{December 2016}
 
@@ -54,7 +55,7 @@ The correct identification of blah insert stuff here.
 
 \item Compositional models
 
-\item Posterior simulations + ML classifier e.g. \ k - NN \?
+\item Posterior simulations?
 
 \end{itemize}
 
@@ -126,7 +127,7 @@ B &= D^{-1} W \\
 \end{cases}
 \end{align} 
 
-It is intuitively clear that the precision matrix here is sparse and so naive calculations will be very inefficient \- see the section on computational considerations for some more sophisticated methods that we will use to simulate the distribution.
+It is intuitively clear that the precision matrix here is sparse and so naive calculations will be very inefficient -- see the section on computational considerations for some more sophisticated methods that we will use to simulate the distribution.
 
 \begin{itemize}
 
@@ -134,9 +135,9 @@ It is intuitively clear that the precision matrix here is sparse and so naive ca
 
 \item Write in terms of join distribution for non-gibs samplers.
 
-\item Spatial dependence parameter $\alpha$ \- to prior or not to prior?
+\item Spatial dependence parameter $\alpha$ --- to prior or not to prior?
 
-\item Intrinsically autoregressive model \- improper as covariance matrix is semi-definite
+\item Intrinsically autoregressive model --- improper as covariance matrix is semi-definite
 
 \end{itemize}
 
@@ -144,13 +145,53 @@ It is intuitively clear that the precision matrix here is sparse and so naive ca
 
 \subsection{Temporal smoothing}
 
-Similarly to in the spatial setting we can use a prior on the temporal component that assumes a level of similarity between adjacent regions - here consecutive time points. The prior prefered here is the one dimensional random walk prior, which we will denote by
+Similarly to in the spatial setting we can use a prior on the temporal component that assumes a level of similarity between adjacent regions -- here consecutive time points. The prior prefered here is the one dimensional random walk prior, which we will denote by
 
 \begin{equation}
 \xi_{1:T} \sim \operatorname{RW}(1)
 \end{equation}
 
-where the dimensionality will often be infered from the context.
+where the dimensionality will often be infered from the context. Note that this can be represented by a CAR model and is sometimes represented as such in the literature. 
+
+\section{Simulated data}
+
+In order to test the accuracy of any potential models we need some data that exhibits trends that exhibit pathelogical behaviour that we wish to identify. The simulated data (include citation for Areti) is of asthma hospitalization counts across 221 clinical commisioning groups in England at 15 time points under a Poisson model with a BYM prior for the spatial component and a $\operatorname{RW}(1)$ prior for the temporal component. \\
+
+A selection of 15 of the regions were chosen according to the 10th, 25th, 50th, 75th and 90th percentiles of the median expected counts over time (three regions per percentile) and were given a deviant temporal trend. \\
+
+The temporal trends of these regions were manually changed, where -- writing the original trend as $g(t)$ and the modified trend as $g^*(t)$ -- we have:
+
+\begin{align}
+g^*(t) &= g(t) + \log(2) && t = 1, 10, 11 \\ 
+g^*(t) &= g(t) - \log(2) && t = 5, 15
+\end{align}
+
+\begin{figure}
+\includegraphics[scale=0.5]{plot_time_effects}
+\centering
+\end{figure}
+
+\begin{itemize}
+\item Check this trend with Marta as the word document and pictured trend are different.
+\end{itemize}
+
+In addition to the observed counts at each point we have the expected number of cases for each regions based on true hospital admissions records for each CCG and shape files corresponding to the regions in question.
+
+\subsection{Cleaning and wrangling}
+
+Of the 211 regions one one had no neighbours, the Isle of Wight, so this region was removed to simplify calculations. An adjacency matrix calculated from the shape data. We had no data for wales so it was removed from the shapedata.
+
+\begin{figure}
+\centering
+\subfloat[Adjacency]{\includegraphics[width=0.5\textwidth]{adjacency}}
+\subfloat[Expected]{\includegraphics[width=0.5\textwidth]{expected}}
+\caption{Mapped data}
+\end{figure}
+
+\begin{itemize}
+\item Remove wales from the above pictures
+\item What to include here?
+\end{itemize}
 
 
 \section{Individual trend model}
@@ -160,6 +201,11 @@ The first Bayesian model we wil consider is similar to that which is formed in S
 \subsection{Baystdetect and the cut function}
 
 In the original paper \emph{Baystdetect} the use of the cut function in the \emph{BUGS} language is employed to fit the two models to the data seperately and then the model selection is undertaken afterward. This method, which prevents the flow of information between the two models is defended in (Nicky Best presentation here) but has been met with some level of skepticism in the community, for example in Andrew Gelmans posts to the Stan mailing list here (insert link), as the analysis is not ``truly Bayesian''. Nethertheless, we examine this paradigm and compare it to fully Bayesian methods. 
+
+\begin{itemize}
+\item Include discussion of model averaging vs larger model
+\item Cite Gelman et al 2013
+\end{itemize}
 
 \subsubsection{Model specification}
 
@@ -193,15 +239,78 @@ The variance hyperparameters are given (insert prior here) as recomended in (pos
 
 For the second model we drop the assumption of space-time seperability and each region gets its own temporal trend as follows
 
-\begin{align}
-u_i &\sim \operatorname{Normal}(0, 1000) &&\textrm{for } i = 1, \ldots, N  \\
-\xi_{i, 1:T} &\sim \operatorname{RW}(1) &&\textrm{for } i = 1, \ldots, N
-\end{align}
+\begin{equation}
+i \in 1,\ldots,N \
+\begin{cases}
+\ u_i \sim \operatorname{Normal}(0, 1000) \\
+\ \xi_{i, 1:T} \sim \operatorname{RW}(1) 
+\end{cases}
+\end{equation}
+
+\subsubsection{Implementation}
+
+The two models were fit to the data using Hamiltonian Monte-Carlo in the \emph{Stan} package -- both for over 2000 samples over 4 chains after a ``warm-up'' period of 1000 samples. Gelman-Rubin statistics for all parameters were under 1.05 (find exact figure) indicating that the had chains converged. Additionally a visual inspection of the trace plots for some select parameters did not indicate any worrying pathalogical behaviour.
+
+These two fits took under 5 minutes each to run after a short compilation which is a huge speed increase over typical \emph{BUGS} implementation.
+
+\subsubsection{Classification and accuracy}
+
+First looking at the general trend model we see that it has accurately identified the global temporal trend. 
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{global_temporal}
+\end{figure}
+
+
 
 \section{Excess variability model}
 
+The second Bayesian model we will look at also attempts to classify the regions, into typical and atypical sets, using a mixture model. Here our abnormal regions, rather than coming from an individual temporal trend, simply have excess inseperable spatio-temporal variance. Some potential advantages of such a model compared to Baystdetect are immediately clear:
 
+\begin{itemize}
+\item It's relative simplicity allows for easier computation
+\item It is not immediately clear that an abnormal temporal trend is symptomatic of an endemic problem --- variance is a more straightforwardly interpretable parameter
+\item Identification issues
+\end{itemize}
 
+\subsection{Model specification}
+
+The model is similar to that of Abellan et al. 2008, but with a mixture component that's hierachical at the regional level. Like before we model the counts as a Poisson process, $Y_{i,t} \sim \operatorname{Poisson}(E_{i,t} \cdot \mu_{i,t})$, with a rate parameter defined additively on the log-scale
+
+\begin{equation}
+\log(\mu_{i,t}) = \lambda_i + \gamma_t + \psi_{i,t}
+\end{equation}
+
+where, as before,
+\begin{align}
+v_{1:N} &\sim \operatorname{CAR}(W, \sigma_v) \\
+\lambda_{1:N} &\sim \operatorname{Normal}(v, \sigma_\lambda) \\
+\gamma_{1:T} &\sim \operatorname{RW}(1).
+\end{align}
+
+We see the new component $\psi$ captures a level of space-time inseperability to the counts. At every point $(i, t)$ each component is modeled as coming from a mixture of two normal distribution, with the mixture component at the regional level,
+\begin{equation}
+\psi_{i,t} \sim z_i \cdot \operatorname{Normal}(0, \tau_1^2) + (1 - z_i) \cdot \operatorname{Normal}(0, \tau_2^2)
+\end{equation} 
+
+where
+\begin{equation}
+  z_i \sim \operatorname{Bernoulli}(q)
+\end{equation}
+
+and $q$ is given a Uniform prior on (0, 1). The variance parameters are given half-normal priors, one a vague prior (representing the abnormal regions) and the other an informative prior which restricts the inseperable variance of the `normal' regions to be very limited. Identification issues are avoided by defining the larger of the variances addivitely in terms of the smaller:
+\begin{align}
+  \tau_1 &\sim \operatorname{Normal}(0, 0.01) \cdot I(0, \infty) \\
+  k &\sim \operatorname{Normal}(0, 100) \cdot I(0, \infty)
+\end{align}
+\begin{equation}
+ \tau_2 = \tau_2 + k
+\end{equation}
+
+Here $I$ is the indicator function.
+
+\subsection{Classification and accuracy}
 
 \section{Computational considerations}
 

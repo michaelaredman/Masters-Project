@@ -1,0 +1,2 @@
+load("/Users/Mike/4th Year/project/data/rdata/unusual_areas.Rda")
+load("/Users/Mike/4th Year/project/data/rdata/expected_data.Rda")

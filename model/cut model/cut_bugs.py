@@ -51,7 +51,8 @@ def init_chains(nchains):
 my_init = init_chains(4)
 
 iter_num = 500
-fit_model1 = pystan.stan(file='model1.stan', data=model1_data, iter=iter_num, chains=4, init=my_init)
+
+fit_model1 = pystan.stan(file='model1.stan', data=model1_data, iter=iter_num, chains=4)
 
 model1_trace = fit_model1.extract()
 

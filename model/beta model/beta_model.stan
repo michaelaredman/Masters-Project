@@ -43,6 +43,7 @@ data {
     vector[numRegions] log_expected; // The expected number of counts based on demographics etc
     matrix<lower = 0, upper = 1>[numRegions, numRegions] W; // The adjacency matrix
     int W_n;
+    real<lower = 0, upper = 1> alpha; //The degree of spatial dependence
 }
 transformed data{
     int W_sparse[W_n, 2];   // adjacency pairs
@@ -80,7 +81,8 @@ parameters {
     real<lower = 0> sigma_temporal; // Variance of temporal component
     real<lower = 0> sigma_l;
     real<lower = 0> var_ind_temporal[numRegions]; // The variance of the individual temporal trends
-    real<lower = 0, upper = 1> alpha; // The degree of spatial dependence - implicitly given flat prior
+    real constant;
+    //real<lower = 0, upper = 1> alpha; // The degree of spatial dependence - implicitly given flat prior
     
     matrix[numRegions, nt] ind_temporal; // The temporal trend of an individual region
     vector[numRegions] ind_constant;
@@ -101,7 +103,7 @@ transformed parameters {
 
     // change variance parameters to be Gamma(2, 0) maybe? as in http://www.stat.columbia.edu/~gelman/research/published/chung_etal_Pmetrika2013.pdf
     
-    mu_general = rep_matrix(temporal, numRegions)' + rep_matrix(lmbda, nt) + rep_matrix(log_expected, nt);
+    mu_general = rep_matrix(temporal, numRegions)' + rep_matrix(lmbda, nt) + rep_matrix(log_expected, nt) + rep_matrix(constant, numRegions, nt);
     mu_specific = ind_temporal + rep_matrix(ind_constant, nt) + rep_matrix(log_expected, nt);
     
 }
@@ -118,19 +120,20 @@ model {
     }
 
     ind_constant ~ normal(0, 30); // non-informative prior on the constant term per region
+    constant ~ normal(0, 30);
 
     var_ind_temporal ~ lognormal(a, b);
     a ~ normal(0, 30);
     b ~ normal(0, 2.5);
-
-    prop_unusual ~ beta(2, 40);
+    
+    prop_unusual ~ uniform(0, 1);
     
     v ~ sparse_car(sigma_v, alpha, W_sparse, D_sparse, lambda, numRegions, W_n);
     lmbda ~ normal(v, sigma_l);
 
     for (i in 1:numRegions){
-	target += log_sum_exp(log(1.0 - prop_unusual[i]) + poisson_log_lpmf(observed[i,] | mu_general[i,]),
-			      log(prop_unusual[i]) + poisson_log_lpmf(observed[i,] | mu_specific[i,]));
+	target += log_sum_exp(log1m(prop_unusual[i]) + poisson_lpmf(observed[i,] | exp(mu_general[i,])),
+			      log(prop_unusual[i]) + poisson_lpmf(observed[i,] | exp(mu_specific[i,])));
     }
 
 }

@@ -20,7 +20,7 @@ def load_data():
     numRegions = observed_values.shape[0] #number of regions
     nt = observed_values.shape[1] #number of time points
     
-    alpha = 0.75 #this was 1 in the model but that makes the covariance matrix singular
+    alpha = 0.9 #this was 1 in the model but that makes the covariance matrix singular
 
     return numRegions, nt, E, W, alpha, observed_values
 
@@ -31,11 +31,14 @@ model_data = {'numRegions': numRegions,
               'observed': observed_values,
               'log_expected': np.log(E),
               'W_n': int(W.sum()/2.0),
-              'W': W}
+              'W': W,
+              'alpha': alpha}
 
 print('Starting fit at: ', time.ctime())
 
-fit = pystan.stan(file='beta_model.stan', data=model_data, iter=500, chains=4)
+iter_num = 500
+
+fit = pystan.stan(file='beta_model.stan', data=model_data, iter=iter_num, chains=4)
 
 trace = fit.extract()
 
@@ -51,6 +54,12 @@ with open(file_name, 'wb') as f:
 prop_unusual = trace['prop_unusual']
 
 prop_unusual_av = prop_unusual.mean(axis=0)
+
+predict = pd.DataFrame(prop_unusual_av)
+predict.columns = ['Prop']
+predict.index = range(1, 211)
+
+
 
 true_unusual = pd.read_csv('../../data/csv/unusual.csv')
 
