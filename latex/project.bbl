@@ -1,0 +1,15 @@
+\begin{thebibliography}{}
+
+\bibitem[Abellan et~al., 2008]{stability}
+Abellan, J.~J., Richardson, S., and Best, N. (2008).
+\newblock Use of space-time models to investigate the stability of patterns of
+  disease.
+\newblock {\em Environmental Health Perspectives}, 116(8):1111.
+
+\bibitem[Li et~al., 2012]{baystdetect}
+Li, G., Best, N., Hansell, A.~L., Ahmed, I., and Richardson, S. (2012).
+\newblock Baystdetect: detecting unusual temporal patterns in small area data
+  via bayesian model choice.
+\newblock {\em Biostatistics}, page kxs005.
+
+\end{thebibliography}

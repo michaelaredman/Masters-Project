@@ -81,7 +81,7 @@ The correct identification of blah insert stuff here.
 
 \item Gelman-Rubin-brooks plot
 
-\item Lack of divergences \- which are ``incredibly sensitive to the kind of pathologies that can obstruct geometric ergodicity'' 
+\item Lack of divergences---which are ``incredibly sensitive to the kind of pathologies that can obstruct geometric ergodicity'' 
 
 
 \end{itemize}
@@ -104,7 +104,7 @@ v_i \ | \ v_j \ j \neq i \sim N(\alpha \cdot \bar{\mu_i}, \ \sigma_v^2/k_i)
 where $k_i$ is the number of neighbours adjacent to region $i$,
 
 \begin{equation}
-\bar{\mu_i} = \sum_{j \in \partial i} \frac{\mu_j}{k_i}
+\bar{\mu}_i = \sum_{j \in \partial i} \frac{\mu_j}{k_i}
 \end{equation}
 
 and $\alpha$ is a parameter measuring the degree of spatial dependence. 
@@ -146,7 +146,6 @@ It is intuitively clear that the precision matrix here is sparse and so naive ca
 \subsection{Temporal smoothing}
 
 Similarly to in the spatial setting we can use a prior on the temporal component that assumes a level of similarity between adjacent regions -- here consecutive time points. The prior prefered here is the one dimensional random walk prior, which we will denote by
-
 \begin{equation}
 \xi_{1:T} \sim \operatorname{RW}(1)
 \end{equation}
@@ -160,7 +159,6 @@ In order to test the accuracy of any potential models we need some data that exh
 A selection of 15 of the regions were chosen according to the 10th, 25th, 50th, 75th and 90th percentiles of the median expected counts over time (three regions per percentile) and were given a deviant temporal trend. \\
 
 The temporal trends of these regions were manually changed, where -- writing the original trend as $g(t)$ and the modified trend as $g^*(t)$ -- we have:
-
 \begin{align}
 g^*(t) &= g(t) + \log(2) && t = 1, 10, 11 \\ 
 g^*(t) &= g(t) - \log(2) && t = 5, 15
@@ -200,7 +198,7 @@ The first Bayesian model we wil consider is similar to that which is formed in S
 
 \subsection{Baystdetect and the cut function}
 
-In the original paper \emph{Baystdetect} the use of the cut function in the \emph{BUGS} language is employed to fit the two models to the data seperately and then the model selection is undertaken afterward. This method, which prevents the flow of information between the two models is defended in (Nicky Best presentation here) but has been met with some level of skepticism in the community, for example in Andrew Gelmans posts to the Stan mailing list here (insert link), as the analysis is not ``truly Bayesian''. Nethertheless, we examine this paradigm and compare it to fully Bayesian methods. 
+In the original paper \cite{baystdetect} the use of the cut function in the \emph{BUGS} language is employed to fit the two models to the data seperately and then the model selection is undertaken afterward. This method, which prevents the flow of information between the two models is defended in (Nicky Best presentation here) but has been met with some level of skepticism in the community, for example in Andrew Gelmans posts to the Stan mailing list here (insert link), as the analysis is not ``truly Bayesian''. Nethertheless, we examine this paradigm and compare it to fully Bayesian methods. 
 
 \begin{itemize}
 \item Include discussion of model averaging vs larger model
@@ -262,12 +260,12 @@ First looking at the general trend model we see that it has accurately identifie
 \includegraphics[width=\textwidth]{global_temporal}
 \end{figure}
 
+\subsection{Fully Bayesian model}
 
 
 \section{Excess variability model}
 
 The second Bayesian model we will look at also attempts to classify the regions, into typical and atypical sets, using a mixture model. Here our abnormal regions, rather than coming from an individual temporal trend, simply have excess inseperable spatio-temporal variance. Some potential advantages of such a model compared to Baystdetect are immediately clear:
-
 \begin{itemize}
 \item It's relative simplicity allows for easier computation
 \item It is not immediately clear that an abnormal temporal trend is symptomatic of an endemic problem --- variance is a more straightforwardly interpretable parameter
@@ -276,7 +274,7 @@ The second Bayesian model we will look at also attempts to classify the regions,
 
 \subsection{Model specification}
 
-The model is similar to that of Abellan et al. 2008, but with a mixture component that's hierachical at the regional level. Like before we model the counts as a Poisson process, $Y_{i,t} \sim \operatorname{Poisson}(E_{i,t} \cdot \mu_{i,t})$, with a rate parameter defined additively on the log-scale
+The model is similar to that of \cite{stability}, but with a mixture component that's hierachical at the regional level. Like before we model the counts as a Poisson process, $Y_{i,t} \sim \operatorname{Poisson}(E_{i,t} \cdot \mu_{i,t})$, with a rate parameter defined additively on the log-scale
 
 \begin{equation}
 \log(\mu_{i,t}) = \lambda_i + \gamma_t + \psi_{i,t}
@@ -284,22 +282,22 @@ The model is similar to that of Abellan et al. 2008, but with a mixture componen
 
 where, as before,
 \begin{align}
-v_{1:N} &\sim \operatorname{CAR}(W, \sigma_v) \\
-\lambda_{1:N} &\sim \operatorname{Normal}(v, \sigma_\lambda) \\
+v_{1:N} &\sim \operatorname{CAR}(W, \sigma_v^2) \\
+\lambda_{1:N} &\sim \operatorname{Normal}(v, \sigma_\lambda^2) \\
 \gamma_{1:T} &\sim \operatorname{RW}(1).
 \end{align}
 
-We see the new component $\psi$ captures a level of space-time inseperability to the counts. At every point $(i, t)$ each component is modeled as coming from a mixture of two normal distribution, with the mixture component at the regional level,
+We see the new component $\psi$ captures a level of space-time inseperability to the counts. At every point $(i, t)$ each component is modeled as coming from a mixture of two normal distributions, with the mixture component at the regional level,
 \begin{equation}
 \psi_{i,t} \sim z_i \cdot \operatorname{Normal}(0, \tau_1^2) + (1 - z_i) \cdot \operatorname{Normal}(0, \tau_2^2)
 \end{equation} 
 
 where
 \begin{equation}
-  z_i \sim \operatorname{Bernoulli}(q)
+  z_i \sim \operatorname{Bernoulli}(q_i)
 \end{equation}
 
-and $q$ is given a Uniform prior on (0, 1). The variance parameters are given half-normal priors, one a vague prior (representing the abnormal regions) and the other an informative prior which restricts the inseperable variance of the `normal' regions to be very limited. Identification issues are avoided by defining the larger of the variances addivitely in terms of the smaller:
+and the $q_i$ are given Uniform priors on (0, 1). Here we are marginilizing out the $z_i$ and instead performing inference on the $q_i$ which confers the advantages set out under the computational considerations section. The variance parameters are given half-normal priors, one a vague prior (representing the abnormal regions) and the other an informative prior which restricts the inseperable variance of the `normal' regions to be very limited. Identification issues and the label switching problem are avoided by defining the larger of the variances addivitely in terms of the smaller:
 \begin{align}
   \tau_1 &\sim \operatorname{Normal}(0, 0.01) \cdot I(0, \infty) \\
   k &\sim \operatorname{Normal}(0, 100) \cdot I(0, \infty)
@@ -312,9 +310,12 @@ Here $I$ is the indicator function.
 
 \subsection{Classification and accuracy}
 
+This model was fit using HMC in \emph{Stan} 
+
+
 \section{Computational considerations}
 
-\subsection{Sampling methods}
+\subsection{Basic Sampling methods}
 
 \begin{itemize}
 
@@ -330,19 +331,93 @@ Here $I$ is the indicator function.
 
 \subsubsection{Metropolis}
 
-\subsubsection{Hamiltonian Monte-Carlo}
+\subsection{Hamiltonian Monte-Carlo}
 
+The previous methods, while possessing the desired asymptotic properties, can---and do---take a long time to converge to the target distribution (infinity is a long time!). The aim of \emph{Hamiltonian Monte-Carlo} is to reduce the correlations between successive samples and so dramatically increase the effective sample size with minimal computational overhead. It does this by introducing an auxilliary variable and exploiting the interplay between this and the variables of the posterioir distribution within the framework of Hamiltonian mechanics.
+
+\subsubsection{Background}
+
+We write $q$ for the variables of the posterior distribution and introduce a new variable $p$ which we will call the \emph{momentum} of the system. Drawing from statistical mechanics, we know that for a given energy function of a system $E(\theta)$ we have the canonical ensemble
+\begin{equation}
+  p(\theta) = \frac{1}{Z} e^{-E(\theta)}.
+\end{equation}
+
+So defining a Hamiltonian of our system where the ``kiniteic energy'' is dependent on our momentum and the potential energy is dependent only on the posterioir:
+\begin{equation}
+  H(p, q) = \underbrace{T(p|q)}_{\text{Kinetic energy}} + \underbrace{V(q)}_{\text{Potential energy}}
+\end{equation} 
+
+looking at the canonical ensemble of the join distribution
+\begin{align}
+  \pi(p, q) &\;{\propto} \; e^{-H(p, q)} \\
+          &= e^{-[T(p|q) + V(q)]} \\
+          &= e^{-T(p|q)} \cdot e^{-V(q)} \\
+          &\;{\propto} \; \pi(p|q) \cdot \pi(q) 
+\end{align}
+
+we see that the posterior and distribution of the momentum are seperable and so independent. This means that if we can sample from $\pi(p, q)$ then our choice of distirbution for the momentum will not effect the calculation of any expectations based on the samples of $q$. \\
+
+Note that here we need a definition of potential energy which will give us back the posterior. Clearly the following satisfies this requirement
+\begin{equation}
+  V(q) = - \log \pi(q)
+\end{equation}
+
+So draws from $\pi(p, q)$ will allow us to make inferences on the $q$, but what advantages does the introduction of this auxilliary variable confer? Well, continuing with our intuition regarding a physical Hamiltonian system, we know that $p$ and $q$ are related by Hamilton's equations
+\begin{align}
+\frac{dq}{dt} &= \frac{\partial H}{\partial p} = \frac{\partial T}{\partial p} \\
+\frac{dp}{dt} &= - \frac{\partial H}{\partial q} = - \frac{\partial T}{\partial q} - \frac{\partial V}{\partial q}
+\end{align}
+
+\begin{itemize}
+  \item Finish off this bit more gracefully
+\end{itemize}
+
+\subsubsection{The Method}
+
+Hamiltonian monte-carlo works, not by applying a transition over $q$, but by giving our starting point ``a kick'' in the form of a random momentum and sampling along the level set of constant energy (defined by the Hamiltonian) using Hamilton's equations to evolve the joint system. Then---after some number of steps---we stop, sample a new momentum, and explore the new phase space that this defines. \\
+
+The questions now are obvious:
+
+\begin{itemize}
+\item \emph{How} do we evolve the joint system in accordance with Hamilton's equations?
+\item Do we need to work out all of the partial deriavtives $\partial V/\partial q_i$ by hand? 
+\item For how long should we explore each level set before sampling a new momentum?
+\item What proposal density should we use for the momentum?
+\item Why does this method lead to samples with less autocorrelation?
+\end{itemize}
+
+Other things to talk about:
 \begin{itemize}
 
 \item Rotational invariance
 
-\item Include some diagrams from MIchael Betancourt's papers
+\item Include some diagrams from Michael Betancourt's papers
 
 \end{itemize}
 
-\subsubsection{Autodiff/black-box variational inference?}
+\subsubsection{Auto differentiation}
 
-\subsection{Reparamterization of the models}
+\subsubsection{Symplectic Integration}
+
+\begin{itemize}
+\item Leap-frog integration
+\item Metropolis correction
+\end{itemize}
+
+\subsubsection{Integration time}
+
+\begin{itemize}
+\item Naive implementations will not preserve detailed balance
+\item Short-time will give large autocorrelations
+\item Long-time will face diminishing returns
+\item Integration time obviously linear in time, so compare to linear
+\item Exhuastive monte-carlo
+\item \emph{Identifying the Optimal Integration Time in Hamiltonian Monte-Carlo} (Betancourt 2016)
+\end{itemize}
+
+\subsection{Autodiff/black-box variational inference?}
+
+\subsection{Reparameterization of the models}
 
 Removing conditional dependencies e.g.
 
@@ -352,7 +427,37 @@ Removing conditional dependencies e.g.
 
 \subsection{Marginilizing over the mixture component}
 
+As \emph{Stan} used Hamiltonian Monte-Carlo, which is a gradient based sampler, we can't directly specify a discrete prior as used in mixture models. Instead we can ``marginalize out'' the mixture component to obtain a purely continuous distribution. This also has significan computational benefits (expand on this). \\
+
+Take for example a mixture of two Normal distributions
+\begin{equation}
+  k \cdot \operatorname{Normal(\mu_1, \sigma_1^2)} + (1 - k) \cdot \operatorname{Normal(\mu_2, \sigma_2^2)}
+\end{equation} 
+\begin{equation}
+  k \sim \operatorname{Bernoulli(\lambda)}.
+\end{equation}
+
+In Monte-Carlo we simply need to be able to calculate the posterior at a specific point. Most software, including \emph{Stan}, rather than multiply the posterior by a chain of conditional probability density functions works on the $\log$ scale where to calculate the log posterior we simply need to increment the log posterioir by the log conditional of the hierachical components. So for our mixture of Normals we need to implement the following
+\begin{align}
+  \text{log\_posterior} &= \text{log\_posterior} + \log(\lambda \cdot \operatorname{Normal\_pdf}(x | \mu_1, \sigma_1^2)  \nonumber \\
+                   & \ \ + (1 - \lambda) \cdot \operatorname{Normal\_pdf}(x | \mu_2, \sigma_2^2))
+\end{align}
+
+which we can see is continuous. The way we can specifically implement this in \emph{Stan} is by using the following manipulation
+
+\begin{align}
+\log(p_X(x | \lambda, \mu_i, \sigma^2_i)) &= \log(\lambda \cdot \operatorname{Normal\_pdf}(x | \mu_1, \sigma_1^2)  \nonumber \\
+& \ \ \ \ \ \ \ + (1 - \lambda) \cdot \text{Normal\_pdf}(x | \mu_2, \sigma_2^2)) \\
+&= \log(\exp(\log(\lambda \cdot \operatorname{Normal\_pdf}(x | \mu_1, \sigma_1^2)))  \nonumber \\
+& \ \ \ \ \ \ \ + \exp(\log((1 - \lambda) \cdot \operatorname{Normal\_pdf}(x | \mu_2, \sigma_2^2)))) \\
+&= \operatorname{log\_sum\_exp}(\log(\lambda) + \log\operatorname{Normal\_pdf}(x | \mu_1, \sigma_1^2),  \nonumber \\
+& \ \ \ \ \ \ \ \log(1 - \lambda) + \log\operatorname{Normal\_pdf}(x | \mu_2, \sigma_2^2))
+\end{align} 
+
+
 \begin{itemize}
+
+\item Cite Stan manual
 
 \item Rao-Blackwellization? 
 
@@ -360,5 +465,7 @@ Removing conditional dependencies e.g.
 
 \subsection{Timing data?}
 
+\bibliographystyle{apalike}
+\bibliography{project}{}
 
 \end{document}
