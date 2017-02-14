@@ -1,6 +1,6 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.11.4)  2 FEB 2017 00:01
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.11.4)  14 FEB 2017 13:42
 entering extended mode
- restricted \write18 enabled.
+ \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
 **\input project.tex
@@ -962,13 +962,19 @@ LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 46.
  [1
 
-{/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2]
-Underfull \hbox (badness 10000) in paragraph at lines 158--159
+{/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+Overfull \hbox (0.1117pt too wide) in paragraph at lines 84--85
+[]\OT1/cmr/m/n/10 Lack of divergences---which are ``in-cred-i-bly sen-si-tive t
+o the kind of patholo-
+ []
+
+[2]
+Underfull \hbox (badness 10000) in paragraph at lines 157--158
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 160--161
+Underfull \hbox (badness 10000) in paragraph at lines 159--160
 
  []
 
@@ -976,63 +982,83 @@ Underfull \hbox (badness 10000) in paragraph at lines 160--161
 File: images/plot_time_effects.pdf Graphic file (type pdf)
 
 <use images/plot_time_effects.pdf>
-Package pdftex.def Info: images/plot_time_effects.pdf used on input line 170.
+Package pdftex.def Info: images/plot_time_effects.pdf used on input line 168.
 (pdftex.def)             Requested size: 252.94437pt x 252.94437pt.
 
 <images/adjacency.png, id=27, 1003.75pt x 1003.75pt>
 File: images/adjacency.png Graphic file (type png)
 
 <use images/adjacency.png>
-Package pdftex.def Info: images/adjacency.png used on input line 186.
+Package pdftex.def Info: images/adjacency.png used on input line 184.
 (pdftex.def)             Requested size: 172.5pt x 172.48848pt.
  <images/expected.png, id=29, 1003.75pt x 1003.75pt>
 File: images/expected.png Graphic file (type png)
 
 <use images/expected.png>
-Package pdftex.def Info: images/expected.png used on input line 187.
+Package pdftex.def Info: images/expected.png used on input line 185.
 (pdftex.def)             Requested size: 172.5pt x 172.48848pt.
  [4 <./images/plot_time_effects.pdf>] [5 <./images/adjacency.png> <./images/exp
 ected.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 238--239
+Underfull \hbox (badness 10000) in paragraph at lines 236--237
 
  []
 
-[6] <images/global_temporal.png, id=51, 1445.4pt x 722.7pt>
+<images/global_temporal.png, id=46, 1445.4pt x 722.7pt>
 File: images/global_temporal.png Graphic file (type png)
 
 <use images/global_temporal.png>
-Package pdftex.def Info: images/global_temporal.png used on input line 262.
+Package pdftex.def Info: images/global_temporal.png used on input line 260.
 (pdftex.def)             Requested size: 345.0pt x 172.49214pt.
- [7 <./images/global_temporal.png>] [8]
-[9] (./project.aux) ) 
+ [6] [7 <./images/global_temporal.png>]
+Overfull \hbox (0.22281pt too wide) in paragraph at lines 335--336
+\OT1/cmr/m/n/10 The pre-vi-ous meth-ods, while pos-sess-ing the de-sired asymp-
+totic prop-er-ties, can---
+ []
+
+[8]
+Underfull \hbox (badness 10000) in paragraph at lines 357--358
+
+ []
+
+[9]
+Underfull \hbox (badness 10000) in paragraph at lines 376--377
+
+ []
+
+[10]
+Underfull \hbox (badness 10000) in paragraph at lines 429--430
+
+ []
+
+[11] (./project.bbl) [12] (./project.aux) ) 
 Here is how much of TeX's memory you used:
- 15576 strings out of 493089
- 293316 string characters out of 6134842
- 348353 words of memory out of 5000000
- 18739 multiletter control sequences out of 15000+600000
+ 15582 strings out of 493089
+ 293384 string characters out of 6134842
+ 350356 words of memory out of 5000000
+ 18742 multiletter control sequences out of 15000+600000
  18128 words of font info for 64 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  55i,16n,54p,756b,369s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/local/texlive/2015/texmf-dist/fonts/type1/public/ams
-fonts/cm/cmbx10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsf
-onts/cm/cmbx12.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfo
-nts/cm/cmmi10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfon
-ts/cm/cmmi7.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts
-/cm/cmr10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/c
-m/cmr12.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/
-cmr17.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cm
-r7.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.
-pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.p
-fb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pf
-b></usr/local/texlive/2015/texmf-dist/fonts/type1/public/mathabx-type1/matha10.
-pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/mathabx-type1/matha7
-.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/mathabx-type1/mathx
-10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/symbols/
-msbm10.pfb>
-Output written on project.pdf (9 pages, 587491 bytes).
+</usr/local/texlive/2015/texmf-dist/
+fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2015/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2015/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2015/texmf-dist/fon
+ts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2015/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2015/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2015/texmf-dist/fonts/typ
+e1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1
+/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmr8.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public
+/amsfonts/cm/cmti10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/
+mathabx-type1/matha10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/publi
+c/mathabx-type1/matha7.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/publ
+ic/mathabx-type1/mathx10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/pu
+blic/amsfonts/symbols/msbm10.pfb>
+Output written on project.pdf (12 pages, 609103 bytes).
 PDF statistics:
- 111 PDF objects out of 1000 (max. 8388607)
- 76 compressed objects within 1 object stream
+ 120 PDF objects out of 1000 (max. 8388607)
+ 82 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  33 words of extra memory for PDF output out of 10000 (max. 10000000)
 
