@@ -3,6 +3,10 @@ general <- read.csv('general.csv')
 specific <- read.csv('specific.csv')
 observed <- read.csv('../../data/csv/simulated.csv')
 
+observed$X = NULL
+specific$X = NULL
+general$X = NULL
+
 library(rjags)
 
 numRegions = dim(observed)[1]

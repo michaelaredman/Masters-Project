@@ -23,6 +23,13 @@ shape_deathtoisleofwight <- shape_deathtowales[shape_deathtowales@data$CCGname !
 neib <- poly2nb(shape_deathtoisleofwight)
 adj <- nb2mat(neib, style="B") 
 write.csv(adj, file='~/4th Year/project/data/csv/adjacency.csv')
+cardinality = card(neib)
+adj_list <- neib[1]
+for (i in 2:210) {
+  adj_list <- c(adj_list, neib[i], recursive=TRUE)
+}
+write.csv(adj_list, file='~/4th Year/project/data/csv/adj_list.csv')
+write.csv(cardinality, file='~/4th Year/project/data/csv/card.csv')
 
 row.names(asthma) <- 1:210
 View(asthma)
