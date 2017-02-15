@@ -297,7 +297,11 @@ where
   z_i \sim \operatorname{Bernoulli}(q_i)
 \end{equation}
 
+<<<<<<< HEAD
 and the $q_i$ are given Uniform priors on (0, 1). Here we are marginilizing out the $z_i$ and instead performing inference on the $q_i$ which confers the advantages set out under the computational considerations section. The variance parameters are given half-normal priors, one a vague prior (representing the abnormal regions) and the other an informative prior which restricts the inseperable variance of the `normal' regions to be very limited. Identification issues and the label switching problem are avoided by defining the larger of the variances addivitely in terms of the smaller:
+=======
+and $q$ is given a Uniform prior on (0, 1). The variance parameters are given half-normal priors, one a vague prior (representing the abnormal regions) and the other an informative prior which restricts the inseperable variance of the `normal' regions to be very limited. Identification issues and the label switching problem are avoided by defining the larger of the variances addivitely in terms of the smaller:
+>>>>>>> origin/master
 \begin{align}
   \tau_1 &\sim \operatorname{Normal}(0, 0.01) \cdot I(0, \infty) \\
   k &\sim \operatorname{Normal}(0, 100) \cdot I(0, \infty)
@@ -310,8 +314,12 @@ Here $I$ is the indicator function.
 
 \subsection{Classification and accuracy}
 
+<<<<<<< HEAD
 This model was fit using HMC in \emph{Stan} 
 
+=======
+\subsection{Fully Bayesian model}
+>>>>>>> origin/master
 
 \section{Computational considerations}
 
@@ -373,6 +381,13 @@ So draws from $\pi(p, q)$ will allow us to make inferences on the $q$, but what 
 \end{itemize}
 
 \subsubsection{The Method}
+<<<<<<< HEAD
+=======
+
+Hamiltonian monte-carlo works, not by applying a transition over $q$, but by giving our starting point ``a kick'' in the form of a random momentum and sampling along the level set of constant energy (defined by the Hamiltonian) using Hamilton's equations to evolve the joint system. Then---after some number of steps---we stop, sample a new momentum, and explore the new phase space that this defines. \\
+
+The questions now are obvious:
+>>>>>>> origin/master
 
 Hamiltonian monte-carlo works, not by applying a transition over $q$, but by giving our starting point ``a kick'' in the form of a random momentum and sampling along the level set of constant energy (defined by the Hamiltonian) using Hamilton's equations to evolve the joint system. Then---after some number of steps---we stop, sample a new momentum, and explore the new phase space that this defines. \\
 
@@ -388,13 +403,35 @@ The questions now are obvious:
 
 Other things to talk about:
 \begin{itemize}
+\item \emph{How} do we evolve the joint system in accordance with Hamilton's equations?
+\item Do we need to work out all of the partial deriavtives $\partial V/\partial q_i$ by hand? 
+\item For how long should we explore each level set before sampling a new momentum?
+\item What proposal density should we use for the momentum?
+\item Why does this method lead to samples with less autocorrelation?
+\end{itemize}
+
+Other things to talk about:
+\begin{itemize}
 
 \item Rotational invariance
 
 \item Include some diagrams from Michael Betancourt's papers
+<<<<<<< HEAD
+=======
 
 \end{itemize}
 
+\subsubsection{Auto differentiation}
+
+\subsubsection{Symplectic Integration}
+>>>>>>> origin/master
+
+\begin{itemize}
+\item Leap-frog integration
+\item Metropolis correction
+\end{itemize}
+
+<<<<<<< HEAD
 \subsubsection{Auto differentiation}
 
 \subsubsection{Symplectic Integration}
@@ -415,6 +452,19 @@ Other things to talk about:
 \item \emph{Identifying the Optimal Integration Time in Hamiltonian Monte-Carlo} (Betancourt 2016)
 \end{itemize}
 
+=======
+\subsubsection{Integration time}
+
+\begin{itemize}
+\item Naive implementations will not preserve detailed balance
+\item Short-time will give large autocorrelations
+\item Long-time will face diminishing returns
+\item Integration time obviously linear in time, so compare to linear
+\item Exhuastive monte-carlo
+\item \emph{Identifying the Optimal Integration Time in Hamiltonian Monte-Carlo} (Betancourt 2016)
+\end{itemize}
+
+>>>>>>> origin/master
 \subsection{Autodiff/black-box variational inference?}
 
 \subsection{Reparameterization of the models}
@@ -465,7 +515,12 @@ which we can see is continuous. The way we can specifically implement this in \e
 
 \subsection{Timing data?}
 
+<<<<<<< HEAD
 \bibliographystyle{apalike}
 \bibliography{project}{}
+=======
+\bibliography{project}{}
+\bibliographystyle{plain}
+>>>>>>> origin/master
 
 \end{document}

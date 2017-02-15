@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.11.4)  14 FEB 2017 14:20
+=======
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.11.4)  14 FEB 2017 13:42
+>>>>>>> origin/master
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -1033,7 +1037,11 @@ Underfull \hbox (badness 10000) in paragraph at lines 429--430
 [11] (./project.bbl) [12] (./project.aux) ) 
 Here is how much of TeX's memory you used:
  15582 strings out of 493089
+<<<<<<< HEAD
  293386 string characters out of 6134842
+=======
+ 293384 string characters out of 6134842
+>>>>>>> origin/master
  350356 words of memory out of 5000000
  18742 multiletter control sequences out of 15000+600000
  18128 words of font info for 64 fonts, out of 8000000 for 9000
@@ -1055,7 +1063,11 @@ mathabx-type1/matha10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/publi
 c/mathabx-type1/matha7.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/publ
 ic/mathabx-type1/mathx10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/pu
 blic/amsfonts/symbols/msbm10.pfb>
+<<<<<<< HEAD
 Output written on project.pdf (12 pages, 610111 bytes).
+=======
+Output written on project.pdf (12 pages, 609103 bytes).
+>>>>>>> origin/master
 PDF statistics:
  120 PDF objects out of 1000 (max. 8388607)
  82 compressed objects within 1 object stream
