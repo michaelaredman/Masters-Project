@@ -475,9 +475,9 @@ Removing conditional dependencies e.g.
 \lambda \sim N(v, \sigma^2_\lambda) = N(0, 1) \cdot \sigma_\lambda^2 + v
 \end{align*}
 
-\subsection{Marginilizing over the mixture component}
+\subsection{Marginilizing over the discrte parameters}
 
-As \emph{Stan} used Hamiltonian Monte-Carlo, which is a gradient based sampler, we can't directly specify a discrete prior as used in mixture models. Instead we can ``marginalize out'' the mixture component to obtain a purely continuous distribution. This also has significan computational benefits (expand on this). \\
+As \emph{Stan} uses Hamiltonian Monte-Carlo, which is a gradient based sampler, we can't directly specify a discrete prior as used in mixture models. Instead we can ``marginalize out'' the mixture component to obtain a purely continuous distribution. This also has significan computational benefits (expand on this). \\
 
 Take for example a mixture of two Normal distributions
 \begin{equation}

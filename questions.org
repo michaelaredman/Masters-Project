@@ -1,8 +1,31 @@
 
-* What is my version of the cut model?
+* What IS my version of the cut model?
 
 ** i.e. Will it fit the same?
 
+** Do I need to use BUGS -- can a closed form method be used?
 
+* CUMSUM
 
+** Why is pmf in CUMSUM?
+   
+** Any good papers to see CUMSUM used in these contexts?
+
+** Does it make sense to make sense of temporal trends in these contexts?
+
+* How to measure false positive/negative etc?
+
+* CAR vs IAR?
+
+* Sum-to-zero constraint
+
+* Rao-Blackwell means marginalizing out discrete parameters is better?
+
+* What do abnormal epidemiological trends look like?
+
+* Is the baystdetect model unidentifiable without the cut function?
+
+* Why not define the mixture on the temporal component?
+  
+* Is marginalization equivalent for some method of selection?
 
