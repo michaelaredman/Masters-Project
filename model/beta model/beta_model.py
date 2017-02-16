@@ -31,8 +31,7 @@ model_data = {'numRegions': numRegions,
               'observed': observed_values,
               'log_expected': np.log(E),
               'W_n': int(W.sum()/2.0),
-              'W': W,
-              'alpha': alpha}
+              'W': W}
 
 print('Starting fit at: ', time.ctime())
 
