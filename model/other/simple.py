@@ -74,7 +74,7 @@ with model:
     
     D = diag(d_1, ..., d_n)
     d_i = 'degree' of region i
-    alpha = level of spatial dependence 
+    alpha = level of spatial dependence
     
     We place vague priors on the variances.
     
@@ -91,7 +91,7 @@ with model:
     temporal  = GaussianRandomWalk('temporal', sd=sigma_temporal, shape=nt)
     
     # mu_it = Expected*exp(lambda_i + temporal_t)
-    
+   
     mu_temp = [] #rate parameters over the time points
     for i in range(numRegions):
         mu_temp.append(T.stack([E[i]*T.exp(v[i] + temporal[t]) for t in range(nt)]))
@@ -116,7 +116,6 @@ with model:
     trace = pm.sample(5000, step)
     cov = pm.trace_cov(trace[1000:])
 
-    
     step2 = pm.NUTS(scaling=cov, is_cov=True)
     print('2nd step defined')
     trace2 = pm.sample(5000, step2)

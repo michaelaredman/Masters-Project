@@ -58,8 +58,6 @@ predict = pd.DataFrame(prop_unusual_av)
 predict.columns = ['Prop']
 predict.index = range(1, 211)
 
-
-
 true_unusual = pd.read_csv('../../data/csv/unusual.csv')
 
 
