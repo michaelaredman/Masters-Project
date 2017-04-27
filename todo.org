@@ -1,0 +1,29 @@
+
+* TODO Implement basic CUSUM class
+
+* TODO Fix LaTeX to remove git additions
+
+* TODO Use BUGS on a sample from the two stan models
+
+* TODO Describe warm-up period for Stan vs burn-in for Gibbs 
+
+* TODO Discussion of prior on the mixture weights
+
+* TODO Make new simulated data where likelihood of abnormal is spatially correlated
+
+Successively select new regions with local preferential attatchment.
+
+
+** Graph generator -> Preferential unusual/usual regions
+
+
+*** Make categorical pmf across all 210 regions (unnormed)
+
+*** To select a region select from remaining list with probabilities weighted by the number of neighbours infected
+
+*** After a region is selected remove from possible selection and add 1 to every neighbour
+
+
+** Graph generator -> Preferential levels of deviation
+
+

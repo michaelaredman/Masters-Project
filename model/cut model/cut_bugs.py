@@ -92,3 +92,12 @@ specific = pd.DataFrame(mu_specific.mean(axis = 0))
 
 general.to_csv('general.csv')
 specific.to_csv('specific.csv')
+
+num_samples = 20
+selection = np.random.choice(np.arange(1000), num_samples, replace=False)
+
+general_sample = mu_general[selection, :, :]
+specific_sample = mu_specific[selection, :, :]
+
+np.savetxt('general_sample.csv', general_sample.flatten())
+np.savetxt('specific_sample.csv', specific_sample.flatten())

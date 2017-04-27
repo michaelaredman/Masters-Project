@@ -36,15 +36,13 @@ model_data = {'numRegions': numRegions,
 
 print('Starting fit at: ', time.ctime())
 
-iter_num = 2000
+iter_num = 500
 
 fit = pystan.stan(file='var.stan', data=model_data, iter=iter_num, chains=4)
 
 print('Finished fit at: ', time.ctime())
 
 trace = fit.extract()
-
-print('')
 
 ts = time.localtime()
 file_name = "trace/model_{}-{}-{}__{}-{}.pkl".format(ts[2], ts[1], ts[0], ts[3], ts[4])

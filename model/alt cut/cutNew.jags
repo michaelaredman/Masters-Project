@@ -1,0 +1,13 @@
+
+model {
+    for (i in 1:N) {
+	z[i] ~ dbern(1.0 - prop_unusual)
+
+	for (t in 1:T) {
+	    for (sample in 0:(numSamples-1)) {
+		    y[i,t+sample*T] ~ dpois(mu[i,t+sample*T])
+		    log(mu[i,t+sample*T]) <- z[i] * general_flat[i,t+sample*T] + (1-z[i]) * specific_flat[i,t+sample*T]
+	    }
+	}
+    }
+}

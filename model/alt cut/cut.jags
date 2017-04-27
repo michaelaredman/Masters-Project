@@ -1,0 +1,12 @@
+
+model {
+
+for (i in 1:N) {
+    z[i] ~ dbern(1.0 - prop_unusual)
+    for (t in 1:T) {
+        y[i,t] ~ dpois(mu[i,t])
+        log(mu[i,t]) <- z[i] * general[i,t] + (1-z[i]) * specific[i,t]
+    }
+}
+
+}
