@@ -36,7 +36,7 @@ contains
 
       S(1) = log_likelihood_ratio(time_series(1), expectation(1), expectation(1)*alpha)
       do i=2,series_len
-         S(2) = max(0d0, log_likelihood_ratio(time_series(i), expectation(i), expectation(i)*alpha))
+         S(i) = max(0d0, log_likelihood_ratio(time_series(i), expectation(i), expectation(i)*alpha))
       end do
       
     end subroutine control_chart
