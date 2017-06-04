@@ -129,3 +129,4 @@ class cusum:
 
 csum = cusum(observed_values, E)
 csum.generate_h(np.linspace(0, 10, 250), p_value=0.01)
+unusual_predicted = csum.test_regions() + 1

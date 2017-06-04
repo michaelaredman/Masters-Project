@@ -23,23 +23,90 @@
 \fancyhead[R]{Michael Redman, CID:\ 00826863}
 \fancyfoot[C]{\thepage}
 \begin{document}
-\title{Modeling spatiotemporal variance in epidemiological contexts}
+\title{Detecting pathologies in spatiotemporal data}
 \author{Michael Redman, CID:\ 0082686\textbf{3}}
 \date{December 2016}
 
 \maketitle
 
+\section{Introduction}
+
+The identification of unusual patterns of disease is of obvious importance in public health. 
+
+\begin{itemize}
+\item Preventative medicine
+\item small/fine-grained areas
+\item Allows for greater spcificity while presenting new challenges
+\item Data sparcity
+\item Computational advances
+\item Enviromental exposures
+\item Great care/subtleties of the computational methods
+\item Spatial scan statistics
+\item Type of data we will be looking at
+\end{itemize}
+
+
+What I do:
+\begin{enumerate}
+\item Investigate the use of control chart based methods
+\item Explore the use of Bayesian models
+\item Look at the use of the cut function
+\item Performance in terms of false-positive/negatives
+\item Speed performance
+\item Try a new model for identifying unseperable variance
+\item Create new simulated data with preferential attachment to test issues with it
+\item Hamiltonian monte carlo and issues with mixture models
+\end{enumerate}
+
 \section{The problem}
 
 The correct identification of blah insert stuff here.
 
-\section{Naive/Other models}
+\section{CUSUM}
 
-\subsection{SATScan}
+The use of control charts are widespead in the area of statistical quality control and have recently increasingly found use in fields such as epidemiology. Their relative simplicity and ease of computation compared to most other methods makes them an ideal model to compare against, in order to observe any gains we might obtain from more complex modelling.
 
-\subsection{CUSUM}
+\begin{itemize}
+\item Mention that the process is sequential and so can be calculated as we go.
+\end{itemize}
 
-\section{Bayesian Model Construction}
+We will specifically be looking at the use of CUSUM models, which seek to identify a qualitative change in the nature of a time series via the evaluation of the cumulative of a relavant test statistic. We define $S_t$ as the value of the control chart at time $t$ and progress its value as follows
+\begin{gather}
+S_0 = 0 \\
+s_{t+1} = \max{(0, S_t + K_t)}.
+\end{gather}
+
+Where $K_t$ is the value of some statistic calculated at time point $t$. We will use the $\log$ of the ratio between the likelihoods of the data, at the time point, under an ``in-control'' and an ``out-of-control'' Poisson process. So if likelihood of the ``out-of-control'' rate is greater than the ``in-control'' then the value of $S_t$ will increase and vice-versa. The logarithms are taken to minimise floating-point arithmetic issues as the densities will often be very small. We then signal that the process is pathological if the value of $S_t$ exceeds some threshold value $h$. \\
+
+This leaves us to come up with sensible methods of generating the ``in-control'' and ``out-of-control'' rates and the threshold value that we trigger at. With the data that we area examining in this project we have the expected values of the disease rates in each region and could use these for the values of the ``in-control'' rate but this would neglat the fact that we expect the incident counts at each region to vary over time and---importantly---this is not neccasarily pathological behaviour. It is instead a temporal trend which differs from some general (here country-wide) trend which we wish to detect. Therefore the method we propose here is to construct a general temporal trend from an average across the regions and to weight this trend per region by that regions expected counts. \\
+
+So for the data $Y_{i,t}, \ i = 1, \ldots, R, \ t = 1, \ldots, T$ we normalize the temporal pattern of each regions by its expect count $E_{i}$ as follows
+\begin{equation}
+\tilde{Y}_{i, t} = \frac{Y_{i, t}}{E_{i}}, \ \ \ \ i = 1, \ldots, R, \ t = 1, \ldots, T.
+\end{equation} 
+
+We then construct the ``in-control'' rate for each region $I_{i, t}$ as described
+\begin{equation}
+I_{i, t} = E_i \cdot \frac{1}{R} \sum_{i=1}^N \tilde{Y}_{i, t}, \ \ \ \ i = 1, \ldots, R, \ t = 1, \ldots, T.
+\end{equation}
+
+For simplicity we only consider the case of abnormally high count rates and ignore artificially low counts but this could be incorporated into the CUSUM model if desired. So to define the ``out-of-control'' rate it makes sense to follow the same temporal trend but with a modified general rate. We do this by calculating the ``out-of-control'' rate $O_{i,t}$ as a multiple of the ``in-control'' as follows
+\begin{equation}
+O_{i,t} = \lambda \cdot I_{i,t}, \ \ \ \  i = 1, \ldots, R, \ t = 1, \ldots, T.
+\end{equation} 
+with $\lambda > 1$.
+
+Now for a given value of $\lambda$ we need a threshold level at which to signal. This can be done by caluclating the average-run length (ARL) which is the expected length of the series between flags of the model. The ARL on the ``in-control'' rate will then give a measure of the false positives for a given threshold $h$, which we can optimize with respect to. As the length of the series we are examining is fixed and the calculation of an ARL would not be clearly defined for a series of varying expectation we will not use the ARL metric here. Instead we simply simulate the ``in-control'' sequence for each region $n$ times and find the smallest value of $h$ for which the the false-postive rate is below 1\%. \\
+
+The setup as described was implemented as a Python class acting as a wrapper to a series of subroutines in Fortran via F2PY\footnote{I originally wrote the entire process in Python but the calculation of the $h$ values was far too slow to be practical. The original code can be on my Github.}. The code can be found in the appendix. \\
+
+This CUSUM process was applied to the asthma data with the ratio $\lambda$ set to $1.5$, indicating we consider the ``out-of-control'' rate to be 50\% greater than the ``in-control'', with each regions temporal pattern being simulated 10,000 times to determine the optimal threshold values. This identified X regions as ``out-of-control'' out of the total 210, giving a false-negative rate of 0\% and false-positive rate of y\%. \\
+
+To conclude, while CUSUM correctly identified the unusual regions, we have a high false-positive rate as the ``in-control'' likelihood was a poor approximation to the true likelihood for a number of regions.  
+
+\section{The Bayesian Framework}
+
+A sensible way of improving on this would be to use a generative model which both incorporated a flexibility that describes uncertainty about the parameterization of the model and makes explicit our beliefs as to the structure of the data. This is most naturally done in the Bayesian framework, where we specify the model in terms of the likelihood 
 
 \begin{itemize}
 

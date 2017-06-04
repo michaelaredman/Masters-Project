@@ -15,7 +15,7 @@ def load_data():
     
     temp_sim = pd.read_csv('../../data/csv/simulated.csv')
     temp_times = temp_sim[['Time1', 'Time2', 'Time3', 'Time4', 'Time5', 'Time6', 'Time7', 'Time8', 'Time9', 'Time10', 'Time11', 'Time12', 'Time13', 'Time14', 'Time15']]
-    observed_values = np.matrix(temp_times, dtype=np.int)
+    observed_values = np.array(temp_times, dtype=np.int)
     
     adj = pd.read_csv('../../data/csv/adjacency.csv', index_col=0)
     W = np.matrix(adj)

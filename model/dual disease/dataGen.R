@@ -49,7 +49,7 @@ alpha <- 0.9
 prec.matrix <- diag(num.neib) - alpha*adj
 cov.matrix <- solve(prec.matrix)
 spatial.sd.A <- 0.02
-spatial.sd.B <- 0.03
+spatial.sd.B <- 0.04
 
 CAR.A <- mvrnorm(mu=rep(0, length(num.neib)), Sigma=cov.matrix*spatial.sd.A)
 CAR.B <- mvrnorm(mu=rep(0, length(num.neib)), Sigma=cov.matrix*spatial.sd.B)

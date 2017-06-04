@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.11.4)  17 FEB 2017 10:46
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.11.4)  4 JUN 2017 19:23
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -965,95 +965,120 @@ LaTeX Font Info:    Try loading font information for U+msb on input line 30.
 (/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 46.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 37.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 46.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 37.
  [1
 
 {/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-Overfull \hbox (0.1117pt too wide) in paragraph at lines 84--85
+Underfull \hbox (badness 10000) in paragraph at lines 79--80
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 81--82
+
+ []
+
+[2]
+Underfull \hbox (badness 10000) in paragraph at lines 99--100
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 101--102
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 103--104
+
+ []
+
+[3]
+Overfull \hbox (0.1117pt too wide) in paragraph at lines 153--154
 []\OT1/cmr/m/n/10 Lack of divergences---which are ``in-cred-i-bly sen-si-tive t
 o the kind of patholo-
  []
 
-[2]
-Underfull \hbox (badness 10000) in paragraph at lines 159--160
+[4] [5]
+Underfull \hbox (badness 10000) in paragraph at lines 228--229
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 161--162
+Underfull \hbox (badness 10000) in paragraph at lines 230--231
 
  []
 
-[3] <images/plot_time_effects.pdf, id=26, 505.89pt x 505.89pt>
+<images/plot_time_effects.pdf, id=35, 505.89pt x 505.89pt>
 File: images/plot_time_effects.pdf Graphic file (type pdf)
 
 <use images/plot_time_effects.pdf>
-Package pdftex.def Info: images/plot_time_effects.pdf used on input line 170.
+Package pdftex.def Info: images/plot_time_effects.pdf used on input line 239.
 (pdftex.def)             Requested size: 252.94437pt x 252.94437pt.
 
-<images/adjacency.png, id=27, 1003.75pt x 1003.75pt>
+<images/adjacency.png, id=36, 1003.75pt x 1003.75pt>
 File: images/adjacency.png Graphic file (type png)
 
 <use images/adjacency.png>
-Package pdftex.def Info: images/adjacency.png used on input line 186.
+Package pdftex.def Info: images/adjacency.png used on input line 255.
 (pdftex.def)             Requested size: 172.5pt x 172.48848pt.
- <images/expected.png, id=29, 1003.75pt x 1003.75pt>
+ <images/expected.png, id=38, 1003.75pt x 1003.75pt>
 File: images/expected.png Graphic file (type png)
 
 <use images/expected.png>
-Package pdftex.def Info: images/expected.png used on input line 187.
+Package pdftex.def Info: images/expected.png used on input line 256.
 (pdftex.def)             Requested size: 172.5pt x 172.48848pt.
- [4 <./images/plot_time_effects.pdf>] [5 <./images/adjacency.png> <./images/exp
-ected.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 238--239
+ [6] [7 <./images/plot_time_effects.pdf> <./images/adjacency.png> <./images/exp
+ected.png>] [8]
+Underfull \hbox (badness 10000) in paragraph at lines 307--308
 
  []
 
-<images/global_temporal.png, id=46, 1445.4pt x 722.7pt>
+<images/global_temporal.png, id=59, 1445.4pt x 722.7pt>
 File: images/global_temporal.png Graphic file (type png)
 
 <use images/global_temporal.png>
-Package pdftex.def Info: images/global_temporal.png used on input line 262.
+Package pdftex.def Info: images/global_temporal.png used on input line 331.
 (pdftex.def)             Requested size: 345.0pt x 172.49214pt.
- [6] [7 <./images/global_temporal.png>]
-Overfull \hbox (0.11694pt too wide) in paragraph at lines 302--307
+ [9]
+Overfull \hbox (0.11694pt too wide) in paragraph at lines 371--376
 []\OT1/cmr/m/n/10 <<<<<<< HEAD and the $\OML/cmm/m/it/10 q[]$ \OT1/cmr/m/n/10 a
 re given Uni-form pri-ors on (0, 1). Here we are marginiliz-
  []
 
-[8]
-Overfull \hbox (0.22281pt too wide) in paragraph at lines 346--347
+[10 <./images/global_temporal.png>]
+Overfull \hbox (0.22281pt too wide) in paragraph at lines 415--416
 \OT1/cmr/m/n/10 The pre-vi-ous meth-ods, while pos-sess-ing the de-sired asymp-
 totic prop-er-ties, can---
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 368--369
-
- []
-
-[9]
-Underfull \hbox (badness 10000) in paragraph at lines 389--390
+[11]
+Underfull \hbox (badness 10000) in paragraph at lines 437--438
 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 394--395
-
- []
-
-[10] [11]
-Underfull \hbox (badness 10000) in paragraph at lines 482--483
+[12]
+Underfull \hbox (badness 10000) in paragraph at lines 458--459
 
  []
 
-[12] (./project.bbl [13]) (./project.bbl) [14] (./project.aux)
+
+Underfull \hbox (badness 10000) in paragraph at lines 463--464
+
+ []
+
+[13] [14]
+Underfull \hbox (badness 10000) in paragraph at lines 551--552
+
+ []
+
+(./project.bbl [15]) (./project.bbl) [16] (./project.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
@@ -1065,26 +1090,28 @@ Here is how much of TeX's memory you used:
  18744 multiletter control sequences out of 15000+600000
  18128 words of font info for 64 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,16n,54p,756b,369s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 55i,16n,54p,819b,369s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
 </usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
 /usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></u
-sr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr
-/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/l
-ocal/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/loc
-al/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/
-texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/tex
-live/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texl
-ive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texli
-ve/2015/texmf-dist/fonts/type1/public/mathabx-type1/matha10.pfb></usr/local/tex
-live/2015/texmf-dist/fonts/type1/public/mathabx-type1/matha7.pfb></usr/local/te
-xlive/2015/texmf-dist/fonts/type1/public/mathabx-type1/mathx10.pfb></usr/local/
-texlive/2015/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on project.pdf (14 pages, 613057 bytes).
+sr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr
+/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/l
+ocal/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/loc
+al/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local
+/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/te
+xlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texli
+ve/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/
+2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2
+015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/20
+15/texmf-dist/fonts/type1/public/mathabx-type1/matha10.pfb></usr/local/texlive/
+2015/texmf-dist/fonts/type1/public/mathabx-type1/matha7.pfb></usr/local/texlive
+/2015/texmf-dist/fonts/type1/public/mathabx-type1/mathx10.pfb></usr/local/texli
+ve/2015/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on project.pdf (16 pages, 638787 bytes).
 PDF statistics:
- 127 PDF objects out of 1000 (max. 8388607)
- 87 compressed objects within 1 object stream
+ 141 PDF objects out of 1000 (max. 8388607)
+ 97 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  33 words of extra memory for PDF output out of 10000 (max. 10000000)
 

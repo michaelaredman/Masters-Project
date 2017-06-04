@@ -6,7 +6,7 @@ model {
 	for (t in 1:T) {
 	    for (sample in 0:(numSamples-1)) {
 		    region_A[i,t+sample*T] ~ dpois(mu_A[i,t+sample*T])
-		    log(mu_A[i,t+sample*T]) <- z[i] * general_flat_A[i,t+sample*T] + (1-z[i]) * specific_flat_A[i,t+sample*T]
+  		    log(mu_A[i,t+sample*T]) <- z[i] * general_flat_A[i,t+sample*T] + (1-z[i]) * specific_flat_A[i,t+sample*T]
 
 		    region_B[i,t+sample*T] ~ dpois(mu_B[i,t+sample*T])
 		    log(mu_B[i,t+sample*T]) <- z[i] * general_flat_B[i,t+sample*T] + (1-z[i]) * specific_flat_B[i,t+sample*T]
