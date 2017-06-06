@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.11.4)  4 JUN 2017 19:23
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.11.4)  6 JUN 2017 21:30
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -965,120 +965,124 @@ LaTeX Font Info:    Try loading font information for U+msb on input line 30.
 (/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 37.
+Underfull \hbox (badness 10000) in paragraph at lines 34--35
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 36--37
+
+ []
+
+[1
+
+{/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 41.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 37.
- [1
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 41.
 
-{/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-Underfull \hbox (badness 10000) in paragraph at lines 79--80
+Underfull \hbox (badness 10000) in paragraph at lines 67--68
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 81--82
+Underfull \hbox (badness 10000) in paragraph at lines 69--70
 
  []
 
-[2]
-Underfull \hbox (badness 10000) in paragraph at lines 99--100
+[2] <images/plot_time_effects.pdf, id=18, 505.89pt x 505.89pt>
+File: images/plot_time_effects.pdf Graphic file (type pdf)
+
+<use images/plot_time_effects.pdf>
+Package pdftex.def Info: images/plot_time_effects.pdf used on input line 78.
+(pdftex.def)             Requested size: 252.94437pt x 252.94437pt.
+
+<images/adjacency.png, id=19, 1003.75pt x 1003.75pt>
+File: images/adjacency.png Graphic file (type png)
+
+<use images/adjacency.png>
+Package pdftex.def Info: images/adjacency.png used on input line 94.
+(pdftex.def)             Requested size: 172.5pt x 172.48848pt.
+ <images/expected.png, id=21, 1003.75pt x 1003.75pt>
+File: images/expected.png Graphic file (type png)
+
+<use images/expected.png>
+Package pdftex.def Info: images/expected.png used on input line 95.
+(pdftex.def)             Requested size: 172.5pt x 172.48848pt.
+ [3 <./images/plot_time_effects.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 118--119
+
+ []
+
+[4 <./images/adjacency.png> <./images/expected.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 120--121
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 101--102
+Underfull \hbox (badness 10000) in paragraph at lines 135--137
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 103--104
+Underfull \hbox (badness 10000) in paragraph at lines 138--139
 
  []
 
-[3]
-Overfull \hbox (0.1117pt too wide) in paragraph at lines 153--154
+
+Underfull \hbox (badness 10000) in paragraph at lines 140--141
+
+ []
+
+[5]
+Underfull \hbox (badness 10000) in paragraph at lines 142--143
+
+ []
+
+[6]
+Overfull \hbox (0.1117pt too wide) in paragraph at lines 204--205
 []\OT1/cmr/m/n/10 Lack of divergences---which are ``in-cred-i-bly sen-si-tive t
 o the kind of patholo-
  []
 
-[4] [5]
-Underfull \hbox (badness 10000) in paragraph at lines 228--229
 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 230--231
-
- []
-
-<images/plot_time_effects.pdf, id=35, 505.89pt x 505.89pt>
-File: images/plot_time_effects.pdf Graphic file (type pdf)
-
-<use images/plot_time_effects.pdf>
-Package pdftex.def Info: images/plot_time_effects.pdf used on input line 239.
-(pdftex.def)             Requested size: 252.94437pt x 252.94437pt.
-
-<images/adjacency.png, id=36, 1003.75pt x 1003.75pt>
-File: images/adjacency.png Graphic file (type png)
-
-<use images/adjacency.png>
-Package pdftex.def Info: images/adjacency.png used on input line 255.
-(pdftex.def)             Requested size: 172.5pt x 172.48848pt.
- <images/expected.png, id=38, 1003.75pt x 1003.75pt>
-File: images/expected.png Graphic file (type png)
-
-<use images/expected.png>
-Package pdftex.def Info: images/expected.png used on input line 256.
-(pdftex.def)             Requested size: 172.5pt x 172.48848pt.
- [6] [7 <./images/plot_time_effects.pdf> <./images/adjacency.png> <./images/exp
-ected.png>] [8]
-Underfull \hbox (badness 10000) in paragraph at lines 307--308
-
- []
-
-<images/global_temporal.png, id=59, 1445.4pt x 722.7pt>
-File: images/global_temporal.png Graphic file (type png)
-
-<use images/global_temporal.png>
-Package pdftex.def Info: images/global_temporal.png used on input line 331.
-(pdftex.def)             Requested size: 345.0pt x 172.49214pt.
- [9]
-Overfull \hbox (0.11694pt too wide) in paragraph at lines 371--376
-[]\OT1/cmr/m/n/10 <<<<<<< HEAD and the $\OML/cmm/m/it/10 q[]$ \OT1/cmr/m/n/10 a
-re given Uni-form pri-ors on (0, 1). Here we are marginiliz-
- []
-
-[10 <./images/global_temporal.png>]
-Overfull \hbox (0.22281pt too wide) in paragraph at lines 415--416
+Overfull \hbox (0.22281pt too wide) in paragraph at lines 212--213
 \OT1/cmr/m/n/10 The pre-vi-ous meth-ods, while pos-sess-ing the de-sired asymp-
 totic prop-er-ties, can---
  []
 
-[11]
-Underfull \hbox (badness 10000) in paragraph at lines 437--438
+[7]
+Underfull \hbox (badness 10000) in paragraph at lines 234--235
 
  []
 
-[12]
-Underfull \hbox (badness 10000) in paragraph at lines 458--459
+[8]
+Underfull \hbox (badness 10000) in paragraph at lines 252--253
 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 463--464
-
- []
-
-[13] [14]
-Underfull \hbox (badness 10000) in paragraph at lines 551--552
+[9] [10] [11]
+Underfull \hbox (badness 10000) in paragraph at lines 402--403
 
  []
 
-(./project.bbl [15]) (./project.bbl) [16] (./project.aux)
+[12] <images/global_temporal.png, id=72, 1445.4pt x 722.7pt>
+File: images/global_temporal.png Graphic file (type png)
+
+<use images/global_temporal.png>
+Package pdftex.def Info: images/global_temporal.png used on input line 434.
+(pdftex.def)             Requested size: 345.0pt x 172.49214pt.
+ [13 <./images/global_temporal.png>] [14]
+[15] [16]
+Underfull \hbox (badness 10000) in paragraph at lines 588--589
+
+ []
+
+[17] (./project.bbl) (./project.bbl) [18] (./project.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
@@ -1090,7 +1094,7 @@ Here is how much of TeX's memory you used:
  18744 multiletter control sequences out of 15000+600000
  18128 words of font info for 64 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,16n,54p,819b,369s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 55i,16n,54p,1289b,369s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
 </usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
@@ -1108,10 +1112,10 @@ ve/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/
 2015/texmf-dist/fonts/type1/public/mathabx-type1/matha7.pfb></usr/local/texlive
 /2015/texmf-dist/fonts/type1/public/mathabx-type1/mathx10.pfb></usr/local/texli
 ve/2015/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on project.pdf (16 pages, 638787 bytes).
+Output written on project.pdf (18 pages, 644459 bytes).
 PDF statistics:
- 141 PDF objects out of 1000 (max. 8388607)
- 97 compressed objects within 1 object stream
+ 148 PDF objects out of 1000 (max. 8388607)
+ 101 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  33 words of extra memory for PDF output out of 10000 (max. 10000000)
 

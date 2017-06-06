@@ -31,7 +31,11 @@
 
 \section{Introduction}
 
-The identification of unusual patterns of disease is of obvious importance in public health. 
+The identification of unusual patterns of disease is of obvious importance in public health. Discrepencies in the relative risk of disease incidence between regions will both inform the allocation of medical resources and motivate investigations over possible environmental exposure. \\
+
+ The detection of such discrepencies is often done by the use of disease mapping studies which aggregate the recorded incidents of the disease of interest over time, and compare the total counts between regions. Public health information systems now record this data indexed to such a fine degree of granularity that the detection of risk factors which act at a very local level, such as hazardous industrial waste, can be feasably indentified. However this fine-grained approach will leave the examined regions with very low incidence, which can hinder the isolation of the signal from the noise, hence the use of time aggregated values. However, in doing this we relinquish any potential information that a temporal trend may afford us. In fact, as described in [Abellen et al], the nature of the temporal trend may suggest anomalities related to very different kinds risk factors. A region which conforms to a similar temporal trend as the others---for example a seasonal factor---but at a a higher rate would imply a disparity which acts over the whole time period, such as an enviromental issue or a sociodemographic difference. While a region which acts wildly without regard to the general trend might suggest a more acute issue is at play, like an outbreak. \\
+
+Consequently, in this project we will be looking at data in both space and time. A variety of methods have been investigated in this context. One of the most simple is that of scan statistics. This procedure, implemented in software such as SaTScan, seeks to identify clusters which can not be explained by the base process -- in our case typically an inhomogenous Poisson process. It does this by evaluating all possible ``windows'' in turn, where a given window will include the region in question and its ``neighbours'' both spatially and temporally. This forms a kind of cylinder which acts to smooth the observed counts in space and time, allowing the sparse data as described earlier to be examined without the noise overwhelming any underlying spatial heterogenicity. This method is descibed in detail and applied to epidemiological data in Kulldorff 1997. While offering an improvement over pointwise evaluation, spatial scan statistics by nature of this smoothing construction are limited in thier ability to detect abnormalities at the individual level, i.e. isolated to a particular region (cite Baystdetect).      
 
 \begin{itemize}
 \item Preventative medicine
@@ -58,9 +62,44 @@ What I do:
 \item Hamiltonian monte carlo and issues with mixture models
 \end{enumerate}
 
-\section{The problem}
+\section{Simulated data}
 
-The correct identification of blah insert stuff here.
+In order to test the accuracy of any potential models we need some data that exhibits trends that exhibit pathelogical behaviour that we wish to identify. The simulated data (include citation for Areti) is of asthma hospitalization counts across 221 clinical commisioning groups in England at 15 time points under a Poisson model with a BYM prior for the spatial component and a $\operatorname{RW}(1)$ prior for the temporal component. \\
+
+A selection of 15 of the regions were chosen according to the 10th, 25th, 50th, 75th and 90th percentiles of the median expected counts over time (three regions per percentile) and were given a deviant temporal trend. \\
+
+The temporal trends of these regions were manually changed, where -- writing the original trend as $g(t)$ and the modified trend as $g^*(t)$ -- we have:
+\begin{align}
+g^*(t) &= g(t) + \log(2) && t = 1, 10, 11 \\ 
+g^*(t) &= g(t) - \log(2) && t = 5, 15
+\end{align}
+
+\begin{figure}
+\includegraphics[scale=0.5]{plot_time_effects}
+\centering
+\end{figure}
+
+\begin{itemize}
+\item Check this trend with Marta as the word document and pictured trend are different.
+\end{itemize}
+
+In addition to the observed counts at each point we have the expected number of cases for each regions based on true hospital admissions records for each CCG and shape files corresponding to the regions in question.
+
+\subsection{Cleaning and wrangling}
+
+Of the 211 regions one one had no neighbours, the Isle of Wight, so this region was removed to simplify calculations. An adjacency matrix calculated from the shape data. We had no data for wales so it was removed from the shapedata.
+
+\begin{figure}
+\centering
+\subfloat[Adjacency]{\includegraphics[width=0.5\textwidth]{adjacency}}
+\subfloat[Expected]{\includegraphics[width=0.5\textwidth]{expected}}
+\caption{Mapped data}
+\end{figure}
+
+\begin{itemize}
+\item Remove wales from the above pictures
+\item What to include here?
+\end{itemize}
 
 \section{CUSUM}
 
@@ -94,19 +133,37 @@ For simplicity we only consider the case of abnormally high count rates and igno
 \begin{equation}
 O_{i,t} = \lambda \cdot I_{i,t}, \ \ \ \  i = 1, \ldots, R, \ t = 1, \ldots, T.
 \end{equation} 
-with $\lambda > 1$.
+with $\lambda > 1$. \\
 
 Now for a given value of $\lambda$ we need a threshold level at which to signal. This can be done by caluclating the average-run length (ARL) which is the expected length of the series between flags of the model. The ARL on the ``in-control'' rate will then give a measure of the false positives for a given threshold $h$, which we can optimize with respect to. As the length of the series we are examining is fixed and the calculation of an ARL would not be clearly defined for a series of varying expectation we will not use the ARL metric here. Instead we simply simulate the ``in-control'' sequence for each region $n$ times and find the smallest value of $h$ for which the the false-postive rate is below 1\%. \\
 
 The setup as described was implemented as a Python class acting as a wrapper to a series of subroutines in Fortran via F2PY\footnote{I originally wrote the entire process in Python but the calculation of the $h$ values was far too slow to be practical. The original code can be on my Github.}. The code can be found in the appendix. \\
 
-This CUSUM process was applied to the asthma data with the ratio $\lambda$ set to $1.5$, indicating we consider the ``out-of-control'' rate to be 50\% greater than the ``in-control'', with each regions temporal pattern being simulated 10,000 times to determine the optimal threshold values. This identified X regions as ``out-of-control'' out of the total 210, giving a false-negative rate of 0\% and false-positive rate of y\%. \\
+This CUSUM process was applied to the asthma data with the ratio $\lambda$ set to $1.5$, indicating we consider the ``out-of-control'' rate to be 50\% greater than the ``in-control'', with each regions temporal pattern being simulated 10,000 times to determine the optimal threshold values. This identified 25 regions as ``out-of-control'' out of the total 210, giving a false-negative rate of 0\% and false-positive rate of 5.2\%. \\
 
 To conclude, while CUSUM correctly identified the unusual regions, we have a high false-positive rate as the ``in-control'' likelihood was a poor approximation to the true likelihood for a number of regions.  
 
 \section{The Bayesian Framework}
 
-A sensible way of improving on this would be to use a generative model which both incorporated a flexibility that describes uncertainty about the parameterization of the model and makes explicit our beliefs as to the structure of the data. This is most naturally done in the Bayesian framework, where we specify the model in terms of the likelihood 
+A sensible way of improving on this would be to use a generative model which incorporates both a flexibility that describes our uncertainty around the parameterization of the model and makes explicit our beliefs as to the structure of the data. This is most naturally done in the Bayesian framework, where we specify the model in terms of a likelihood which describes how we simulate the data based on a set of parameters and a collection of---possibly hierarchical---priors which describe our uncertainty about these parameters ex ante. 
+
+\begin{enumerate}
+\item Advantages of generative models
+\item Advantages over frequentist approaches, e.g. mean/mode often terrible approximations, in part due to concentration of measure
+\item Level of shrinkage attributable to closeness of prior structure to some ``true prior''
+\item Bayes formula
+\item Difficulty in evaluating integrals/expectations
+\item Samples will converge to expectation (use betancourts conceptual into here)
+\item Proposal density and preserving the pdf
+\item Metropolis-hastings
+\item Theory and issues including: large/small step sizes, large autocorrelation, slow exploration of the sample space, divergences
+\item Gibbs sampleing and blocked gibbs: overcomes some element of dimensionality but poor for highly correlated variables, compounded by issues with 
+\item Asymptotics not followed in finite time often
+\item Quick talk about existing software
+\item Hamiltonian monte carlo provides some solutions to many of these problems
+\item In last few years (get exact) emergence of better algorithms, tuning and software have made using HMC practical. Not used in epidemiology much yet though. Different fields different amounts due to issues with discrete paramters etc. that we will address later.
+\item Convergence statistics
+\end{enumerate}
 
 \begin{itemize}
 
@@ -119,10 +176,6 @@ A sensible way of improving on this would be to use a generative model which bot
 \item Prior on mixture component probability
 
 \item Bayesian classification
-
-\item Compositional models
-
-\item Posterior simulations?
 
 \end{itemize}
 
@@ -153,6 +206,85 @@ A sensible way of improving on this would be to use a generative model which bot
 
 \end{itemize}
 
+
+\subsection{Hamiltonian Monte-Carlo}
+
+The previous methods, while possessing the desired asymptotic properties, can---and do---take a long time to converge to the target distribution (infinity is a long time!). The aim of \emph{Hamiltonian Monte-Carlo} is to reduce the correlations between successive samples and so dramatically increase the effective sample size with minimal computational overhead. It does this by introducing an auxilliary variable and exploiting the interplay between this and the variables of the posterioir distribution within the framework of Hamiltonian mechanics.
+
+\subsubsection{Background}
+
+We write $q$ for the variables of the posterior distribution and introduce a new variable $p$ which we will call the \emph{momentum} of the system. Drawing from statistical mechanics, we know that for a given energy function of a system $E(\theta)$ we have the canonical ensemble
+\begin{equation}
+  p(\theta) = \frac{1}{Z} e^{-E(\theta)}.
+\end{equation}
+
+So defining a Hamiltonian of our system where the ``kiniteic energy'' is dependent on our momentum and the potential energy is dependent only on the posterioir:
+\begin{equation}
+  H(p, q) = \underbrace{T(p|q)}_{\text{Kinetic energy}} + \underbrace{V(q)}_{\text{Potential energy}}
+\end{equation} 
+
+looking at the canonical ensemble of the join distribution
+\begin{align}
+  \pi(p, q) &\;{\propto} \; e^{-H(p, q)} \\
+          &= e^{-[T(p|q) + V(q)]} \\
+          &= e^{-T(p|q)} \cdot e^{-V(q)} \\
+          &\;{\propto} \; \pi(p|q) \cdot \pi(q) 
+\end{align}
+
+we see that the posterior and distribution of the momentum are seperable and so independent. This means that if we can sample from $\pi(p, q)$ then our choice of distirbution for the momentum will not effect the calculation of any expectations based on the samples of $q$. \\
+
+Note that here we need a definition of potential energy which will give us back the posterior. Clearly the following satisfies this requirement
+\begin{equation}
+  V(q) = - \log \pi(q)
+\end{equation}
+
+So draws from $\pi(p, q)$ will allow us to make inferences on the $q$, but what advantages does the introduction of this auxilliary variable confer? Well, continuing with our intuition regarding a physical Hamiltonian system, we know that $p$ and $q$ are related by Hamilton's equations
+\begin{align}
+\frac{dq}{dt} &= \frac{\partial H}{\partial p} = \frac{\partial T}{\partial p} \\
+\frac{dp}{dt} &= - \frac{\partial H}{\partial q} = - \frac{\partial T}{\partial q} - \frac{\partial V}{\partial q}
+\end{align}
+
+\begin{itemize}
+  \item Finish off this bit more gracefully
+\end{itemize}
+
+\subsubsection{The Method}
+Hamiltonian monte-carlo works, not by applying a transition over $q_i$, but by giving our starting point ``a kick'' in the form of a random momentum and sampling along the level set of constant energy (defined by the Hamiltonian) using Hamilton's equations to evolve the joint system. Then---after some number of steps---we stop, sample a new momentum, and explore the new phase space that this defines. \\
+
+The questions now are obvious:
+
+\begin{itemize}
+\item \emph{How} do we evolve the joint system in accordance with Hamilton's equations? (Leapfrog)
+\item Do we need to work out all of the partial deriavtives $\partial V/\partial q_i$ by hand? 
+\item For how long should we explore each level set before sampling a new momentum?
+\item What proposal density should we use for the momentum?
+\item Why does this method lead to samples with less autocorrelation?
+\end{itemize}
+
+Other things to talk about:
+\begin{itemize}
+\item \emph{How} do we evolve the joint system in accordance with Hamilton's equations?
+\item Do we need to work out all of the partial deriavtives $\partial V/\partial q_i$ by hand? 
+\item For how long should we explore each level set before sampling a new momentum?
+\item What proposal density should we use for the momentum?
+\item Why does this method lead to samples with less autocorrelation?
+\item Parameter tuning vs burn-in period
+\end{itemize}
+
+Other things to talk about:
+\begin{itemize}
+
+\item Rotational invariance
+
+\item Include some diagrams from Michael Betancourt's papers
+
+\end{itemize}
+
+\subsection{General Model Form}
+
+\begin{itemize}
+\item Use best et al to summarise basic model form
+\end{itemize}
 
 \section{Smoothing}
 
@@ -212,6 +344,11 @@ Cite \cite{car}
 
 \subsection{BYM prior}
 
+\begin{itemize}
+\item CIte Besag York Mollie paper
+\item Increases degrees of freedom for spatial componenet
+\end{itemize}
+
 \subsection{Temporal smoothing}
 
 Similarly to in the spatial setting we can use a prior on the temporal component that assumes a level of similarity between adjacent regions -- here consecutive time points. The prior prefered here is the one dimensional random walk prior, which we will denote by
@@ -220,46 +357,6 @@ Similarly to in the spatial setting we can use a prior on the temporal component
 \end{equation}
 
 where the dimensionality will often be infered from the context. Note that this can be represented by a CAR model and is sometimes represented as such in the literature. 
-
-\section{Simulated data}
-
-In order to test the accuracy of any potential models we need some data that exhibits trends that exhibit pathelogical behaviour that we wish to identify. The simulated data (include citation for Areti) is of asthma hospitalization counts across 221 clinical commisioning groups in England at 15 time points under a Poisson model with a BYM prior for the spatial component and a $\operatorname{RW}(1)$ prior for the temporal component. \\
-
-A selection of 15 of the regions were chosen according to the 10th, 25th, 50th, 75th and 90th percentiles of the median expected counts over time (three regions per percentile) and were given a deviant temporal trend. \\
-
-The temporal trends of these regions were manually changed, where -- writing the original trend as $g(t)$ and the modified trend as $g^*(t)$ -- we have:
-\begin{align}
-g^*(t) &= g(t) + \log(2) && t = 1, 10, 11 \\ 
-g^*(t) &= g(t) - \log(2) && t = 5, 15
-\end{align}
-
-\begin{figure}
-\includegraphics[scale=0.5]{plot_time_effects}
-\centering
-\end{figure}
-
-\begin{itemize}
-\item Check this trend with Marta as the word document and pictured trend are different.
-\end{itemize}
-
-In addition to the observed counts at each point we have the expected number of cases for each regions based on true hospital admissions records for each CCG and shape files corresponding to the regions in question.
-
-\subsection{Cleaning and wrangling}
-
-Of the 211 regions one one had no neighbours, the Isle of Wight, so this region was removed to simplify calculations. An adjacency matrix calculated from the shape data. We had no data for wales so it was removed from the shapedata.
-
-\begin{figure}
-\centering
-\subfloat[Adjacency]{\includegraphics[width=0.5\textwidth]{adjacency}}
-\subfloat[Expected]{\includegraphics[width=0.5\textwidth]{expected}}
-\caption{Mapped data}
-\end{figure}
-
-\begin{itemize}
-\item Remove wales from the above pictures
-\item What to include here?
-\end{itemize}
-
 
 \section{Individual trend model}
 
@@ -314,6 +411,14 @@ i \in 1,\ldots,N \
 \end{cases}
 \end{equation}
 
+\subsection{Combining the models}
+
+\begin{itemize}
+\item BUGS can be used with a mixture component
+\item In this case the likelihood can be worked out by hand with the probability of the mixture component prior
+\item Describe likelihood code
+\end{itemize}
+
 \subsubsection{Implementation}
 
 The two models were fit to the data using Hamiltonian Monte-Carlo in the \emph{Stan} package -- both for over 2000 samples over 4 chains after a ``warm-up'' period of 1000 samples. Gelman-Rubin statistics for all parameters were under 1.05 (find exact figure) indicating that the had chains converged. Additionally a visual inspection of the trace plots for some select parameters did not indicate any worrying pathalogical behaviour.
@@ -331,6 +436,11 @@ First looking at the general trend model we see that it has accurately identifie
 
 \subsection{Fully Bayesian model}
 
+\begin{itemize}
+\item Can be fit fully in Stan
+\item Reference the use of Rao-Blackwellization
+\item Graph the temporal components failure
+\end{itemize}
 
 \section{Excess variability model}
 
@@ -339,6 +449,7 @@ The second Bayesian model we will look at also attempts to classify the regions,
 \item It's relative simplicity allows for easier computation
 \item It is not immediately clear that an abnormal temporal trend is symptomatic of an endemic problem --- variance is a more straightforwardly interpretable parameter
 \item Identification issues
+\item Mixture model issues reduced due to setup of variance
 \end{itemize}
 
 \subsection{Model specification}
@@ -366,11 +477,7 @@ where
   z_i \sim \operatorname{Bernoulli}(q_i)
 \end{equation}
 
-<<<<<<< HEAD
 and the $q_i$ are given Uniform priors on (0, 1). Here we are marginilizing out the $z_i$ and instead performing inference on the $q_i$ which confers the advantages set out under the computational considerations section. The variance parameters are given half-normal priors, one a vague prior (representing the abnormal regions) and the other an informative prior which restricts the inseperable variance of the `normal' regions to be very limited. Identification issues and the label switching problem are avoided by defining the larger of the variances addivitely in terms of the smaller:
-=======
-and $q$ is given a Uniform prior on (0, 1). The variance parameters are given half-normal priors, one a vague prior (representing the abnormal regions) and the other an informative prior which restricts the inseperable variance of the `normal' regions to be very limited. Identification issues and the label switching problem are avoided by defining the larger of the variances addivitely in terms of the smaller:
->>>>>>> origin/master
 \begin{align}
   \tau_1 &\sim \operatorname{Normal}(0, 0.01) \cdot I(0, \infty) \\
   k &\sim \operatorname{Normal}(0, 100) \cdot I(0, \infty)
@@ -383,12 +490,23 @@ Here $I$ is the indicator function.
 
 \subsection{Classification and accuracy}
 
-<<<<<<< HEAD
 This model was fit using HMC in \emph{Stan} 
 
-=======
-\subsection{Fully Bayesian model}
->>>>>>> origin/master
+\subsection{Over-smoothing}
+
+\begin{itemize}
+\item Expected disease trends will cluster
+\item Model relies on finding unseperable variance but local high variance could be explained by CAR component
+\item Need a model which smooths regions but is able to still identify clustered unusual areas
+\end{itemize}
+
+\subsection{Simulated Data}
+
+\begin{itemize}
+\item Preferential attachment scheme
+\item Describe full data generation parameters and process
+\item Include plots of temporal and spatial components
+\end{itemize}
 
 \section{Computational considerations}
 
@@ -408,87 +526,8 @@ This model was fit using HMC in \emph{Stan}
 
 \subsubsection{Metropolis}
 
-\subsection{Hamiltonian Monte-Carlo}
-
-The previous methods, while possessing the desired asymptotic properties, can---and do---take a long time to converge to the target distribution (infinity is a long time!). The aim of \emph{Hamiltonian Monte-Carlo} is to reduce the correlations between successive samples and so dramatically increase the effective sample size with minimal computational overhead. It does this by introducing an auxilliary variable and exploiting the interplay between this and the variables of the posterioir distribution within the framework of Hamiltonian mechanics.
-
-\subsubsection{Background}
-
-We write $q$ for the variables of the posterior distribution and introduce a new variable $p$ which we will call the \emph{momentum} of the system. Drawing from statistical mechanics, we know that for a given energy function of a system $E(\theta)$ we have the canonical ensemble
-\begin{equation}
-  p(\theta) = \frac{1}{Z} e^{-E(\theta)}.
-\end{equation}
-
-So defining a Hamiltonian of our system where the ``kiniteic energy'' is dependent on our momentum and the potential energy is dependent only on the posterioir:
-\begin{equation}
-  H(p, q) = \underbrace{T(p|q)}_{\text{Kinetic energy}} + \underbrace{V(q)}_{\text{Potential energy}}
-\end{equation} 
-
-looking at the canonical ensemble of the join distribution
-\begin{align}
-  \pi(p, q) &\;{\propto} \; e^{-H(p, q)} \\
-          &= e^{-[T(p|q) + V(q)]} \\
-          &= e^{-T(p|q)} \cdot e^{-V(q)} \\
-          &\;{\propto} \; \pi(p|q) \cdot \pi(q) 
-\end{align}
-
-we see that the posterior and distribution of the momentum are seperable and so independent. This means that if we can sample from $\pi(p, q)$ then our choice of distirbution for the momentum will not effect the calculation of any expectations based on the samples of $q$. \\
-
-Note that here we need a definition of potential energy which will give us back the posterior. Clearly the following satisfies this requirement
-\begin{equation}
-  V(q) = - \log \pi(q)
-\end{equation}
-
-So draws from $\pi(p, q)$ will allow us to make inferences on the $q$, but what advantages does the introduction of this auxilliary variable confer? Well, continuing with our intuition regarding a physical Hamiltonian system, we know that $p$ and $q$ are related by Hamilton's equations
-\begin{align}
-\frac{dq}{dt} &= \frac{\partial H}{\partial p} = \frac{\partial T}{\partial p} \\
-\frac{dp}{dt} &= - \frac{\partial H}{\partial q} = - \frac{\partial T}{\partial q} - \frac{\partial V}{\partial q}
-\end{align}
-
-\begin{itemize}
-  \item Finish off this bit more gracefully
-\end{itemize}
-
-\subsubsection{The Method}
 <<<<<<< HEAD
 =======
-
-Hamiltonian monte-carlo works, not by applying a transition over $q$, but by giving our starting point ``a kick'' in the form of a random momentum and sampling along the level set of constant energy (defined by the Hamiltonian) using Hamilton's equations to evolve the joint system. Then---after some number of steps---we stop, sample a new momentum, and explore the new phase space that this defines. \\
-
-The questions now are obvious:
->>>>>>> origin/master
-
-Hamiltonian monte-carlo works, not by applying a transition over $q$, but by giving our starting point ``a kick'' in the form of a random momentum and sampling along the level set of constant energy (defined by the Hamiltonian) using Hamilton's equations to evolve the joint system. Then---after some number of steps---we stop, sample a new momentum, and explore the new phase space that this defines. \\
-
-The questions now are obvious:
-
-\begin{itemize}
-\item \emph{How} do we evolve the joint system in accordance with Hamilton's equations?
-\item Do we need to work out all of the partial deriavtives $\partial V/\partial q_i$ by hand? 
-\item For how long should we explore each level set before sampling a new momentum?
-\item What proposal density should we use for the momentum?
-\item Why does this method lead to samples with less autocorrelation?
-\end{itemize}
-
-Other things to talk about:
-\begin{itemize}
-\item \emph{How} do we evolve the joint system in accordance with Hamilton's equations?
-\item Do we need to work out all of the partial deriavtives $\partial V/\partial q_i$ by hand? 
-\item For how long should we explore each level set before sampling a new momentum?
-\item What proposal density should we use for the momentum?
-\item Why does this method lead to samples with less autocorrelation?
-\end{itemize}
-
-Other things to talk about:
-\begin{itemize}
-
-\item Rotational invariance
-
-\item Include some diagrams from Michael Betancourt's papers
-<<<<<<< HEAD
-=======
-
-\end{itemize}
 
 \subsubsection{Auto differentiation}
 
