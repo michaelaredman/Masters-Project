@@ -1,17 +1,17 @@
-[0] Config.pm:324> INFO - This is Biber 2.1
-[0] Config.pm:327> INFO - Logfile is 'project.blg'
-[67] biber-darwin:276> INFO - === Wed Jun  7, 2017, 16:44:18
-[67] Biber.pm:333> INFO - Reading 'project.bcf'
-[178] Biber.pm:645> INFO - Found 8 citekeys in bib section 0
-[218] Biber.pm:2977> INFO - Processing section 0
-[247] Biber.pm:3115> INFO - Looking for bibtex format file 'project.bib' for section 0
-[250] bibtex.pm:1021> INFO - Decoding LaTeX character macros into UTF-8
-[253] bibtex.pm:895> INFO - Found BibTeX data source 'project.bib'
-[397] UCollate.pm:66> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[397] UCollate.pm:66> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
-[397] Biber.pm:2854> INFO - Sorting list 'nyt' of type 'entry' with scheme 'nyt' and locale 'en-US'
-[397] Biber.pm:2858> INFO - No sort tailoring available for locale 'en-US'
-[416] bbl.pm:505> INFO - Writing 'project.bbl' with encoding 'ascii'
-[419] Utils.pm:146> WARN - The entry 'baystdetect' has characters which cannot be encoded in 'ascii'. Recoding problematic characters into macros.
-[420] bbl.pm:596> INFO - Output to project.bbl
-[420] Biber.pm:106> INFO - WARNINGS: 1
+[1] Config.pm:324> INFO - This is Biber 2.1
+[1] Config.pm:327> INFO - Logfile is 'project.blg'
+[75] biber-darwin:276> INFO - === Thu Jun  8, 2017, 20:44:01
+[75] Biber.pm:333> INFO - Reading 'project.bcf'
+[307] Biber.pm:645> INFO - Found 10 citekeys in bib section 0
+[351] Biber.pm:2977> INFO - Processing section 0
+[393] Biber.pm:3115> INFO - Looking for bibtex format file 'project.bib' for section 0
+[399] bibtex.pm:1021> INFO - Decoding LaTeX character macros into UTF-8
+[403] bibtex.pm:895> INFO - Found BibTeX data source 'project.bib'
+[630] UCollate.pm:66> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[630] UCollate.pm:66> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[630] Biber.pm:2854> INFO - Sorting list 'nyt' of type 'entry' with scheme 'nyt' and locale 'en-US'
+[630] Biber.pm:2858> INFO - No sort tailoring available for locale 'en-US'
+[659] bbl.pm:505> INFO - Writing 'project.bbl' with encoding 'ascii'
+[663] Utils.pm:146> WARN - The entry 'baystdetect' has characters which cannot be encoded in 'ascii'. Recoding problematic characters into macros.
+[664] bbl.pm:596> INFO - Output to project.bbl
+[665] Biber.pm:106> INFO - WARNINGS: 1

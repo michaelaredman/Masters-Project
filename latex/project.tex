@@ -74,41 +74,56 @@ In order to test the accuracy of any potential models we need some data that exh
 
 \section{Specification}
 
-A real dataset of asthma hospitalisation counts was used to contruct the expected rates, adjusted by regional demographics by age and sex, for the 221 Clinical Commisioning Groups in England. These are the expected counts that we will standardize against when attempting to identify abnormalities. We denote these values throughout by $E_{i}, \text{ for } i=1,\ldots,221$. \\
+A real dataset of asthma hospitalisation counts was used to contruct the expected rates, adjusted by regional demographics by age and sex, for the 221 Clinical Commisioning Groups in England. These are the expected counts that we will standardize against when attempting to identify abnormalities. We denote these values throughout by $E_{i}, \text{ for } i=1,\ldots,221$. A plot that we generated to show the distribution of these values across the regions can be seen in fig \ref{}  \\
 
 A binomial random variable might be the most principled choice of response but the expected counts we have calculated are large enough for using a Poisson response to be essentially equivalent. Indeed this is the most popular choice in the literature. The data was generated across 15 time points, so our values are drawn from
 \begin{equation}
-Y_{i,t} = \operatorname{Poisson}(E_i \cdot \mu_{i,t}), \ \ \ \ i=1,\ldots,221 \ \ \ \ t=1,\ldots,15
+Y_{i,t} \; \sim \; \operatorname{Poisson}(E_i \cdot \mu_{i,t}), \ \ \ \ i=1,\ldots,221 \ \ \ \ t=1,\ldots,15
 \end{equation} 
 
 where $\mu_{i,t}$ allows us to add random effects to our model. \\
 
 These random effects are used to add additional natural variation to the counts, where the direction of this variation is in some sense shared between `similar' regions or time points. We seperate these effects into those that describe the temporal trend and those which affect the spatial heterogeneity. So for the temporal trend we of course expect adjacent time points to be similar. This is achieved in this data by sampling from a one-dimensional Gaussian random walk
 \begin{equation}
-\xi_{1:15} \sim \operatorname{RW}(1).
+\xi_{1:15} \; \sim \; \operatorname{RW1}(\sigma_{\xi}^2).
 \end{equation}
 
-Additionally, we would expect regions which are close to each other to be similar. The data incorporated this assumption by the use of the BYM prior, first defined in \cite{bym},
+Additionally, we would expect regions which are close to each other to be similar. The data generation incorporated this assumption by the use of the BYM prior, first defined in \cite{bym},
 \begin{equation}
-\phi_{1:211}
+\lambda_{1:211} \; \sim \; \operatorname{BYM}(W, \sigma_{\lambda}^2, \sigma_v^2) 
+\end{equation}
+which is a multivariate normal distribution
+\begin{equation}
+\lambda_{1:211} \; \sim \; \cal{N}(v_{1:211}, I_{211}\sigma_{\lambda}^2)
+\end{equation} 
+where the mean vector is drawn from an \emph{intrinsically autoregressive} process
+\begin{equation}
+v_{1:211} \; \sim \; \operatorname{IAR}(W, \sigma_v^2)
+\end{equation}
+which is a Markov random field where areas that are adjacent (according to an adjacency matrix $W$) are more similar to those further away. The precise specification of the BYM prior is discussed in section \ref{carmodel}. \\
+
+The presumed sources of these random effects will determine how we wish for them to influence the generation of the data. In this dataset it is assumed that the temporal and spatial effects will work multiplicatively, where increases in one will magnify the effect of the other. Therefore, given our samples from the aformentioned distributions, we calculate $\mu_{i,t}$ additively on the $\log$ scale
+\begin{equation}
+\log{(\mu_{i,t})} = \lambda_i + \xi_t \ \ \ \ i=1,\ldots,221 \ \ \ \ t=1,\ldots,15
 \end{equation}
 
- which is a multivariate normal distribution
+In total, this scheme describes a method of generating random variables that has the features one would expect of spatiotemporal disease incidence. We now need to modify a selection of the regions to resemble a regions we would expect to be unusual. \\
 
+Fifteen of the regions were chosen according to the 10th, 25th, 50th, 75th and 90th percentiles of the median expected counts over time, with three regions per percentile. At each percentile the three regions were selected corresponding to one of three levels of spatial risk, i.e. the generated spatial effect $\lambda_{1:211}$, low (10th-30th percentiles), medium (45th-55th percentile) and high (70th-90th percentiles). This was done to ensure that the unusual regions were spread evenly given the underlying levels of risk. \\
 
-
- The simulated data (include citation for Areti) is of asthma hospitalization counts across 221 clinical commisioning groups in England at 15 time points under a Poisson model with a BYM prior for the spatial component and a $\operatorname{RW}(1)$ prior for the temporal component. \\
-
-A selection of 15 of the regions were chosen according to the 10th, 25th, 50th, 75th and 90th percentiles of the median expected counts over time (three regions per percentile) and were given a deviant temporal trend. \\
-
-The temporal trends of these regions were manually changed, where -- writing the original trend as $g(t)$ and the modified trend as $g^*(t)$ -- we have:
+To make these regions unusual they were given a deviant temporal trend. This was done by modifying the temporal trends of these regions manually, where---writing the original trend as $g(t)$ and the modified trend as $g^*(t)$---we have:
 \begin{align}
 g^*(t) &= g(t) + \log(2) && t = 1, 10, 11 \\ 
 g^*(t) &= g(t) - \log(2) && t = 5, 15
 \end{align}
 
+This has the effect of either doubling or halving the expected counts depending on the time point. The resulting temporal trend compared to the original can be seen in figure \ref{fig:timeeffects}. \\
+
+ N.B. All of the unusual regions exhibit the same deviation, which is probably an unrealistic assumption. However, by the way that they're defined, it is clear that the models used in this project should not perform better because of this fact. 
+
 \begin{figure}
 \includegraphics[scale=0.5]{plot_time_effects}
+\label{fig:timeeffects}
 \centering
 \end{figure}
 
@@ -116,11 +131,23 @@ g^*(t) &= g(t) - \log(2) && t = 5, 15
 \item Check this trend with Marta as the word document and pictured trend are different.
 \end{itemize}
 
-In addition to the observed counts at each point we have the expected number of cases for each regions based on true hospital admissions records for each CCG and shape files corresponding to the regions in question.
-
 \section{Cleaning and wrangling}
 
-Of the 211 regions one one had no neighbours, the Isle of Wight, so this region was removed to simplify calculations. An adjacency matrix calculated from the shape data. We had no data for wales so it was removed from the shapedata.
+Of the 211 regions only one one had no neighbours, the Isle of Wight. As this will complicate some of the smoothing calculations we need to perform for the Bayesian procedures (and the Isle of Wight was not one of those selected as unusual), the region was removed to simplify calculations.
+
+Shape data for the 211 Clinical Commisioning Groups plus wales was provided by CITE HERE. The regions of Wales and the Isle of Wight were of course removed. The shapefiles were imported and edited using the package \emph{rgdal} created by \cite{shaperead}. Then, using the package \emph{spdep} created by \cite{shape}, the shapefile was used to generate an object which calculates all of the adjacent regions for each region. Then this object was converted into into an adjacency matrix $W$ such that
+\begin{equation*}
+{(W)}_{ij} &= 
+\begin{cases}
+1, \ \ i \leftrightarrow j \\
+0, \ \ \textrm{otherwise}
+\end{cases}
+\end{equation*}
+where the double arrow signifies adjacency. The result of this procedure can be seen over the original shapedata in fig \ref{adj}.
+
+
+ 
+ An adjacency matrix calculated from the shape data. We had no data for wales so it was removed from the shapedata.
 
 \begin{figure}
 \centering
@@ -129,14 +156,9 @@ Of the 211 regions one one had no neighbours, the Isle of Wight, so this region 
 \caption{Mapped data}
 \end{figure}
 
-\begin{itemize}
-\item Remove wales from the above pictures
-\item What to include here?
-\end{itemize}
+\chapter{CUSUM}
 
-\section{CUSUM}
-
-The use of control charts are widespead in the area of statistical quality control and have recently increasingly found use in fields such as epidemiology. Their relative simplicity and ease of computation compared to most other methods makes them an ideal model to compare against, in order to observe any gains we might obtain from more complex modelling.
+The use of control charts are widespead in the area of statistical quality control and have recently increasingly found use in fields such as epidemiology, e.g. . Their relative simplicity and ease of computation compared to most other methods makes them an ideal model to compare against, in order to observe any gains we might obtain from more complex modelling.
 
 \begin{itemize}
 \item Mention that the process is sequential and so can be calculated as we go.
@@ -324,7 +346,7 @@ Other things to talk about:
 
 Ideally we wish to identify potential local risk factors in the aetiology of a disease, say, carcenogenic hazard from industrial polution. So it's clear that the ability to incorporate a high level of spatial granularity in our model is of value in these contexts. However this comes with the trade-off of greater variance in the counts, making identification of abnormal temporal trends difficult, especially for diseases with low incidence. Therefore we need to employ an element of smoothing over the local neighbourhoods of each region. This can be done in a variety of methods. One possibility is the use of splines such as in (source here) but in this project we will primarily look at using a conditionally autoregressive prior.
 
-\subsection{CAR models}
+\subsection{CAR models} \label{carmodel}
 
 Markov random field.
 

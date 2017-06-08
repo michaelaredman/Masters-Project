@@ -69,6 +69,47 @@
       \field{pages}{123\bibrangedash 142}
       \range{pages}{20}
     \endentry
+    \entry{bym}{article}{}
+      \name{author}{3}{}{%
+        {{uniquename=0,hash=88cb1cda62a3c1c6c5dfbdb50798c38a}{Besag}{B\bibinitperiod}{J}{J\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=16752b805f854e8dd063805b873dd889}{York}{Y\bibinitperiod}{J}{J\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=1ce0238508eed89a1494198f25076ed2}{Mollie}{M\bibinitperiod}{A}{A\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{106c83424e36f4ab729acf992e365690}
+      \strng{fullhash}{3e10a9c433c91b586cfa647913f12fcd}
+      \field{sortinit}{B}
+      \field{sortinithash}{4ecbea03efd0532989d3836d1a048c32}
+      \field{labelyear}{nodate}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{BF00116466.[Cross Ref]}
+      \field{title}{Bayesian image restoration with two applications in spatial statistics (with discussion) Ann Inst Stat Math. 1991; 43: 1--59. doi: 10.1007}
+    \endentry
+    \entry{best2005comparison}{article}{}
+      \name{author}{3}{}{%
+        {{uniquename=0,hash=0b722de921c70fe17432894948d786b1}{Best}{B\bibinitperiod}{Nicky}{N\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=71425b355b472529d862b325802115e6}{Richardson}{R\bibinitperiod}{Sylvia}{S\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=de9a15cd3bd930e9942cada619c717f8}{Thomson}{T\bibinitperiod}{Andrew}{A\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Sage Publications Sage CA: Thousand Oaks, CA}%
+      }
+      \strng{namehash}{ffa8f0a1810b4acc905d4ae8c9e2b2f7}
+      \strng{fullhash}{9a86dd67ac672aebd4bab9f6de59b28e}
+      \field{sortinit}{B}
+      \field{sortinithash}{4ecbea03efd0532989d3836d1a048c32}
+      \field{labelyear}{2005}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Statistical methods in medical research}
+      \field{number}{1}
+      \field{title}{A comparison of Bayesian spatial models for disease mapping}
+      \field{volume}{14}
+      \field{year}{2005}
+      \field{pages}{35\bibrangedash 59}
+      \range{pages}{25}
+    \endentry
     \entry{car}{misc}{}
       \name{author}{1}{}{%
         {{uniquename=0,hash=15514cd4e4ed5e730c955903911c2380}{{Joseph}}{J\bibinitperiod}{Max}{M\bibinitperiod}{}{}{}{}}%
