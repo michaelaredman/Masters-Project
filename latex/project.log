@@ -1,22 +1,23 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.11.4)  6 JUN 2017 21:30
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.11.4)  8 JUN 2017 18:22
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
 **\input project.tex
-(./project.tex (/usr/local/texlive/2015/texmf-dist/tex/latex/base/article.cls
-Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(./project.tex (/usr/local/texlive/2015/texmf-dist/tex/latex/base/report.cls
+Document Class: report 2014/09/29 v1.4h Standard LaTeX document class
 (/usr/local/texlive/2015/texmf-dist/tex/latex/base/size10.clo
 File: size10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
 )
 \c@part=\count79
-\c@section=\count80
-\c@subsection=\count81
-\c@subsubsection=\count82
-\c@paragraph=\count83
-\c@subparagraph=\count84
-\c@figure=\count85
-\c@table=\count86
+\c@chapter=\count80
+\c@section=\count81
+\c@subsection=\count82
+\c@subsubsection=\count83
+\c@paragraph=\count84
+\c@subparagraph=\count85
+\c@figure=\count86
+\c@table=\count87
 \abovecaptionskip=\skip41
 \belowcaptionskip=\skip42
 \bibindent=\dimen102
@@ -41,13 +42,13 @@ Package: amsbsy 1999/11/29 v1.2d
 (/usr/local/texlive/2015/texmf-dist/tex/latex/amsmath/amsopn.sty
 Package: amsopn 1999/12/14 v2.01 operator names
 )
-\inf@bad=\count87
+\inf@bad=\count88
 LaTeX Info: Redefining \frac on input line 210.
-\uproot@=\count88
-\leftroot@=\count89
+\uproot@=\count89
+\leftroot@=\count90
 LaTeX Info: Redefining \overline on input line 306.
-\classnum@=\count90
-\DOTSCASE@=\count91
+\classnum@=\count91
+\DOTSCASE@=\count92
 LaTeX Info: Redefining \ldots on input line 378.
 LaTeX Info: Redefining \dots on input line 381.
 LaTeX Info: Redefining \cdots on input line 466.
@@ -56,15 +57,15 @@ LaTeX Info: Redefining \cdots on input line 466.
 \big@size=\dimen105
 LaTeX Font Info:    Redeclaring font encoding OML on input line 566.
 LaTeX Font Info:    Redeclaring font encoding OMS on input line 567.
-\macc@depth=\count92
-\c@MaxMatrixCols=\count93
+\macc@depth=\count93
+\c@MaxMatrixCols=\count94
 \dotsspace@=\muskip10
-\c@parentequation=\count94
-\dspbrk@lvl=\count95
+\c@parentequation=\count95
+\dspbrk@lvl=\count96
 \tag@help=\toks15
-\row@=\count96
-\column@=\count97
-\maxfields@=\count98
+\row@=\count97
+\column@=\count98
+\maxfields@=\count99
 \andhelp@=\toks16
 \eqnshift@=\dimen106
 \alignsep@=\dimen107
@@ -190,10 +191,10 @@ LaTeX Font Info:    Redeclaring math symbol \ominus on input line 659.
 LaTeX Font Info:    Redeclaring math symbol \otimes on input line 661.
 LaTeX Font Info:    Redeclaring math symbol \odot on input line 663.
 LaTeX Font Info:    Redeclaring math symbol \oslash on input line 675.
-\mayacnter=\count99
-\mayacnta=\count100
-\mayacntb=\count101
-\mayacntc=\count102
+\mayacnter=\count100
+\mayacnta=\count101
+\mayacntb=\count102
+\mayacntc=\count103
 \mayawidth=\dimen112
 LaTeX Font Info:    Redeclaring math symbol \intop on input line 753.
 LaTeX Font Info:    Redeclaring math symbol \ointop on input line 760.
@@ -437,19 +438,19 @@ Package caption3 Info: TeX engine: e-TeX on input line 57.
 \caption@parindent=\dimen122
 \caption@hangindent=\dimen123
 )
-\c@ContinuedFloat=\count103
+\c@ContinuedFloat=\count104
 )
-\c@KVtest=\count104
+\c@KVtest=\count105
 \sf@farskip=\skip50
 \sf@captopadj=\dimen124
 \sf@capskip=\skip51
 \sf@nearskip=\skip52
-\c@subfigure=\count105
-\c@subfigure@save=\count106
-\c@lofdepth=\count107
-\c@subtable=\count108
-\c@subtable@save=\count109
-\c@lotdepth=\count110
+\c@subfigure=\count106
+\c@subfigure@save=\count107
+\c@lofdepth=\count108
+\c@subtable=\count109
+\c@subtable@save=\count110
+\c@lotdepth=\count111
 \sf@top=\skip53
 \sf@bottom=\skip54
 )
@@ -476,7 +477,7 @@ Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
 (/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
 Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 )
-\Gread@gobject=\count111
+\Gread@gobject=\count112
 ))
 \Gin@req@height=\dimen125
 \Gin@req@width=\dimen126
@@ -513,14 +514,244 @@ Package: booktabs 2005/04/14 v1.61803 publication quality tables
 \cmidrulesep=\dimen134
 \cmidrulekern=\dimen135
 \defaultaddspace=\dimen136
-\@cmidla=\count112
-\@cmidlb=\count113
+\@cmidla=\count113
+\@cmidlb=\count114
 \@aboverulesep=\dimen137
 \@belowrulesep=\dimen138
-\@thisruleclass=\count114
-\@lastruleclass=\count115
+\@thisruleclass=\count115
+\@lastruleclass=\count116
 \@thisrulewidth=\dimen139
 )
+(/usr/local/texlive/2015/texmf-dist/tex/latex/biblatex/biblatex.sty
+Package: biblatex 2015/04/19 v3.0 programmable bibliographies (PK/JW/AB)
+
+
+Package biblatex Warning: No "backend" specified, using Biber backend.
+(biblatex)                To use BibTeX, load biblatex with 
+(biblatex)                the "backend=bibtex" option.
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/biblatex/biblatex2.sty
+Package: biblatex2 2015/04/19 v3.0 programmable bibliographies (biber) (PK/JW/A
+B)
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/etoolbox/etoolbox.sty
+Package: etoolbox 2015/05/04 v2.2 e-TeX tools for LaTeX (JAW)
+\etb@tempcnta=\count117
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
+Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/etexcmds.sty
+Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/ifluatex.sty
+Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+)))
+(/usr/local/texlive/2015/texmf-dist/tex/latex/logreq/logreq.sty
+Package: logreq 2010/08/04 v1.0 xml request logger
+\lrq@indent=\count118
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/logreq/logreq.def
+File: logreq.def 2010/08/04 v1.0 logreq spec v1.0
+))
+(/usr/local/texlive/2015/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/url/url.sty
+\Urlmuskip=\muskip11
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
+\c@tabx@nest=\count119
+\c@listtotal=\count120
+\c@listcount=\count121
+\c@liststart=\count122
+\c@liststop=\count123
+\c@citecount=\count124
+\c@citetotal=\count125
+\c@multicitecount=\count126
+\c@multicitetotal=\count127
+\c@instcount=\count128
+\c@maxnames=\count129
+\c@minnames=\count130
+\c@maxitems=\count131
+\c@minitems=\count132
+\c@citecounter=\count133
+\c@savedcitecounter=\count134
+\c@uniquelist=\count135
+\c@uniquename=\count136
+\c@refsection=\count137
+\c@refsegment=\count138
+\c@maxextratitle=\count139
+\c@maxextratitleyear=\count140
+\c@maxextrayear=\count141
+\c@maxextraalpha=\count142
+\c@abbrvpenalty=\count143
+\c@highnamepenalty=\count144
+\c@lownamepenalty=\count145
+\c@maxparens=\count146
+\c@parenlevel=\count147
+\blx@tempcnta=\count148
+\blx@tempcntb=\count149
+\blx@tempcntc=\count150
+\blx@maxsection=\count151
+\blx@maxsegment@0=\count152
+\blx@notetype=\count153
+\blx@parenlevel@text=\count154
+\blx@parenlevel@foot=\count155
+\blx@sectionciteorder@0=\count156
+\labelnumberwidth=\skip55
+\labelalphawidth=\skip56
+\biblabelsep=\skip57
+\bibitemsep=\skip58
+\bibnamesep=\skip59
+\bibinitsep=\skip60
+\bibparsep=\skip61
+\bibhang=\skip62
+\blx@bcfin=\read1
+\blx@bcfout=\write3
+\c@mincomprange=\count157
+\c@maxcomprange=\count158
+\c@mincompwidth=\count159
+Package biblatex Info: Trying to load biblatex default data model...
+Package biblatex Info: ... file 'blx-dm.def' found.
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/biblatex/blx-dm.def)
+Package biblatex Info: Trying to load biblatex style data model...
+Package biblatex Info: ... file 'authoryear.dbx' not found.
+Package biblatex Info: Trying to load biblatex custom data model...
+Package biblatex Info: ... file 'biblatex-dm.cfg' not found.
+\c@afterword=\count160
+\c@savedafterword=\count161
+\c@annotator=\count162
+\c@savedannotator=\count163
+\c@author=\count164
+\c@savedauthor=\count165
+\c@bookauthor=\count166
+\c@savedbookauthor=\count167
+\c@commentator=\count168
+\c@savedcommentator=\count169
+\c@editor=\count170
+\c@savededitor=\count171
+\c@editora=\count172
+\c@savededitora=\count173
+\c@editorb=\count174
+\c@savededitorb=\count175
+\c@editorc=\count176
+\c@savededitorc=\count177
+\c@foreword=\count178
+\c@savedforeword=\count179
+\c@holder=\count180
+\c@savedholder=\count181
+\c@introduction=\count182
+\c@savedintroduction=\count183
+\c@namea=\count184
+\c@savednamea=\count185
+\c@nameb=\count186
+\c@savednameb=\count187
+\c@namec=\count188
+\c@savednamec=\count189
+\c@translator=\count190
+\c@savedtranslator=\count191
+\c@shortauthor=\count192
+\c@savedshortauthor=\count193
+\c@shorteditor=\count194
+\c@savedshorteditor=\count195
+\c@labelname=\count196
+\c@savedlabelname=\count197
+\c@institution=\count198
+\c@savedinstitution=\count199
+\c@lista=\count200
+\c@savedlista=\count201
+\c@listb=\count202
+\c@savedlistb=\count203
+\c@listc=\count204
+\c@savedlistc=\count205
+\c@listd=\count206
+\c@savedlistd=\count207
+\c@liste=\count208
+\c@savedliste=\count209
+\c@listf=\count210
+\c@savedlistf=\count211
+\c@location=\count212
+\c@savedlocation=\count213
+\c@organization=\count214
+\c@savedorganization=\count215
+\c@origlocation=\count216
+\c@savedoriglocation=\count217
+\c@origpublisher=\count218
+\c@savedorigpublisher=\count219
+\c@publisher=\count220
+\c@savedpublisher=\count221
+\c@language=\count222
+\c@savedlanguage=\count223
+\c@pageref=\count224
+\c@savedpageref=\count225
+\shorthandwidth=\skip63
+\shortjournalwidth=\skip64
+\shortserieswidth=\skip65
+\shorttitlewidth=\skip66
+\shortauthorwidth=\skip67
+\shorteditorwidth=\skip68
+Package biblatex Info: Trying to load compatibility code...
+Package biblatex Info: ... file 'blx-compat.def' found.
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/biblatex/blx-compat.def
+File: blx-compat.def 2015/04/19 v3.0 biblatex compatibility (PK/JW/AB)
+)
+Package biblatex Info: Trying to load generic definitions...
+Package biblatex Info: ... file 'biblatex.def' found.
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/biblatex/biblatex.def
+File: biblatex.def 
+\c@textcitecount=\count226
+\c@textcitetotal=\count227
+\c@textcitemaxnames=\count228
+\c@biburlnumpenalty=\count229
+\c@biburlucpenalty=\count230
+\c@biburllcpenalty=\count231
+\c@smartand=\count232
+)
+Package biblatex Info: Trying to load bibliography style 'authoryear'...
+Package biblatex Info: ... file 'authoryear.bbx' found.
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/biblatex/bbx/authoryear.bbx
+File: authoryear.bbx 2015/04/19 v3.0 biblatex bibliography style (PK/JW/AB)
+Package biblatex Info: Trying to load bibliography style 'standard'...
+Package biblatex Info: ... file 'standard.bbx' found.
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/biblatex/bbx/standard.bbx
+File: standard.bbx 2015/04/19 v3.0 biblatex bibliography style (PK/JW/AB)
+\c@bbx:relatedcount=\count233
+\c@bbx:relatedtotal=\count266
+))
+Package biblatex Info: Trying to load citation style 'authoryear'...
+Package biblatex Info: ... file 'authoryear.cbx' found.
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/biblatex/cbx/authoryear.cbx
+File: authoryear.cbx 2015/04/19 v3.0 biblatex citation style (PK/JW/AB)
+Package biblatex Info: Redefining '\cite'.
+Package biblatex Info: Redefining '\parencite'.
+Package biblatex Info: Redefining '\footcite'.
+Package biblatex Info: Redefining '\footcitetext'.
+Package biblatex Info: Redefining '\smartcite'.
+Package biblatex Info: Redefining '\textcite'.
+Package biblatex Info: Redefining '\textcites'.
+)
+Package biblatex Info: Trying to load configuration file...
+Package biblatex Info: ... file 'biblatex.cfg' found.
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/biblatex/biblatex.cfg
+File: biblatex.cfg 
+)))
 (/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/color.sty
 Package: color 2014/10/28 v1.1a Standard LaTeX Color (DPC)
 
@@ -572,12 +803,12 @@ ode.tex
 \pgf@yb=\dimen147
 \pgf@xc=\dimen148
 \pgf@yc=\dimen149
-\w@pgf@writea=\write3
-\r@pgf@reada=\read1
-\c@pgf@counta=\count116
-\c@pgf@countb=\count117
-\c@pgf@countc=\count118
-\c@pgf@countd=\count119
+\w@pgf@writea=\write4
+\r@pgf@reada=\read2
+\c@pgf@counta=\count267
+\c@pgf@countb=\count268
+\c@pgf@countc=\count269
+\c@pgf@countd=\count270
 \t@pgf@toka=\toks31
 \t@pgf@tokb=\toks32
 \t@pgf@tokc=\toks33
@@ -598,8 +829,8 @@ File: pgfsys-common-pdf.def 2013/10/10  (rcs-revision 1.13)
 (/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/systemlayer/pgfsyssoftpath.
 code.tex
 File: pgfsyssoftpath.code.tex 2013/09/09  (rcs-revision 1.9)
-\pgfsyssoftpath@smallbuffer@items=\count120
-\pgfsyssoftpath@bigbuffer@items=\count121
+\pgfsyssoftpath@smallbuffer@items=\count271
+\pgfsyssoftpath@bigbuffer@items=\count272
 )
 (/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/systemlayer/pgfsysprotocol.
 code.tex
@@ -629,7 +860,7 @@ Package: pgfcore 2010/04/11 v3.0.0 (rcs-revision 1.7)
 (/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex)
 (/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex
 \pgfmath@dimen=\dimen150
-\pgfmath@count=\count122
+\pgfmath@count=\count273
 \pgfmath@box=\box29
 \pgfmath@toks=\toks34
 \pgfmath@stack@operand=\toks35
@@ -654,7 +885,7 @@ code.tex)
 (/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.integ
 erarithmetics.code.tex)))
 (/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfloat.code.tex
-\c@pgfmathroundto@lastzeros=\count123
+\c@pgfmathroundto@lastzeros=\count274
 ))
 (/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepoints.co
 de.tex
@@ -692,7 +923,7 @@ File: pgfcorescopes.code.tex 2013/10/09  (rcs-revision 1.44)
 \pgfpic=\box30
 \pgf@hbox=\box31
 \pgf@layerbox@main=\box32
-\pgf@picture@serial@count=\count124
+\pgf@picture@serial@count=\count275
 )
 (/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/basiclayer/pgfcoregraphicst
 ate.code.tex
@@ -727,7 +958,7 @@ File: pgfcorearrows.code.tex 2013/11/07  (rcs-revision 1.40)
 e.tex
 File: pgfcoreshade.code.tex 2013/07/15  (rcs-revision 1.15)
 \pgf@max=\dimen174
-\pgf@sys@shading@range@num=\count125
+\pgf@sys@shading@range@num=\count276
 )
 (/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreimage.cod
 e.tex
@@ -790,7 +1021,7 @@ Package: tikz 2013/12/13 v3.0.0 (rcs-revision 1.142)
 (/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/libraries/pgflibraryplothan
 dlers.code.tex
 File: pgflibraryplothandlers.code.tex 2013/08/31 v3.0.0 (rcs-revision 1.20)
-\pgf@plot@mark@count=\count126
+\pgf@plot@mark@count=\count277
 \pgfplotmarksize=\dimen179
 )
 \tikz@lastx=\dimen180
@@ -803,42 +1034,42 @@ File: pgflibraryplothandlers.code.tex 2013/08/31 v3.0.0 (rcs-revision 1.20)
 \tikz@figbox@bg=\box36
 \tikz@tempbox=\box37
 \tikz@tempbox@bg=\box38
-\tikztreelevel=\count127
-\tikznumberofchildren=\count128
-\tikznumberofcurrentchild=\count129
-\tikz@fig@count=\count130
+\tikztreelevel=\count278
+\tikznumberofchildren=\count279
+\tikznumberofcurrentchild=\count280
+\tikz@fig@count=\count281
 
 (/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/modules/pgfmodulematrix.cod
 e.tex
 File: pgfmodulematrix.code.tex 2013/09/17  (rcs-revision 1.8)
-\pgfmatrixcurrentrow=\count131
-\pgfmatrixcurrentcolumn=\count132
-\pgf@matrix@numberofcolumns=\count133
+\pgfmatrixcurrentrow=\count282
+\pgfmatrixcurrentcolumn=\count283
+\pgf@matrix@numberofcolumns=\count284
 )
-\tikz@expandcount=\count134
+\tikz@expandcount=\count285
 
 (/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
 s/tikzlibrarytopaths.code.tex
 File: tikzlibrarytopaths.code.tex 2008/06/17 v3.0.0 (rcs-revision 1.2)
 )))
 (/usr/local/texlive/2015/texmf-dist/tex/latex/listings/listings.sty
-\lst@mode=\count135
+\lst@mode=\count286
 \lst@gtempboxa=\box39
 \lst@token=\toks39
-\lst@length=\count136
+\lst@length=\count287
 \lst@currlwidth=\dimen186
-\lst@column=\count137
-\lst@pos=\count138
+\lst@column=\count288
+\lst@pos=\count289
 \lst@lostspace=\dimen187
 \lst@width=\dimen188
-\lst@newlines=\count139
-\lst@lineno=\count140
+\lst@newlines=\count290
+\lst@lineno=\count291
 \lst@maxwidth=\dimen189
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2014/09/06 1.5e (Carsten Heinz)
-\c@lstnumber=\count141
-\lst@skipnumbers=\count142
+\c@lstnumber=\count292
+\lst@skipnumbers=\count293
 \lst@framebox=\box40
 )
 (/usr/local/texlive/2015/texmf-dist/tex/latex/listings/listings.cfg
@@ -850,69 +1081,62 @@ Package: listings 2014/09/06 1.5e (Carsten Heinz)
 File: lstlang1.sty 2014/09/06 1.5e listings language file
 )
 (/usr/local/texlive/2015/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty
-\fancy@headwidth=\skip55
-\f@ncyO@elh=\skip56
-\f@ncyO@erh=\skip57
-\f@ncyO@olh=\skip58
-\f@ncyO@orh=\skip59
-\f@ncyO@elf=\skip60
-\f@ncyO@erf=\skip61
-\f@ncyO@olf=\skip62
-\f@ncyO@orf=\skip63
+\fancy@headwidth=\skip69
+\f@ncyO@elh=\skip70
+\f@ncyO@erh=\skip71
+\f@ncyO@olh=\skip72
+\f@ncyO@orh=\skip73
+\f@ncyO@elf=\skip74
+\f@ncyO@erf=\skip75
+\f@ncyO@olf=\skip76
+\f@ncyO@orf=\skip77
 )
-(./project.aux
+Package biblatex Info: Trying to load language 'english'...
+Package biblatex Info: ... file 'english.lbx' found.
 
-LaTeX Warning: Label `stability' multiply defined.
-
-
-LaTeX Warning: Label `car' multiply defined.
-
-
-LaTeX Warning: Label `baystdetect' multiply defined.
-
-
-LaTeX Warning: Label `stan' multiply defined.
-
+(/usr/local/texlive/2015/texmf-dist/tex/latex/biblatex/lbx/english.lbx
+File: english.lbx 2015/04/19 v3.0 biblatex localization (PK/JW/AB)
 )
+\@quotelevel=\count294
+\@quotereset=\count295
+
+(./project.aux)
 \openout1 = `project.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for U/mathx/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for U/mathx/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: subfig package v1.3 is loaded.
 Package caption Info: listings package is loaded.
 Package caption Info: End \AtBeginDocument code.
- (/usr/local/texlive/2015/texmf-dist/tex/context/base/supp-pdf.mkii
+
+(/usr/local/texlive/2015/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count143
+\scratchcounter=\count296
 \scratchdimen=\dimen190
 \scratchbox=\box41
-\nofMPsegments=\count144
-\nofMParguments=\count145
+\nofMPsegments=\count297
+\nofMParguments=\count298
 \everyMPshowfont=\toks40
-\MPscratchCnt=\count146
+\MPscratchCnt=\count299
 \MPscratchDim=\dimen191
-\MPnumerator=\count147
-\makeMPintoPDFobject=\count148
+\MPnumerator=\count300
+\makeMPintoPDFobject=\count301
 \everyMPtoPDFconversion=\toks41
 ) (/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
 Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
 )
 
-(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/ifluatex.sty
-Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
-Package ifluatex Info: LuaTeX not detected.
-)
 (/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/ifpdf.sty
 Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
 Package ifpdf Info: pdfTeX in PDF mode is detected.
@@ -931,19 +1155,6 @@ Package: grfext 2010/08/19 v1.1 Manage graphics extensions (HO)
 (/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
 Package: kvdefinekeys 2011/04/07 v1.3 Define keys (HO)
 ))
-(/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/kvoptions.sty
-Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
-
-(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
-Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
-
-(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/etexcmds.sty
-Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)
-Package etexcmds Info: Could not find \expanded.
-(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
-(etexcmds)             that some package has redefined \expanded.
-(etexcmds)             In the latter case, load this package earlier.
-)))
 Package grfext Info: Graphics extension search list:
 (grfext)             [.png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPE
 G,.JBIG2,.JB2,.eps]
@@ -953,150 +1164,238 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-ABD: EveryShipout initializing macros
-\c@lstlisting=\count149
-LaTeX Font Info:    Try loading font information for U+msa on input line 30.
+Package biblatex Info: No input encoding detected.
+(biblatex)             Assuming 'ascii'.
+Package biblatex Info: Automatic encoding selection.
+(biblatex)             Assuming data encoding 'ascii'.
+\openout3 = `project.bcf'.
+
+Package biblatex Info: Trying to load bibliographic data...
+Package biblatex Info: ... file 'project.bbl' found.
+
+(./project.bbl)
+Package biblatex Info: Reference section=0 on input line 35.
+Package biblatex Info: Reference segment=0 on input line 35.
+ ABD: EveryShipout initializing macros
+\c@lstlisting=\count302
+LaTeX Font Info:    Try loading font information for U+msa on input line 40.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 30.
+LaTeX Font Info:    Try loading font information for U+msb on input line 40.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
-Underfull \hbox (badness 10000) in paragraph at lines 34--35
+) [1
 
- []
+{/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (./proj
+ect.toc)
+\tf@toc=\write5
+\openout5 = `project.toc'.
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 36--37
-
- []
 
 [1
 
-{/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 41.
+]
+Chapter 1.
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/base/omscmr.fd
-File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
-)
-LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 41.
+Underfull \hbox (badness 10000) in paragraph at lines 46--47
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 48--49
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 50--51
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 52--53
+
+ []
+
+[2
+
+]
+Underfull \hbox (badness 10000) in paragraph at lines 54--55
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 56--58
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 59--60
+
+ []
+
+[3]
+Underfull \hbox (badness 10000) in paragraph at lines 61--62
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 63--64
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 65--66
+
+ []
+
+
+LaTeX Warning: Citation 'best2005comparison' on page 4 undefined on input line 
+67.
+
 
 Underfull \hbox (badness 10000) in paragraph at lines 67--68
 
  []
 
+[4]
+Chapter 2.
 
-Underfull \hbox (badness 10000) in paragraph at lines 69--70
+Underfull \hbox (badness 10000) in paragraph at lines 73--74
 
  []
 
-[2] <images/plot_time_effects.pdf, id=18, 505.89pt x 505.89pt>
+
+Underfull \hbox (badness 10000) in paragraph at lines 75--76
+
+ []
+
+<images/plot_time_effects.pdf, id=26, 505.89pt x 505.89pt>
 File: images/plot_time_effects.pdf Graphic file (type pdf)
 
 <use images/plot_time_effects.pdf>
-Package pdftex.def Info: images/plot_time_effects.pdf used on input line 78.
+Package pdftex.def Info: images/plot_time_effects.pdf used on input line 84.
 (pdftex.def)             Requested size: 252.94437pt x 252.94437pt.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 89.
 
-<images/adjacency.png, id=19, 1003.75pt x 1003.75pt>
+(/usr/local/texlive/2015/texmf-dist/tex/latex/base/omscmr.fd
+File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 89.
+
+<images/adjacency.png, id=27, 1003.75pt x 1003.75pt>
 File: images/adjacency.png Graphic file (type png)
 
 <use images/adjacency.png>
-Package pdftex.def Info: images/adjacency.png used on input line 94.
+Package pdftex.def Info: images/adjacency.png used on input line 100.
 (pdftex.def)             Requested size: 172.5pt x 172.48848pt.
- <images/expected.png, id=21, 1003.75pt x 1003.75pt>
+ <images/expected.png, id=29, 1003.75pt x 1003.75pt>
 File: images/expected.png Graphic file (type png)
 
 <use images/expected.png>
-Package pdftex.def Info: images/expected.png used on input line 95.
+Package pdftex.def Info: images/expected.png used on input line 101.
 (pdftex.def)             Requested size: 172.5pt x 172.48848pt.
- [3 <./images/plot_time_effects.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 118--119
+ [5
 
- []
-
-[4 <./images/adjacency.png> <./images/expected.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 120--121
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 135--137
+] [6 <./images/plot_time_effects.pdf> <./images/adjacency.png> <./images/expect
+ed.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 125--126
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 138--139
+Underfull \hbox (badness 10000) in paragraph at lines 127--128
+
+ []
+
+[7]
+Underfull \hbox (badness 10000) in paragraph at lines 142--144
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 140--141
+Underfull \hbox (badness 10000) in paragraph at lines 145--146
 
  []
 
-[5]
-Underfull \hbox (badness 10000) in paragraph at lines 142--143
+
+Underfull \hbox (badness 10000) in paragraph at lines 147--148
 
  []
 
-[6]
-Overfull \hbox (0.1117pt too wide) in paragraph at lines 204--205
+
+Underfull \hbox (badness 10000) in paragraph at lines 149--150
+
+ []
+
+[8] [9]
+Overfull \hbox (0.1117pt too wide) in paragraph at lines 211--212
 []\OT1/cmr/m/n/10 Lack of divergences---which are ``in-cred-i-bly sen-si-tive t
 o the kind of patholo-
  []
 
 
-Overfull \hbox (0.22281pt too wide) in paragraph at lines 212--213
+Overfull \hbox (0.22281pt too wide) in paragraph at lines 219--220
 \OT1/cmr/m/n/10 The pre-vi-ous meth-ods, while pos-sess-ing the de-sired asymp-
 totic prop-er-ties, can---
  []
 
-[7]
-Underfull \hbox (badness 10000) in paragraph at lines 234--235
+[10]
+Underfull \hbox (badness 10000) in paragraph at lines 241--242
 
  []
 
-[8]
-Underfull \hbox (badness 10000) in paragraph at lines 252--253
+
+Underfull \hbox (badness 10000) in paragraph at lines 259--260
 
  []
 
-[9] [10] [11]
-Underfull \hbox (badness 10000) in paragraph at lines 402--403
+[11] [12] [13] [14]
+Underfull \hbox (badness 10000) in paragraph at lines 409--410
 
  []
 
-[12] <images/global_temporal.png, id=72, 1445.4pt x 722.7pt>
+<images/global_temporal.png, id=81, 1445.4pt x 722.7pt>
 File: images/global_temporal.png Graphic file (type png)
 
 <use images/global_temporal.png>
-Package pdftex.def Info: images/global_temporal.png used on input line 434.
+Package pdftex.def Info: images/global_temporal.png used on input line 441.
 (pdftex.def)             Requested size: 345.0pt x 172.49214pt.
- [13 <./images/global_temporal.png>] [14]
-[15] [16]
-Underfull \hbox (badness 10000) in paragraph at lines 588--589
+ [15] [16 <./images/global_temporal.png>]
+[17] [18]
+Underfull \hbox (badness 10000) in paragraph at lines 595--596
 
  []
 
-[17] (./project.bbl) (./project.bbl) [18] (./project.aux)
+[19] [20] [21
 
-LaTeX Warning: There were multiply-defined labels.
+] (./project.aux)
+
+LaTeX Warning: There were undefined references.
+
+
+Package biblatex Warning: Please (re)run Biber on the file:
+(biblatex)                project
+(biblatex)                and rerun LaTeX afterwards.
+
+Package logreq Info: Writing requests to 'project.run.xml'.
+\openout1 = `project.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 15586 strings out of 493089
- 293421 string characters out of 6134842
- 350356 words of memory out of 5000000
- 18744 multiletter control sequences out of 15000+600000
- 18128 words of font info for 64 fonts, out of 8000000 for 9000
+ 20997 strings out of 493089
+ 390084 string characters out of 6134842
+ 779865 words of memory out of 5000000
+ 24096 multiletter control sequences out of 15000+600000
+ 19809 words of font info for 70 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,16n,54p,1289b,369s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 55i,16n,54p,1345b,957s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
+</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb>
 </usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
 /usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></u
 sr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr
@@ -1108,14 +1407,15 @@ xlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texli
 ve/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/
 2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2
 015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/20
-15/texmf-dist/fonts/type1/public/mathabx-type1/matha10.pfb></usr/local/texlive/
-2015/texmf-dist/fonts/type1/public/mathabx-type1/matha7.pfb></usr/local/texlive
-/2015/texmf-dist/fonts/type1/public/mathabx-type1/mathx10.pfb></usr/local/texli
-ve/2015/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on project.pdf (18 pages, 644459 bytes).
+15/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/201
+5/texmf-dist/fonts/type1/public/mathabx-type1/matha10.pfb></usr/local/texlive/2
+015/texmf-dist/fonts/type1/public/mathabx-type1/matha7.pfb></usr/local/texlive/
+2015/texmf-dist/fonts/type1/public/mathabx-type1/mathx10.pfb></usr/local/texliv
+e/2015/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on project.pdf (22 pages, 673341 bytes).
 PDF statistics:
- 148 PDF objects out of 1000 (max. 8388607)
- 101 compressed objects within 2 object streams
+ 169 PDF objects out of 1000 (max. 8388607)
+ 116 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  33 words of extra memory for PDF output out of 10000 (max. 10000000)
 

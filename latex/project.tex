@@ -1,4 +1,4 @@
-\documentclass{article}
+\documentclass{report}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{mathabx}
@@ -12,6 +12,16 @@
 \usepackage{subcaption}
 \usepackage{enumerate}
 \usepackage{booktabs}
+
+\usepackage[
+style=authoryear,
+citestyle=authoryear,
+maxcitenames=1,
+maxbibnames=6
+]{biblatex}
+\addbibresource{project.bib}
+\bibliography{project}
+
 \usepackage[usenames,dvipsnames]{color}
 \usepackage{tikz}
 \usepackage{listings}
@@ -29,42 +39,65 @@
 
 \maketitle
 
-\section{Introduction}
+\tableofcontents
+
+\chapter{Introduction}
 
 The identification of unusual patterns of disease is of obvious importance in public health. Discrepencies in the relative risk of disease incidence between regions will both inform the allocation of medical resources and motivate investigations over possible environmental exposure. \\
 
- The detection of such discrepencies is often done by the use of disease mapping studies which aggregate the recorded incidents of the disease of interest over time, and compare the total counts between regions. Public health information systems now record this data indexed to such a fine degree of granularity that the detection of risk factors which act at a very local level, such as hazardous industrial waste, can be feasably indentified. However this fine-grained approach will leave the examined regions with very low incidence, which can hinder the isolation of the signal from the noise, hence the use of time aggregated values. However, in doing this we relinquish any potential information that a temporal trend may afford us. In fact, as described in [Abellen et al], the nature of the temporal trend may suggest anomalities related to very different kinds risk factors. A region which conforms to a similar temporal trend as the others---for example a seasonal factor---but at a a higher rate would imply a disparity which acts over the whole time period, such as an enviromental issue or a sociodemographic difference. While a region which acts wildly without regard to the general trend might suggest a more acute issue is at play, like an outbreak. \\
+ The detection of such discrepencies is often done by the use of disease mapping studies which aggregate the recorded incidents of the disease of interest over time, and compare the total counts between regions. Public health information systems now record this data indexed to such a fine degree of granularity that the detection of risk factors which act at a very local level, such as hazardous industrial waste, can be feasably indentified. However this fine-grained approach will leave the examined regions with very low incidence, which can hinder the isolation of the signal from the noise, hence the use of time aggregated values. However, in doing this we relinquish any potential information that a temporal trend may afford us. In fact, as described in \cite{stability}, the nature of the temporal trend may suggest anomalities related to very different kinds risk factors. A region which conforms to a similar temporal trend as the others---for example a seasonal factor---but at a higher rate would imply a disparity which acts over the whole time period, such as an enviromental issue or a sociodemographic difference. While a region which acts wildly without regard to the general trend might suggest a more acute issue is at play, like an outbreak. \\
 
-Consequently, in this project we will be looking at data in both space and time. A variety of methods have been investigated in this context. One of the most simple is that of scan statistics. This procedure, implemented in software such as SaTScan, seeks to identify clusters which can not be explained by the base process -- in our case typically an inhomogenous Poisson process. It does this by evaluating all possible ``windows'' in turn, where a given window will include the region in question and its ``neighbours'' both spatially and temporally. This forms a kind of cylinder which acts to smooth the observed counts in space and time, allowing the sparse data as described earlier to be examined without the noise overwhelming any underlying spatial heterogenicity. This method is descibed in detail and applied to epidemiological data in Kulldorff 1997. While offering an improvement over pointwise evaluation, spatial scan statistics by nature of this smoothing construction are limited in thier ability to detect abnormalities at the individual level, i.e. isolated to a particular region (cite Baystdetect).      
+Consequently, in this project we will be looking at data that is indexed in both space and time. Additionally in any model that we implement, we wish to be able to control for any known covariates which may influence the risk within a given region. For example some regions will be more populous, while others may contain proportionally more at-risk peoples, so it would be wise to have some method of setting the expected counts by region. \\
 
-\begin{itemize}
-\item Preventative medicine
-\item small/fine-grained areas
-\item Allows for greater spcificity while presenting new challenges
-\item Data sparcity
-\item Computational advances
-\item Enviromental exposures
-\item Great care/subtleties of the computational methods
-\item Spatial scan statistics
-\item Type of data we will be looking at
-\end{itemize}
+A variety of methods have been investigated in these contexts. One of the most simple is that of scan statistics. This procedure, implemented in software such as SaTScan, seeks to identify clusters which can not be explained by the base process -- in our case typically an inhomogenous Poisson process. It does this by evaluating all possible ``windows'' in turn, where a given window will include the region in question and its ``neighbours'' both spatially and temporally. This forms a kind of cylinder which acts to smooth the observed counts in space and time, allowing the sparse data as described earlier to be examined without the noise overwhelming any underlying spatial heterogenicity. This method is descibed in detail and applied to epidemiological data in \cite{scan}. While offering an improvement over pointwise evaluation, spatial scan statistics by nature of this smoothing construction are limited in their ability to detect abnormalities at the individual level, i.e. isolated to a particular region (\cite{baystdetect}).  \\
+
+Control chart based methods offer both relatively fast computation times and the ability to specifically identify abnormal temporal trends. These, in the simplest of terms, are graphs we construct combined with a decision rule to classify whether a process is in `in-control' or `out-of-control'. Versions such as CUSUM are often designed for step detection -- the identification of abrupt jumps in rate of the process. When looking at longer time periods, this is exactly the type of pathology one might expect. The regions which now show atypical trends should still have exhibited normal behaviour most of the time, the problem is to decide when such heterogeneity in the process is substantive.  Another advantage is, as the techinique is sequential in nature, the sample size of the items in consideration need not be fixed in advance.  \\
+
+The most natural way to frame our problem is by the construction of a hierachical model. In this method we perform inference on a latent variable---within a complex model---which indicates the ``unusalness'' of a point or group of points. This Bayesian approach compells us to express our assumptions about the data generatively, which confers a number of advantages. Firstly, it is often the case in discriminative models that the choice of method is implicitly performing shrinkage, without this being made explicit or even realized by the modeler. For an intereting example see \cite{stoch}. Thinking generatively forces us to be clear about our assumptions. Secondly, real world epidemiological data will presumably not supply the true response variable, that is, whether or not a region is genuinely anomalous. This abscence of training means we need our model to provide reasonable estimates immediately, rather than at some asymptotic limit. This advantage can be seen in, for example, \cite{ng}. Thirdly, the parameters of a Bayesian model are far more readily interpretable that those in a non-generative setting, which could allow for further inference beyond the identification of abnormal regions, e.g. the nature and extent of the deviation from what was expected. And lastly,
+ the Bayesian framework naturally allows the addition of futher assumptions and complexity. For example, \cite{banerjee} extends spatiotemporal models to the modelling of multiple diseases via the introduction of a shared `frailty' term. \\
+
+The examination, implementation and comparison of these Bayesian methods with discriminative models, specifically control charts, is the focus of this project. \\
+
+Working on simulated data, we first implement a CUSUM based classifier and suggest a novel(?) specification of the `in-control' process. With the efficiency of the method being of great importance, we implement the computations from scratch in Fortran rather than modifying the existing statistical routines in R. \\
+
+Then, turning to Bayesian methods, we examine the general structure of the models employed in the literature and how this standard is well suited to the particular challenges of our problem. In particular, the favored priors for the smoothing of the data are reviewed. The difficulties and subtleties of computaion are addressed in detail, as are some of the superior techniques that have been developed in the past few years. \\
+
+We examine BaySTDetect, one of the existing models in the literature, discussing the rationales behind the construction of the model and the `cutting of feedback' that's employed -- where we demonstrate that this particular choice is fundamental to it's success. Rather than use the standard MCMC software in the field, we implement the model in Stan using Hamiltonial Monte Carlo and combine the submodels directly through the likelihoods. We show that this can lead to order of magnitude speed-ups over the original implementation in \cite{baystdetect}. \\
+
+We then suggest a new model, based on \cite{stability}, that works fully within the Bayesian framework by identifying an excess in the variance which can not be explained by the shared random effects. Implementing this model, again in Stan, we show that this model obtains good results, despite not being the way in which our simulated data were originally created. However, as suggested in \cite{best2005comparison}, models of this kind may oversmooth the counts spatially. We demonstrate this by simulating a new set of data where the regions to be `unusual' are selected sequentially via a preferential attachment scheme and showing that our model performs poorly in this context. \\
+
+Finally we compare the use three models on both sets of data with respect to their speed, false postive rate and power.
+
+\chapter{Simulated data}
+
+In order to test the accuracy of any potential models we need some data that exhibits the type of pathological trends that we wish to identify. The following data was graciously supplied by Areti Boulieri.
+
+\section{Specification}
+
+A real dataset of asthma hospitalisation counts was used to contruct the expected rates, adjusted by regional demographics by age and sex, for the 221 Clinical Commisioning Groups in England. These are the expected counts that we will standardize against when attempting to identify abnormalities. We denote these values throughout by $E_{i}, \text{ for } i=1,\ldots,221$. \\
+
+A binomial random variable might be the most principled choice of response but the expected counts we have calculated are large enough for using a Poisson response to be essentially equivalent. Indeed this is the most popular choice in the literature. The data was generated across 15 time points, so our values are drawn from
+\begin{equation}
+Y_{i,t} = \operatorname{Poisson}(E_i \cdot \mu_{i,t}), \ \ \ \ i=1,\ldots,221 \ \ \ \ t=1,\ldots,15
+\end{equation} 
+
+where $\mu_{i,t}$ allows us to add random effects to our model. \\
+
+These random effects are used to add additional natural variation to the counts, where the direction of this variation is in some sense shared between `similar' regions or time points. We seperate these effects into those that describe the temporal trend and those which affect the spatial heterogeneity. So for the temporal trend we of course expect adjacent time points to be similar. This is achieved in this data by sampling from a one-dimensional Gaussian random walk
+\begin{equation}
+\xi_{1:15} \sim \operatorname{RW}(1).
+\end{equation}
+
+Additionally, we would expect regions which are close to each other to be similar. The data incorporated this assumption by the use of the BYM prior, first defined in \cite{bym},
+\begin{equation}
+\phi_{1:211}
+\end{equation}
+
+ which is a multivariate normal distribution
 
 
-What I do:
-\begin{enumerate}
-\item Investigate the use of control chart based methods
-\item Explore the use of Bayesian models
-\item Look at the use of the cut function
-\item Performance in terms of false-positive/negatives
-\item Speed performance
-\item Try a new model for identifying unseperable variance
-\item Create new simulated data with preferential attachment to test issues with it
-\item Hamiltonian monte carlo and issues with mixture models
-\end{enumerate}
 
-\section{Simulated data}
-
-In order to test the accuracy of any potential models we need some data that exhibits trends that exhibit pathelogical behaviour that we wish to identify. The simulated data (include citation for Areti) is of asthma hospitalization counts across 221 clinical commisioning groups in England at 15 time points under a Poisson model with a BYM prior for the spatial component and a $\operatorname{RW}(1)$ prior for the temporal component. \\
+ The simulated data (include citation for Areti) is of asthma hospitalization counts across 221 clinical commisioning groups in England at 15 time points under a Poisson model with a BYM prior for the spatial component and a $\operatorname{RW}(1)$ prior for the temporal component. \\
 
 A selection of 15 of the regions were chosen according to the 10th, 25th, 50th, 75th and 90th percentiles of the median expected counts over time (three regions per percentile) and were given a deviant temporal trend. \\
 
@@ -85,7 +118,7 @@ g^*(t) &= g(t) - \log(2) && t = 5, 15
 
 In addition to the observed counts at each point we have the expected number of cases for each regions based on true hospital admissions records for each CCG and shape files corresponding to the regions in question.
 
-\subsection{Cleaning and wrangling}
+\section{Cleaning and wrangling}
 
 Of the 211 regions one one had no neighbours, the Isle of Wight, so this region was removed to simplify calculations. An adjacency matrix calculated from the shape data. We had no data for wales so it was removed from the shapedata.
 
@@ -107,12 +140,13 @@ The use of control charts are widespead in the area of statistical quality contr
 
 \begin{itemize}
 \item Mention that the process is sequential and so can be calculated as we go.
+\item Spatial CUSUM
 \end{itemize}
 
 We will specifically be looking at the use of CUSUM models, which seek to identify a qualitative change in the nature of a time series via the evaluation of the cumulative of a relavant test statistic. We define $S_t$ as the value of the control chart at time $t$ and progress its value as follows
 \begin{gather}
 S_0 = 0 \\
-s_{t+1} = \max{(0, S_t + K_t)}.
+S_{t+1} = \max{(0, S_t + K_t)}.
 \end{gather}
 
 Where $K_t$ is the value of some statistic calculated at time point $t$. We will use the $\log$ of the ratio between the likelihoods of the data, at the time point, under an ``in-control'' and an ``out-of-control'' Poisson process. So if likelihood of the ``out-of-control'' rate is greater than the ``in-control'' then the value of $S_t$ will increase and vice-versa. The logarithms are taken to minimise floating-point arithmetic issues as the densities will often be very small. We then signal that the process is pathological if the value of $S_t$ exceeds some threshold value $h$. \\
@@ -624,12 +658,8 @@ For more on this see page 185 of \cite{stan}.
 
 \subsection{Timing data?}
 
-<<<<<<< HEAD
-\bibliographystyle{apalike}
-\bibliography{project}{}
-=======
-\bibliography{project}{}
-\bibliographystyle{plain}
->>>>>>> origin/master
+Timing things
+
+\printbibliography
 
 \end{document}

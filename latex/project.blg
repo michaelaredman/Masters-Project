@@ -1,55 +1,17 @@
-This is BibTeX, Version 0.99d (TeX Live 2015)
-Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
-The top-level auxiliary file: project.aux
-The style file: apalike.bst
-Illegal, another \bibdata command---line 55 of file project.aux
- : \bibdata
- :         {project}
-I'm skipping whatever remains of this command
-Illegal, another \bibstyle command---line 60 of file project.aux
- : \bibstyle
- :          {plain}
-I'm skipping whatever remains of this command
-Database file #1: project.bib
-You've used 4 entries,
-            1935 wiz_defined-function locations,
-            494 strings with 4288 characters,
-and the built_in function-call counts, 1430 in all, are:
-= -- 140
-> -- 60
-< -- 3
-+ -- 20
-- -- 20
-* -- 105
-:= -- 258
-add.period$ -- 11
-call.type$ -- 4
-change.case$ -- 30
-chr.to.int$ -- 4
-cite$ -- 4
-duplicate$ -- 61
-empty$ -- 87
-format.name$ -- 24
-if$ -- 279
-int.to.chr$ -- 1
-int.to.str$ -- 0
-missing$ -- 2
-newline$ -- 22
-num.names$ -- 12
-pop$ -- 24
-preamble$ -- 1
-purify$ -- 30
-quote$ -- 0
-skip$ -- 56
-stack$ -- 0
-substring$ -- 72
-swap$ -- 15
-text.length$ -- 1
-text.prefix$ -- 0
-top$ -- 0
-type$ -- 24
-warning$ -- 0
-while$ -- 10
-width$ -- 0
-write$ -- 50
-(There were 2 error messages)
+[0] Config.pm:324> INFO - This is Biber 2.1
+[0] Config.pm:327> INFO - Logfile is 'project.blg'
+[67] biber-darwin:276> INFO - === Wed Jun  7, 2017, 16:44:18
+[67] Biber.pm:333> INFO - Reading 'project.bcf'
+[178] Biber.pm:645> INFO - Found 8 citekeys in bib section 0
+[218] Biber.pm:2977> INFO - Processing section 0
+[247] Biber.pm:3115> INFO - Looking for bibtex format file 'project.bib' for section 0
+[250] bibtex.pm:1021> INFO - Decoding LaTeX character macros into UTF-8
+[253] bibtex.pm:895> INFO - Found BibTeX data source 'project.bib'
+[397] UCollate.pm:66> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[397] UCollate.pm:66> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[397] Biber.pm:2854> INFO - Sorting list 'nyt' of type 'entry' with scheme 'nyt' and locale 'en-US'
+[397] Biber.pm:2858> INFO - No sort tailoring available for locale 'en-US'
+[416] bbl.pm:505> INFO - Writing 'project.bbl' with encoding 'ascii'
+[419] Utils.pm:146> WARN - The entry 'baystdetect' has characters which cannot be encoded in 'ascii'. Recoding problematic characters into macros.
+[420] bbl.pm:596> INFO - Output to project.bbl
+[420] Biber.pm:106> INFO - WARNINGS: 1

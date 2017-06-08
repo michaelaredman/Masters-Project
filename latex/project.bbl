@@ -1,24 +1,201 @@
-\begin{thebibliography}{}
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 2.5 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
 
-\bibitem[Abellan et~al., 2008]{stability}
-Abellan, J.~J., Richardson, S., and Best, N. (2008).
-\newblock Use of space-time models to investigate the stability of patterns of
-  disease.
-\newblock {\em Environmental Health Perspectives}, 116(8):1111.
 
-\bibitem[{Joseph}, 2016]{car}
-{Joseph}, M. (2016).
-\newblock Exact sparse car models in stan.
+\refsection{0}
+  \sortlist{nyt}{nyt}
+    \entry{stability}{article}{}
+      \name{author}{3}{}{%
+        {{uniquename=0,hash=212dc8ee5a368a9e71a86ec12ad83314}{Abellan}{A\bibinitperiod}{Juan\bibnamedelima Jose}{J\bibinitperiod\bibinitdelim J\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=71425b355b472529d862b325802115e6}{Richardson}{R\bibinitperiod}{Sylvia}{S\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=0b722de921c70fe17432894948d786b1}{Best}{B\bibinitperiod}{Nicky}{N\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {National Institute of Environmental Health Sciences}%
+      }
+      \strng{namehash}{852d3d75bf8c5200e6c945ff41c811b5}
+      \strng{fullhash}{dac819ceb59db16f5faba704fe45a166}
+      \field{sortinit}{A}
+      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
+      \field{labelyear}{2008}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Environmental Health Perspectives}
+      \field{number}{8}
+      \field{title}{Use of space-time models to investigate the stability of patterns of disease}
+      \field{volume}{116}
+      \field{year}{2008}
+      \field{pages}{1111}
+      \range{pages}{1}
+    \endentry
+    \entry{banerjee}{article}{}
+      \name{author}{3}{}{%
+        {{uniquename=0,hash=2f89b8a28f371cc1eee016f2b855a3bf}{Banerjee}{B\bibinitperiod}{Sudipto}{S\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=e036b8cfdd67d36d1e6da4d95010bc5b}{Wall}{W\bibinitperiod}{Melanie\bibnamedelima M}{M\bibinitperiod\bibinitdelim M\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=ad13da83ac0f67014db8a3306a0581a8}{Carlin}{C\bibinitperiod}{Bradley\bibnamedelima P}{B\bibinitperiod\bibinitdelim P\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Biometrika Trust}%
+      }
+      \strng{namehash}{00ac74a0b1e8fd8e5fb7822bc05e6e91}
+      \strng{fullhash}{ad164d1baaff896a0cb28f8c7e7bb93e}
+      \field{sortinit}{B}
+      \field{sortinithash}{4ecbea03efd0532989d3836d1a048c32}
+      \field{labelyear}{2003}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Biostatistics}
+      \field{number}{1}
+      \field{title}{Frailty modeling for spatially correlated survival data, with application to infant mortality in Minnesota}
+      \field{volume}{4}
+      \field{year}{2003}
+      \field{pages}{123\bibrangedash 142}
+      \range{pages}{20}
+    \endentry
+    \entry{car}{misc}{}
+      \name{author}{1}{}{%
+        {{uniquename=0,hash=15514cd4e4ed5e730c955903911c2380}{{Joseph}}{J\bibinitperiod}{Max}{M\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{15514cd4e4ed5e730c955903911c2380}
+      \strng{fullhash}{15514cd4e4ed5e730c955903911c2380}
+      \field{sortinit}{J}
+      \field{sortinithash}{ec3950a647c092421b9fcca6d819504a}
+      \field{labelyear}{2016}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Exact sparse CAR models in Stan}
+      \field{year}{2016}
+      \verb{url}
+      \verb http://mc-stan.org/documentation/case-studies/mbjoseph-CARStan.html
+      \endverb
+    \endentry
+    \entry{scan}{article}{}
+      \name{author}{1}{}{%
+        {{uniquename=0,hash=5dfb28176e8b38c698d454c4c884ff0f}{Kulldorff}{K\bibinitperiod}{Martin}{M\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Taylor \& Francis}%
+      }
+      \strng{namehash}{5dfb28176e8b38c698d454c4c884ff0f}
+      \strng{fullhash}{5dfb28176e8b38c698d454c4c884ff0f}
+      \field{sortinit}{K}
+      \field{sortinithash}{a7d5b3aec5a0890aae7baf85a209abfc}
+      \field{labelyear}{1997}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Communications in Statistics-Theory and methods}
+      \field{number}{6}
+      \field{title}{A spatial scan statistic}
+      \field{volume}{26}
+      \field{year}{1997}
+      \field{pages}{1481\bibrangedash 1496}
+      \range{pages}{16}
+    \endentry
+    \entry{baystdetect}{article}{}
+      \name{author}{5}{}{%
+        {{uniquename=0,hash=73e4bb016728a9a83d92c1653795e904}{Li}{L\bibinitperiod}{Guangquan}{G\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=0b722de921c70fe17432894948d786b1}{Best}{B\bibinitperiod}{Nicky}{N\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=122399f75dcb998bea43b86940f7f4a4}{Hansell}{H\bibinitperiod}{Anna\bibnamedelima L}{A\bibinitperiod\bibinitdelim L\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=a2d50242115b192f2e0406f1482fde30}{Ahmed}{A\bibinitperiod}{Isma\"{\i{}}l}{I\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=71425b355b472529d862b325802115e6}{Richardson}{R\bibinitperiod}{Sylvia}{S\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Biometrika Trust}%
+      }
+      \strng{namehash}{331c36e2257a8e78b98302df7e3179b9}
+      \strng{fullhash}{ed6c035ec213f536b4bab2629b7748d3}
+      \field{sortinit}{L}
+      \field{sortinithash}{872351f18d0f736066eda0bf18bfa4f7}
+      \field{labelyear}{2012}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Biostatistics}
+      \field{title}{BaySTDetect: detecting unusual temporal patterns in small area data via Bayesian model choice}
+      \field{year}{2012}
+      \field{pages}{kxs005}
+      \range{pages}{-1}
+    \endentry
+    \entry{stoch}{article}{}
+      \name{author}{3}{}{%
+        {{uniquename=0,hash=01767107e2c06a4879e3fff5cb6116b1}{Mandt}{M\bibinitperiod}{Stephan}{S\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=f7331779b52e0ecf23ce0fe45ac710b3}{Hoffman}{H\bibinitperiod}{Matthew\bibnamedelima D}{M\bibinitperiod\bibinitdelim D\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=0acd0349006f4ee348ffe16e1fe1fe21}{Blei}{B\bibinitperiod}{David\bibnamedelima M}{D\bibinitperiod\bibinitdelim M\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{a78649bda2e17571c50bc54c720ecfc2}
+      \strng{fullhash}{28c276584ee7ff5aae174834b5534b07}
+      \field{sortinit}{M}
+      \field{sortinithash}{2684bec41e9697b92699b46491061da2}
+      \field{labelyear}{2017}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{arXiv preprint arXiv:1704.04289}
+      \field{title}{Stochastic Gradient Descent as Approximate Bayesian Inference}
+      \field{year}{2017}
+    \endentry
+    \entry{ng}{article}{}
+      \name{author}{2}{}{%
+        {{uniquename=0,hash=799b172b8d02b7acdf21d0cc48934fca}{Ng}{N\bibinitperiod}{Andrew\bibnamedelima Y}{A\bibinitperiod\bibinitdelim Y\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=996ffb9cb286a8b4b0fc16793c54cc31}{Jordan}{J\bibinitperiod}{Michael\bibnamedelima I}{M\bibinitperiod\bibinitdelim I\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {MIT; 1998}%
+      }
+      \strng{namehash}{cab9c15feb1b9f1ac408af4e2bea8704}
+      \strng{fullhash}{49a7ae4cf8feee99134b0d9d1599ae37}
+      \field{sortinit}{N}
+      \field{sortinithash}{925374ca63e7594de7fafdb83e64d41d}
+      \field{labelyear}{2002}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Advances in neural information processing systems}
+      \field{title}{On discriminative vs. generative classifiers: A comparison of logistic regression and naive bayes}
+      \field{volume}{2}
+      \field{year}{2002}
+      \field{pages}{841\bibrangedash 848}
+      \range{pages}{8}
+    \endentry
+    \entry{stan}{misc}{}
+      \name{author}{1}{}{%
+        {{uniquename=0,hash=2418ee02a26ab01ead911ec86c507892}{{Stan\bibnamedelimb Development\bibnamedelimb Team}}{S\bibinitperiod}{}{}{}{}{}{}}%
+      }
+      \strng{namehash}{2418ee02a26ab01ead911ec86c507892}
+      \strng{fullhash}{2418ee02a26ab01ead911ec86c507892}
+      \field{sortinit}{S}
+      \field{sortinithash}{fd1e7c5ab79596b13dbbb67f8d70fb5a}
+      \field{labelyear}{2016}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Version 2.14.0}
+      \field{title}{Stan Modeling Language Users Guide and Reference Manual}
+      \field{year}{2016}
+      \verb{url}
+      \verb http://mc-stan.org/
+      \endverb
+    \endentry
+  \endsortlist
+\endrefsection
+\endinput
 
-\bibitem[Li et~al., 2012]{baystdetect}
-Li, G., Best, N., Hansell, A.~L., Ahmed, I., and Richardson, S. (2012).
-\newblock Baystdetect: detecting unusual temporal patterns in small area data
-  via bayesian model choice.
-\newblock {\em Biostatistics}, page kxs005.
-
-\bibitem[{Stan Development Team}, 2016]{stan}
-{Stan Development Team} (2016).
-\newblock Stan modeling language users guide and reference manual.
-\newblock Version 2.14.0.
-
-\end{thebibliography}

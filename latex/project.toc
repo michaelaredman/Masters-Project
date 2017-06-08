@@ -1,0 +1,83 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {1}Introduction}{2}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {2}Simulated data}{5}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.0.1}Cleaning and wrangling}{5}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.1}CUSUM}{7}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.2}The Bayesian Framework}{8}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.2.1}Hyperparameter priors}{10}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.2.2}Convergence statistics}{10}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.2.3}Hamiltonian Monte-Carlo}{10}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Background}{10}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{The Method}{11}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.2.4}General Model Form}{12}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.3}Smoothing}{12}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.3.1}CAR models}{12}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.3.2}BYM prior}{13}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.3.3}Temporal smoothing}{14}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.4}Individual trend model}{14}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.4.1}Baystdetect and the cut function}{14}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Model specification}{14}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.4.2}Combining the models}{15}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Implementation}{15}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Classification and accuracy}{16}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.4.3}Fully Bayesian model}{16}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.5}Excess variability model}{16}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.5.1}Model specification}{17}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.5.2}Classification and accuracy}{17}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.5.3}Over-smoothing}{17}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.5.4}Simulated Data}{18}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.6}Computational considerations}{18}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.6.1}Basic Sampling methods}{18}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Gibbs sampling}{18}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Metropolis}{18}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Auto differentiation}{18}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Symplectic Integration}{18}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Auto differentiation}{18}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Symplectic Integration}{18}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Integration time}{19}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Integration time}{19}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.6.2}Autodiff/black-box variational inference?}{19}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.6.3}Reparameterization of the models}{19}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.6.4}Marginilizing over the discrte parameters}{19}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.6.5}Timing data?}{20}
