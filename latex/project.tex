@@ -1,4 +1,5 @@
-\documentclass{report}
+\documentclass[11pt]{report}
+\usepackage[a4paper]{geometry}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{mathabx}
@@ -13,12 +14,14 @@
 \usepackage{enumerate}
 \usepackage{booktabs}
 
+
 \usepackage[
-style=authoryear,
-citestyle=authoryear,
+authordate,
 maxcitenames=1,
+backend=biber,
+natbib,
 maxbibnames=6
-]{biblatex}
+]{biblatex-chicago}
 \addbibresource{project.bib}
 \bibliography{project}
 
@@ -45,16 +48,16 @@ maxbibnames=6
 
 The identification of unusual patterns of disease is of obvious importance in public health. Discrepencies in the relative risk of disease incidence between regions will both inform the allocation of medical resources and motivate investigations over possible environmental exposure. \\
 
- The detection of such discrepencies is often done by the use of disease mapping studies which aggregate the recorded incidents of the disease of interest over time, and compare the total counts between regions. Public health information systems now record this data indexed to such a fine degree of granularity that the detection of risk factors which act at a very local level, such as hazardous industrial waste, can be feasably indentified. However this fine-grained approach will leave the examined regions with very low incidence, which can hinder the isolation of the signal from the noise, hence the use of time aggregated values. However, in doing this we relinquish any potential information that a temporal trend may afford us. In fact, as described in \cite{stability}, the nature of the temporal trend may suggest anomalities related to very different kinds risk factors. A region which conforms to a similar temporal trend as the others---for example a seasonal factor---but at a higher rate would imply a disparity which acts over the whole time period, such as an enviromental issue or a sociodemographic difference. While a region which acts wildly without regard to the general trend might suggest a more acute issue is at play, like an outbreak. \\
+ The detection of such discrepencies is often done by the use of disease mapping studies which aggregate the recorded incidents of the disease of interest over time, and compare the total counts between regions. Public health information systems now record this data indexed to such a fine degree of granularity that the detection of risk factors which act at a very local level, such as hazardous industrial waste, can be feasably indentified. However this fine-grained approach will leave the examined regions with very low incidence, which can hinder the isolation of the signal from the noise, hence the use of time aggregated values. However, in doing this we relinquish any potential information that a temporal trend may afford us. In fact, as described in \citet{stability}, the nature of the temporal trend may suggest anomalities related to very different kinds risk factors. A region which conforms to a similar temporal trend as the others---for example a seasonal factor---but at a higher rate would imply a disparity which acts over the whole time period, such as an enviromental issue or a sociodemographic difference. While a region which acts wildly without regard to the general trend might suggest a more acute issue is at play. \\
 
-Consequently, in this project we will be looking at data that is indexed in both space and time. Additionally in any model that we implement, we wish to be able to control for any known covariates which may influence the risk within a given region. For example some regions will be more populous, while others may contain proportionally more at-risk peoples, so it would be wise to have some method of setting the expected counts by region. \\
+Consequently, in this project we will be looking at data that is indexed in both space and time. Additionally in any model that we implement, we wish to be able to control for known covariates which may influence the risk within a given region. For example some regions will be more populous, while others may contain proportionally more at-risk peoples, so it would be wise to have some method of setting the expected counts by region. \\
 
-A variety of methods have been investigated in these contexts. One of the most simple is that of scan statistics. This procedure, implemented in software such as SaTScan, seeks to identify clusters which can not be explained by the base process -- in our case typically an inhomogenous Poisson process. It does this by evaluating all possible ``windows'' in turn, where a given window will include the region in question and its ``neighbours'' both spatially and temporally. This forms a kind of cylinder which acts to smooth the observed counts in space and time, allowing the sparse data as described earlier to be examined without the noise overwhelming any underlying spatial heterogenicity. This method is descibed in detail and applied to epidemiological data in \cite{scan}. While offering an improvement over pointwise evaluation, spatial scan statistics by nature of this smoothing construction are limited in their ability to detect abnormalities at the individual level, i.e. isolated to a particular region (\cite{baystdetect}).  \\
+A variety of methods have been investigated in these contexts. One of the most simple is that of scan statistics. This procedure, implemented in software such as SaTScan, seeks to identify clusters which can not be explained by the base process -- in our case typically an inhomogenous Poisson process. It does this by evaluating all possible ``windows'' in turn, where a given window will include the region in question and its ``neighbours'' both spatially and temporally. This forms a kind of cylinder which acts to smooth the observed counts in space and time, allowing the sparse data as described earlier to be examined without the noise overwhelming any underlying spatial heterogenicity. This method is descibed in detail and applied to epidemiological data in \citet{scan}. While offering an improvement over pointwise evaluation, spatial scan statistics by nature of this smoothing construction are limited in their ability to detect abnormalities at the individual level, i.e. isolated to a particular region \citep{baystdetect}.  \\
 
 Control chart based methods offer both relatively fast computation times and the ability to specifically identify abnormal temporal trends. These, in the simplest of terms, are graphs we construct combined with a decision rule to classify whether a process is in `in-control' or `out-of-control'. Versions such as CUSUM are often designed for step detection -- the identification of abrupt jumps in rate of the process. When looking at longer time periods, this is exactly the type of pathology one might expect. The regions which now show atypical trends should still have exhibited normal behaviour most of the time, the problem is to decide when such heterogeneity in the process is substantive.  Another advantage is, as the techinique is sequential in nature, the sample size of the items in consideration need not be fixed in advance.  \\
 
-The most natural way to frame our problem is by the construction of a hierachical model. In this method we perform inference on a latent variable---within a complex model---which indicates the ``unusalness'' of a point or group of points. This Bayesian approach compells us to express our assumptions about the data generatively, which confers a number of advantages. Firstly, it is often the case in discriminative models that the choice of method is implicitly performing shrinkage, without this being made explicit or even realized by the modeler. For an intereting example see \cite{stoch}. Thinking generatively forces us to be clear about our assumptions. Secondly, real world epidemiological data will presumably not supply the true response variable, that is, whether or not a region is genuinely anomalous. This abscence of training means we need our model to provide reasonable estimates immediately, rather than at some asymptotic limit. This advantage can be seen in, for example, \cite{ng}. Thirdly, the parameters of a Bayesian model are far more readily interpretable that those in a non-generative setting, which could allow for further inference beyond the identification of abnormal regions, e.g. the nature and extent of the deviation from what was expected. And lastly,
- the Bayesian framework naturally allows the addition of futher assumptions and complexity. For example, \cite{banerjee} extends spatiotemporal models to the modelling of multiple diseases via the introduction of a shared `frailty' term. \\
+The most natural way to frame our problem is by the construction of a hierachical model. In this method we perform inference on a latent variable---within a complex model---which indicates the `unusalness' of a point or group of points. This Bayesian approach compells us to express our assumptions about the data generatively, which confers a number of advantages. Firstly, it is often the case in discriminative models that the choice of method is implicitly performing shrinkage, without this being made explicit or even realized by the modeler. For an intereting example see \citet{stoch}. Thinking generatively forces us to be clear about our assumptions. Secondly, real world epidemiological data will presumably not supply the true response variable, that is, whether or not a region is genuinely anomalous. This abscence of training means we need our model to provide reasonable estimates immediately, rather than at some asymptotic limit. This advantage can be seen in, for example, \citet{ng}. Thirdly, the parameters of a Bayesian model are far more readily interpretable that those in a non-generative setting, which could allow for further inference beyond the identification of abnormal regions, e.g. the nature and extent of the deviation from what was expected. And lastly,
+ the Bayesian framework naturally allows the addition of futher assumptions and complexity. For example, \citet{banerjee} extends spatiotemporal models to the modelling of multiple diseases via the introduction of a shared `frailty' term. \\
 
 The examination, implementation and comparison of these Bayesian methods with discriminative models, specifically control charts, is the focus of this project. \\
 
@@ -62,9 +65,9 @@ Working on simulated data, we first implement a CUSUM based classifier and sugge
 
 Then, turning to Bayesian methods, we examine the general structure of the models employed in the literature and how this standard is well suited to the particular challenges of our problem. In particular, the favored priors for the smoothing of the data are reviewed. The difficulties and subtleties of computaion are addressed in detail, as are some of the superior techniques that have been developed in the past few years. \\
 
-We examine BaySTDetect, one of the existing models in the literature, discussing the rationales behind the construction of the model and the `cutting of feedback' that's employed -- where we demonstrate that this particular choice is fundamental to it's success. Rather than use the standard MCMC software in the field, we implement the model in Stan using Hamiltonial Monte Carlo and combine the submodels directly through the likelihoods. We show that this can lead to order of magnitude speed-ups over the original implementation in \cite{baystdetect}. \\
+We examine BaySTDetect, one of the existing models in the literature, discussing the rationales behind the construction of the model and the `cutting of feedback' that's employed -- where we demonstrate that this particular choice is fundamental to it's success. Rather than use the standard MCMC software in the field, we implement the model in Stan using Hamiltonial Monte Carlo and combine the submodels directly through the likelihoods. We show that this can lead to order of magnitude speed-ups over the original implementation in \citet{baystdetect}. \\
 
-We then suggest a new model, based on \cite{stability}, that works fully within the Bayesian framework by identifying an excess in the variance which can not be explained by the shared random effects. Implementing this model, again in Stan, we show that this model obtains good results, despite not being the way in which our simulated data were originally created. However, as suggested in \cite{best2005comparison}, models of this kind may oversmooth the counts spatially. We demonstrate this by simulating a new set of data where the regions to be `unusual' are selected sequentially via a preferential attachment scheme and showing that our model performs poorly in this context. \\
+We then suggest a new model, based on \citet{stability}, that works fully within the Bayesian framework by identifying an excess in the variance which can not be explained by the shared random effects. Implementing this model, again in Stan, we show that this model obtains good results, despite not being the way in which our simulated data were originally created. However, as suggested in \citet{best2005comparison}, models of this kind may oversmooth the counts spatially. We demonstrate this by simulating a new set of data where the regions to be `unusual' are selected sequentially via a preferential attachment scheme and showing that our model performs poorly in this context. \\
 
 Finally we compare the use three models on both sets of data with respect to their speed, false postive rate and power.
 
@@ -85,16 +88,16 @@ where $\mu_{i,t}$ allows us to add random effects to our model. \\
 
 These random effects are used to add additional natural variation to the counts, where the direction of this variation is in some sense shared between `similar' regions or time points. We seperate these effects into those that describe the temporal trend and those which affect the spatial heterogeneity. So for the temporal trend we of course expect adjacent time points to be similar. This is achieved in this data by sampling from a one-dimensional Gaussian random walk
 \begin{equation}
-\xi_{1:15} \; \sim \; \operatorname{RW1}(\sigma_{\xi}^2).
+\xi_{1:15} \; \sim \; \operatorname{RW}_1(\sigma_{\xi}^2).
 \end{equation}
 
-Additionally, we would expect regions which are close to each other to be similar. The data generation incorporated this assumption by the use of the BYM prior, first defined in \cite{bym},
+Additionally, we would expect regions which are close to each other to be similar. The data generation incorporated this assumption by the use of the BYM prior, first defined in \citet{bym},
 \begin{equation}
 \lambda_{1:211} \; \sim \; \operatorname{BYM}(W, \sigma_{\lambda}^2, \sigma_v^2) 
 \end{equation}
 which is a multivariate normal distribution
 \begin{equation}
-\lambda_{1:211} \; \sim \; \cal{N}(v_{1:211}, I_{211}\sigma_{\lambda}^2)
+\lambda_{1:211} \; \sim \; \mathcal{N}(v_{1:211}, I_{211} \cdot\sigma_{\lambda}^2)
 \end{equation} 
 where the mean vector is drawn from an \emph{intrinsically autoregressive} process
 \begin{equation}
@@ -135,7 +138,7 @@ This has the effect of either doubling or halving the expected counts depending 
 
 Of the 211 regions only one one had no neighbours, the Isle of Wight. As this will complicate some of the smoothing calculations we need to perform for the Bayesian procedures (and the Isle of Wight was not one of those selected as unusual), the region was removed to simplify calculations.
 
-Shape data for the 211 Clinical Commisioning Groups plus wales was provided by CITE HERE. The regions of Wales and the Isle of Wight were of course removed. The shapefiles were imported and edited using the package \emph{rgdal} created by \cite{shaperead}. Then, using the package \emph{spdep} created by \cite{shape}, the shapefile was used to generate an object which calculates all of the adjacent regions for each region. Then this object was converted into into an adjacency matrix $W$ such that
+Shape data for the 211 Clinical Commisioning Groups plus wales was provided by CITE HERE. The regions of Wales and the Isle of Wight were of course removed. The shapefiles were imported and edited using the package \emph{rgdal} created by \citet{shaperead}. Then, using the package \emph{spdep} created by \citet{shape}, the shapefile was used to generate an object which calculates all of the adjacent regions for each region. Then this object was converted into into an adjacency matrix $W$ such that
 \begin{equation*}
 {(W)}_{ij} &= 
 \begin{cases}
@@ -146,9 +149,6 @@ Shape data for the 211 Clinical Commisioning Groups plus wales was provided by C
 where the double arrow signifies adjacency. The result of this procedure can be seen over the original shapedata in fig \ref{adj}.
 
 
- 
- An adjacency matrix calculated from the shape data. We had no data for wales so it was removed from the shapedata.
-
 \begin{figure}
 \centering
 \subfloat[Adjacency]{\includegraphics[width=0.5\textwidth]{adjacency}}
@@ -156,50 +156,104 @@ where the double arrow signifies adjacency. The result of this procedure can be 
 \caption{Mapped data}
 \end{figure}
 
-\chapter{CUSUM}
+\chapter{Control charts}
 
-The use of control charts are widespead in the area of statistical quality control and have recently increasingly found use in fields such as epidemiology, e.g. . Their relative simplicity and ease of computation compared to most other methods makes them an ideal model to compare against, in order to observe any gains we might obtain from more complex modelling.
 
-\begin{itemize}
-\item Mention that the process is sequential and so can be calculated as we go.
-\item Spatial CUSUM
-\end{itemize}
+The use of control charts are widespead in the area of statistical quality control and have recently increasingly found use in fields such as epidemiology, see for example \citet{mei}. Their relative simplicity and ease of computation compared to most other methods makes them an ideal model to compare against, in order to observe any gains we might obtain from more complex modelling. Indeed, as expressed by \citet{vapnik} in the context of generative vs discriminative models, ``one should solve the problem directly and never solve a more general problem as an intermediate step''. \\
 
-We will specifically be looking at the use of CUSUM models, which seek to identify a qualitative change in the nature of a time series via the evaluation of the cumulative of a relavant test statistic. We define $S_t$ as the value of the control chart at time $t$ and progress its value as follows
+\section{CUSUM}
+
+We will specifically be looking at the use of CUSUM models, which seek to identify a qualitative change in the nature of a time series via the evaluation of the cumulative sum of a relavant test statistic. In the setting of the inhomogenous Poisson CUSUM, we assume that the data follows a null model defined by a series of rate parameters which define the `in-control' Poisson process. Likewise we have a complementary set of parameters that define the rates of an `out-of-control' process. We wish to detect the point in time at which there is sufficient evidence that the process was switched from the null to the `out-of-control' process, as quickly as possible while not exceeding some measure of how often we err. \\
+
+To do this, define $S_t$ as the value of the control chart at time $t$ and progress its value as follows
 \begin{gather}
 S_0 = 0 \\
-S_{t+1} = \max{(0, S_t + K_t)}.
+S_{t+1} = \max{(0, S_t + K_{t+1})}.
 \end{gather}
+where $K_t$ is the value of a statistic calculated at time point $t$. \\
 
-Where $K_t$ is the value of some statistic calculated at time point $t$. We will use the $\log$ of the ratio between the likelihoods of the data, at the time point, under an ``in-control'' and an ``out-of-control'' Poisson process. So if likelihood of the ``out-of-control'' rate is greater than the ``in-control'' then the value of $S_t$ will increase and vice-versa. The logarithms are taken to minimise floating-point arithmetic issues as the densities will often be very small. We then signal that the process is pathological if the value of $S_t$ exceeds some threshold value $h$. \\
+As first proposed in \citet{page}, we will use
+\begin{align}
+K_t &= \log{\left(\frac{f_1(Y_{i,t})}{f_0(Y_{i,t})}\right)} \\
+    &= \log{[f_1(Y_{i,t})]} - \log{[f_0(Y_{i,t})]}.
+\end{align}
+where $f_0$ is the likelihood of the 'in-control' rate and $f_1$ that of the 'out-of-control'. \\
 
-This leaves us to come up with sensible methods of generating the ``in-control'' and ``out-of-control'' rates and the threshold value that we trigger at. With the data that we area examining in this project we have the expected values of the disease rates in each region and could use these for the values of the ``in-control'' rate but this would neglat the fact that we expect the incident counts at each region to vary over time and---importantly---this is not neccasarily pathological behaviour. It is instead a temporal trend which differs from some general (here country-wide) trend which we wish to detect. Therefore the method we propose here is to construct a general temporal trend from an average across the regions and to weight this trend per region by that regions expected counts. \\
+That is, the $\log$ of the ratio between the likelihoods of the data, at the time point, under the `in-control' and `out-of-control' Poisson process. So if likelihood of the `out-of-control' rate is greater than the `in-control' then the value of $S_t$ will increase and vice-versa. We then signal that the process is pathological if the value of $S_t$ exceeds some threshold value $h$. \\
+
+Note that, for a Poisson process, the likelihood is
+\begin{equation}
+f_j(x) = \frac{\lambda_j^x e^{-\lambda}}{x!}.
+\end{equation}
+So for the log-likelihood we have
+\begin{equation}
+\ell_j(x) = x \log(\lambda_j) - \lambda_j - \log(x!)
+\end{equation}
+giving the value of our test statistic as
+\begin{equation}
+K_t = Y_{i,t} (\log{\lambda_{1, t}} - \log{\lambda_{0, t}}) - (\lambda_{1, t} - \lambda_{0, t}).
+\end{equation}
+
+This leaves us to come up with sensible methods of generating the `in-control' and `out-of-control' rates and the threshold value that we trigger at. With the data that we are examining in this project we have the expected values of the disease rates in each region and could use these for the values of the `in-control' rate but this would neglect the fact that we expect the incident counts at each region to vary over time and---importantly---this is not neccasarily pathological behaviour. It is instead a temporal trend which differs from some general (here country-wide) trend which we wish to detect. Therefore the method we propose here is to construct a general temporal trend from an average across the regions and to weight this trend per region by that regions expected counts. \\
 
 So for the data $Y_{i,t}, \ i = 1, \ldots, R, \ t = 1, \ldots, T$ we normalize the temporal pattern of each regions by its expect count $E_{i}$ as follows
 \begin{equation}
 \tilde{Y}_{i, t} = \frac{Y_{i, t}}{E_{i}}, \ \ \ \ i = 1, \ldots, R, \ t = 1, \ldots, T.
 \end{equation} 
 
-We then construct the ``in-control'' rate for each region $I_{i, t}$ as described
+We then construct the `in-control' rate for each region $I_{i, t}$ as described
 \begin{equation}
 I_{i, t} = E_i \cdot \frac{1}{R} \sum_{i=1}^N \tilde{Y}_{i, t}, \ \ \ \ i = 1, \ldots, R, \ t = 1, \ldots, T.
 \end{equation}
 
-For simplicity we only consider the case of abnormally high count rates and ignore artificially low counts but this could be incorporated into the CUSUM model if desired. So to define the ``out-of-control'' rate it makes sense to follow the same temporal trend but with a modified general rate. We do this by calculating the ``out-of-control'' rate $O_{i,t}$ as a multiple of the ``in-control'' as follows
+For simplicity we only consider the case of abnormally high count rates and ignore artificially low counts although this could be incorporated into the CUSUM model if desired. So to define the `out-of-control' rate it makes sense to follow the same temporal trend but with a modified general rate. We do this by calculating the `out-of-control' rate $O_{i,t}$ as a multiple of the `in-control' as follows
 \begin{equation}
-O_{i,t} = \lambda \cdot I_{i,t}, \ \ \ \  i = 1, \ldots, R, \ t = 1, \ldots, T.
+O_{i,t} = \alpha \cdot I_{i,t}, \ \ \ \  i = 1, \ldots, R, \ t = 1, \ldots, T.
 \end{equation} 
-with $\lambda > 1$. \\
+with $\alpha > 1$. \\
 
-Now for a given value of $\lambda$ we need a threshold level at which to signal. This can be done by caluclating the average-run length (ARL) which is the expected length of the series between flags of the model. The ARL on the ``in-control'' rate will then give a measure of the false positives for a given threshold $h$, which we can optimize with respect to. As the length of the series we are examining is fixed and the calculation of an ARL would not be clearly defined for a series of varying expectation we will not use the ARL metric here. Instead we simply simulate the ``in-control'' sequence for each region $n$ times and find the smallest value of $h$ for which the the false-postive rate is below 1\%. \\
+Now for a given value of $\alpha$ we need a threshold level at which to signal. This can be done by caluclating the average-run length (ARL) which is the expected length of the series between flags of the model. The ARL on the `in-control' rate will then give a measure of the false positives for a given threshold $h$, which we can optimize with respect to. As the length of the series we are examining is fixed and the calculation of an ARL would not be clearly defined for a series of varying expectation we will not use the ARL metric here. Instead we simply simulate the `in-control' sequence for each region a large number of times and find the smallest value of $h$ for which the the false-postive rate is below some desired rate. \\
 
 The setup as described was implemented as a Python class acting as a wrapper to a series of subroutines in Fortran via F2PY\footnote{I originally wrote the entire process in Python but the calculation of the $h$ values was far too slow to be practical. The original code can be on my Github.}. The code can be found in the appendix. \\
 
-This CUSUM process was applied to the asthma data with the ratio $\lambda$ set to $1.5$, indicating we consider the ``out-of-control'' rate to be 50\% greater than the ``in-control'', with each regions temporal pattern being simulated 10,000 times to determine the optimal threshold values. This identified 25 regions as ``out-of-control'' out of the total 210, giving a false-negative rate of 0\% and false-positive rate of 5.2\%. \\
+This CUSUM process was applied to the asthma data with the ratio $\alpha$ set to $1.5$, indicating we consider the ``out-of-control'' rate to be 50\% greater than the ``in-control'', with each regions temporal pattern being simulated 10,000 times to determine the optimal threshold values. This identified 25 regions as ``out-of-control'' out of the total 210, giving a false-negative rate of 0\% and false-positive rate of 5.13\%. \\
 
-To conclude, while CUSUM correctly identified the unusual regions, we have a high false-positive rate as the ``in-control'' likelihood was a poor approximation to the true likelihood for a number of regions.  
+The power of the test is clearly excellent, but the false-positive rate is clearly much greater than our desired limit of 1\%. Why is this? \\  
 
-\section{The Bayesian Framework}
+Note that the expected value of $K_t$ under the `out-of-control' model ($H_1$) will be the Kullback-Leibler divergence between the two models \citep{weighed},
+\begin{align*}
+\mathbb{E}[K_t | H_1] &= \int_{-\infty}^{\infty} f_1(x_t) K_t \; dx_t \\
+                        &= \int_{-\infty}^{\infty} f_1(x_t) \log{\left(\frac{f_1(x_t)}{f_0(x_t)}\right)} \; dx_t \\
+                        &= D_{\mathrm{KL}}(H_1\|H_0).
+\end{align*}
+
+This gives an intuitive explanation of the procedure: under the alternate (`out-of-control') model, $K_t$ measures the information lost by attempting to approximate the (true) alternate model by the null. When the cumulative information lost by this approximation becomes intolerable, we reject the null. \\
+
+It can be shown that, under some assumptions, using this metric with the CUSUM method is in some sense optimal \citep{ritov1990}. However, the issues with the assumptions here are clear. The null model as we have defined attempts to incorporate the general temporal trend but we would also expect a level of random spaital variation which masks the underlying abnormalities and our procedure ignores this. Therefore for regions which are not unusual (call these $H_G$), the null model will underestimate the likelihood ($f_0(x_t)$) of their counts relative to the true likelihood $f_G(x_t)$. So, under $H_G$ one would expect $\log(f_1(x_t)) - \log(f_0(x_t))$ to be large more often than under the null, underestimating the value of $h$ which would be required to keep the FPR under 1\%. \\
+
+Additionally, even if the true data is distributed as we assume in the null, the parameters of the temporal trend that defines the `in-control' models are still an estimation from the data. The errors between this hypothetical `true' temporal trend and our estimate from the data will add additional noise into the process. In particular, this will affect the estimation of the optimal value of $h$ for a given FPR -- potentially increasing the number of false positives relative to what we might otherwise expect. \\
+
+A number of methods exist that attempt to account for this additional estimation error. For example, following the method devised in \citet{gandy}, we could estimate the `in-control' parameters as usual and then draw samples with replacement from the `in-control' model with these parameters. Then, calculating estimates of the `in-control' parameters from these samples, we obtain a series of bootstrap estimators. The optimal values of $h$ for each of these bootstrap estimators can be used to devise a threshold which posseses our desired properties with a certain probability. Of course, the data from which we estimate the temporal trend is not all `in-control', so our estimates will be even more biased than this would suggest. 
+ 
+\section{Spatial CUSUM}
+
+While our method accounts for a varying temporal trend, it falls short most saliently by not accounting for the spatial effects we assume our data posseses. The approach suggested by \citet{raubertas} attempts to take the spatial information into account by replacing the counts at each region by a weighted sum
+\begin{equation*}
+x_{i,t}' = \sum_{j=1}^R s_{i, j} x_{j, t}
+\end{equation*} 
+where we pool within neighbourhoods by assigning the weights based on the `closeness' of the regions. \\
+
+For example this method was used in \citet{spatialcusum} with the Poisson CUSUM, where the counts at each region were replaced by
+\begin{equation*}
+x_{i,t}' = \sum_{x_{j, t} \in \partial x_{i,t}} x_{j, t} 
+\end{equation*} 
+where $\partial x_{i,t}$ are all the regions including and adjacent to $x_{i,t}$. \\
+
+The Poisson CUSUM statistics were calculated for these modified regions and the Benjamin-Hochberg procedure was used to determine the level at which we signal for a given false discovery rate. Despite this methods simplicity, the author uses a set of simulated data to show that it can provide a significant improvement on considering the regions individually. \\ 
+
+This approach could be used in conjunction with that of the previous section to account for both spatial and temporal effects, while still enjoying the benefits of CUSUM. Note that, in this case, the expected counts would also need to be summed across neighbourhoods to provide the `in-control' means. 
+
+\chapter{The Bayesian Framework}
 
 A sensible way of improving on this would be to use a generative model which incorporates both a flexibility that describes our uncertainty around the parameterization of the model and makes explicit our beliefs as to the structure of the data. This is most naturally done in the Bayesian framework, where we specify the model in terms of a likelihood which describes how we simulate the data based on a set of parameters and a collection of---possibly hierarchical---priors which describe our uncertainty about these parameters ex ante. 
 
@@ -342,16 +396,15 @@ Other things to talk about:
 \item Use best et al to summarise basic model form
 \end{itemize}
 
-\section{Smoothing}
+\chapter{Smoothing}
 
-Ideally we wish to identify potential local risk factors in the aetiology of a disease, say, carcenogenic hazard from industrial polution. So it's clear that the ability to incorporate a high level of spatial granularity in our model is of value in these contexts. However this comes with the trade-off of greater variance in the counts, making identification of abnormal temporal trends difficult, especially for diseases with low incidence. Therefore we need to employ an element of smoothing over the local neighbourhoods of each region. This can be done in a variety of methods. One possibility is the use of splines such as in (source here) but in this project we will primarily look at using a conditionally autoregressive prior.
+Ideally we wish to identify potential local risk factors in the aetiology of a disease, say, carcenogenic hazard from industrial polution. So it's clear that the ability to incorporate a high level of spatial granularity in our model is of value in these contexts. However this comes with the trade-off of greater variance in the counts, making identification of abnormal temporal trends difficult, especially for diseases with low incidence. Therefore we need to employ an element of smoothing over the local neighbourhoods of each region. This can be done in a variety of methods. One possibility is the use of splines such as in \citet{spline} but in this project we will primarily looking at the use of autoregressive priors. For a comparison of these two approaches see \cite{splinecompare}.   
 
-\subsection{CAR models} \label{carmodel}
+\section{CAR models} \label{carmodel}
 
-Markov random field.
+One of the most natural ways of describing the proximity of regional data is by their adjacency relationships. These can be described mathematically as an undirected graph where the edges connect those regions which share a border. When the probabilistic dependence of the regions on this graph extent only to those that share an edge (i.e. the Markov property), then we call the network a Markov random field. \\ 
 
-Conditionally autoregressive models can be best understood when specified in terms in terms of their conditional distribution. 
-
+In the Bayesian setting, the most popular way of modelling this interdependence is through the use of a conditionally autoregressive (CAR) prior. These CAR models can be best understood when specified in terms in terms of their conditional distribution
 \begin{equation}
 v_i \ | \ v_j \ j \neq i \sim N(\alpha \cdot \bar{\mu_i}, \ \sigma_v^2/k_i)
 \end{equation}
@@ -362,11 +415,10 @@ where $k_i$ is the number of neighbours adjacent to region $i$,
 \bar{\mu}_i = \sum_{j \in \partial i} \frac{\mu_j}{k_i}
 \end{equation}
 
-and $\alpha$ is a parameter measuring the degree of spatial dependence. 
+and $\alpha \in (0, 1)$ is a parameter measuring the degree of spatial dependence. \\
 
-However as this specification is a markov random field and not a directed acyclic graph we can't use this definition in non-gibbs sampling methods \- we need the $v_i$ to be jointly specified. Thankfully it is possible for it to be expressed in terms of a multivariate normal distribution as follows,
-
-\begin{equation}
+However, while this defines a Markov random field, it is not a directed acyclic graph and we can't use this definition in non-gibbs sampling methods -- we need the $v_i$ to be jointly specified. Thankfully it is possible \citep{banerjeebook} for this to be expressed in terms of a multivariate normal distribution as follows,
+\begin{equation} \label{eq:car}
 v \ \sim \ N(0, \ \sigma_v^2 \cdot {[D(I_n - \alpha B)]}^{-1})
 \end{equation}
 
@@ -382,15 +434,17 @@ B &= D^{-1} W \\
 \end{cases}
 \end{align} 
 
-It is intuitively clear that the precision matrix here is sparse and so naive calculations will be very inefficient -- see the section on computational considerations for some more sophisticated methods that we will use to simulate the distribution.
+Note that it is intuitively clear that the precision matrix here in high dimensions will be sparse and so naive calculations will be very inefficient -- see the section on computational considerations for some more sophisticated methods that we will use to simulate the distribution. Cite \citet{car}
 
-Cite \cite{car}
+\subsection{Intrinsically autoregressive priors}
+
+When we take the CAR distribution under the limiting case of $\alpha \to 1$ we obtain the intrinsically autoregressive prior (ICAR/IAR). The ICAR prior is very popular throughout disease mapping due to its use in the BYM prior described in the next section. The use of  
+
 
 \begin{itemize}
 
 \item Cite http://www.biostat.umn.edu/~brad/software/jbc.proofs.pdf
 
-\item Write in terms of join distribution for non-gibs samplers.
 
 \item Spatial dependence parameter $\alpha$ --- to prior or not to prior?
 
@@ -414,20 +468,20 @@ Similarly to in the spatial setting we can use a prior on the temporal component
 
 where the dimensionality will often be infered from the context. Note that this can be represented by a CAR model and is sometimes represented as such in the literature. 
 
-\section{Individual trend model}
+\chapter{Individual trend model}
 
 The first Bayesian model we wil consider is similar to that which is formed in Someone et al. In this setting we construct two alternate hypothesis for each region, one where the counts at the region are broadly in keeping with some ``global'' temporal trend (subject to localised spatial deviations captured with a conditionally autoregressive prior), and in the other the region has its own individual temporal trend. Then by some method of classification we sort the regions into those deemed most likely to follow the global model and those exhibiting behaviour more typical of the second model - and label these regions ``unusual''.
 
-\subsection{Baystdetect and the cut function}
+\section{Baystdetect and the cut function}
 
-In the original paper \cite{baystdetect} the use of the cut function in the \emph{BUGS} language is employed to fit the two models to the data seperately and then the model selection is undertaken afterward. This method, which prevents the flow of information between the two models is defended in (Nicky Best presentation here) but has been met with some level of skepticism in the community, for example in Andrew Gelmans posts to the Stan mailing list here (insert link), as the analysis is not ``truly Bayesian''. Nethertheless, we examine this paradigm and compare it to fully Bayesian methods. 
+In the original paper \citet{baystdetect} the use of the cut function in the \emph{BUGS} language is employed to fit the two models to the data seperately and then the model selection is undertaken afterward. This method, which prevents the flow of information between the two models is defended in (Nicky Best presentation here) but has been met with some level of skepticism in the community, for example in Andrew Gelmans posts to the Stan mailing list here (insert link), as the analysis is not ``truly Bayesian''. Nethertheless, we examine this paradigm and compare it to fully Bayesian methods. 
 
 \begin{itemize}
 \item Include discussion of model averaging vs larger model
 \item Cite Gelman et al 2013
 \end{itemize}
 
-\subsubsection{Model specification}
+\section{Model specification}
 
 We denote the counts at region $i$ at time $t$ by $Y_{i,t}$ and model them by a Poisson process
 
@@ -467,7 +521,7 @@ i \in 1,\ldots,N \
 \end{cases}
 \end{equation}
 
-\subsection{Combining the models}
+\section{Combining the models}
 
 \begin{itemize}
 \item BUGS can be used with a mixture component
@@ -475,13 +529,13 @@ i \in 1,\ldots,N \
 \item Describe likelihood code
 \end{itemize}
 
-\subsubsection{Implementation}
+\subsection{Implementation}
 
 The two models were fit to the data using Hamiltonian Monte-Carlo in the \emph{Stan} package -- both for over 2000 samples over 4 chains after a ``warm-up'' period of 1000 samples. Gelman-Rubin statistics for all parameters were under 1.05 (find exact figure) indicating that the had chains converged. Additionally a visual inspection of the trace plots for some select parameters did not indicate any worrying pathalogical behaviour.
 
 These two fits took under 5 minutes each to run after a short compilation which is a huge speed increase over typical \emph{BUGS} implementation.
 
-\subsubsection{Classification and accuracy}
+\section{Classification and accuracy}
 
 First looking at the general trend model we see that it has accurately identified the global temporal trend. 
 
@@ -490,7 +544,7 @@ First looking at the general trend model we see that it has accurately identifie
 \includegraphics[width=\textwidth]{global_temporal}
 \end{figure}
 
-\subsection{Fully Bayesian model}
+\section{Fully Bayesian model}
 
 \begin{itemize}
 \item Can be fit fully in Stan
@@ -498,7 +552,7 @@ First looking at the general trend model we see that it has accurately identifie
 \item Graph the temporal components failure
 \end{itemize}
 
-\section{Excess variability model}
+\chapter{Excess variability model}
 
 The second Bayesian model we will look at also attempts to classify the regions, into typical and atypical sets, using a mixture model. Here our abnormal regions, rather than coming from an individual temporal trend, simply have excess inseperable spatio-temporal variance. Some potential advantages of such a model compared to Baystdetect are immediately clear:
 \begin{itemize}
@@ -508,9 +562,9 @@ The second Bayesian model we will look at also attempts to classify the regions,
 \item Mixture model issues reduced due to setup of variance
 \end{itemize}
 
-\subsection{Model specification}
+\section{Model specification}
 
-The model is similar to that of \cite{stability}, but with a mixture component that's hierachical at the regional level. Like before we model the counts as a Poisson process, $Y_{i,t} \sim \operatorname{Poisson}(E_{i,t} \cdot \mu_{i,t})$, with a rate parameter defined additively on the log-scale
+The model is similar to that of \citet{stability}, but with a mixture component that's hierachical at the regional level. Like before we model the counts as a Poisson process, $Y_{i,t} \sim \operatorname{Poisson}(E_{i,t} \cdot \mu_{i,t})$, with a rate parameter defined additively on the log-scale
 
 \begin{equation}
 \log(\mu_{i,t}) = \lambda_i + \gamma_t + \psi_{i,t}
@@ -544,11 +598,11 @@ and the $q_i$ are given Uniform priors on (0, 1). Here we are marginilizing out 
 
 Here $I$ is the indicator function.
 
-\subsection{Classification and accuracy}
+\section{Classification and accuracy}
 
 This model was fit using HMC in \emph{Stan} 
 
-\subsection{Over-smoothing}
+\section{Over-smoothing}
 
 \begin{itemize}
 \item Expected disease trends will cluster
@@ -556,7 +610,7 @@ This model was fit using HMC in \emph{Stan}
 \item Need a model which smooths regions but is able to still identify clustered unusual areas
 \end{itemize}
 
-\subsection{Simulated Data}
+\section{Simulated Data}
 
 \begin{itemize}
 \item Preferential attachment scheme
@@ -564,9 +618,9 @@ This model was fit using HMC in \emph{Stan}
 \item Include plots of temporal and spatial components
 \end{itemize}
 
-\section{Computational considerations}
+\chapter{Computational considerations}
 
-\subsection{Basic Sampling methods}
+\section{Basic Sampling methods}
 
 \begin{itemize}
 
@@ -629,9 +683,9 @@ This model was fit using HMC in \emph{Stan}
 \end{itemize}
 
 >>>>>>> origin/master
-\subsection{Autodiff/black-box variational inference?}
+\section{Autodiff/black-box variational inference?}
 
-\subsection{Reparameterization of the models}
+\section{Reparameterization of the models}
 
 Removing conditional dependencies e.g.
 
@@ -639,7 +693,7 @@ Removing conditional dependencies e.g.
 \lambda \sim N(v, \sigma^2_\lambda) = N(0, 1) \cdot \sigma_\lambda^2 + v
 \end{align*}
 
-\subsection{Marginilizing over the discrte parameters}
+\section{Marginilizing over the discrte parameters}
 
 As \emph{Stan} uses Hamiltonian Monte-Carlo, which is a gradient based sampler, we can't directly specify a discrete prior as used in mixture models. Instead we can ``marginalize out'' the mixture component to obtain a purely continuous distribution. This also has significan computational benefits (expand on this). \\
 
@@ -678,7 +732,7 @@ For more on this see page 185 of \cite{stan}.
 
 \end{itemize}
 
-\subsection{Timing data?}
+\chapter{Comparisions and conclusions}
 
 Timing things
 
