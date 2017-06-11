@@ -2909,13 +2909,31 @@
     <bcf:citekey order="35">raubertas</bcf:citekey>
     <bcf:citekey order="36">spatialcusum</bcf:citekey>
     <bcf:citekey order="37">spatialcusum</bcf:citekey>
-    <bcf:citekey order="38">car</bcf:citekey>
-    <bcf:citekey order="39">car</bcf:citekey>
-    <bcf:citekey order="40">baystdetect</bcf:citekey>
-    <bcf:citekey order="41">baystdetect</bcf:citekey>
-    <bcf:citekey order="42">stability</bcf:citekey>
-    <bcf:citekey order="43">stability</bcf:citekey>
-    <bcf:citekey order="44">stan</bcf:citekey>
+    <bcf:citekey order="38">spline</bcf:citekey>
+    <bcf:citekey order="39">spline</bcf:citekey>
+    <bcf:citekey order="40">splinecompare</bcf:citekey>
+    <bcf:citekey order="41">banerjeebook</bcf:citekey>
+    <bcf:citekey order="42">bym</bcf:citekey>
+    <bcf:citekey order="43">bym</bcf:citekey>
+    <bcf:citekey order="44">bugs</bcf:citekey>
+    <bcf:citekey order="45">bym</bcf:citekey>
+    <bcf:citekey order="46">bym</bcf:citekey>
+    <bcf:citekey order="47">bugs</bcf:citekey>
+    <bcf:citekey order="48">car</bcf:citekey>
+    <bcf:citekey order="49">lipcancer</bcf:citekey>
+    <bcf:citekey order="50">lipcancer</bcf:citekey>
+    <bcf:citekey order="51">baystdetect</bcf:citekey>
+    <bcf:citekey order="52">baystdetect</bcf:citekey>
+    <bcf:citekey order="53">baystdetect</bcf:citekey>
+    <bcf:citekey order="54">baystdetect</bcf:citekey>
+    <bcf:citekey order="55">gelmancut</bcf:citekey>
+    <bcf:citekey order="56">baystdetect</bcf:citekey>
+    <bcf:citekey order="57">baystdetect</bcf:citekey>
+    <bcf:citekey order="58">gelman2006prior</bcf:citekey>
+    <bcf:citekey order="59">gelman2006prior</bcf:citekey>
+    <bcf:citekey order="60">stability</bcf:citekey>
+    <bcf:citekey order="61">stability</bcf:citekey>
+    <bcf:citekey order="62">stan</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" name="cms" type="entry" sortscheme="cms">
   <bcf:sorting>

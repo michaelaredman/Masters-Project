@@ -27,6 +27,8 @@ maxbibnames=6
 
 \usepackage[usenames,dvipsnames]{color}
 \usepackage{tikz}
+\usetikzlibrary{arrows}
+
 \usepackage{listings}
 \lstset{language=Python, breaklines=true}  
 \usepackage{fancyhdr}
@@ -423,9 +425,8 @@ v \ \sim \ N(0, \ \sigma_v^2 \cdot {[D(I_n - \alpha B)]}^{-1})
 \end{equation}
 
 where
-
 \begin{align}
-D &= \operatorname{diag}(k_i) \\
+D &= \operatorname{diag}(k_i)  \\
 B &= D^{-1} W \\
 {(W)}_{ij} &= 
 \begin{cases}
@@ -434,92 +435,146 @@ B &= D^{-1} W \\
 \end{cases}
 \end{align} 
 
-Note that it is intuitively clear that the precision matrix here in high dimensions will be sparse and so naive calculations will be very inefficient -- see the section on computational considerations for some more sophisticated methods that we will use to simulate the distribution. Cite \citet{car}
+Note that it is intuitively clear that the precision matrix here in high dimensions will be sparse and so naive calculations will be very inefficient -- see the section on computational considerations for some more sophisticated methods that we will use to simulate the distribution.
 
 \subsection{Intrinsically autoregressive priors}
 
-When we take the CAR distribution under the limiting case of $\alpha \to 1$ we obtain the intrinsically autoregressive prior (ICAR/IAR). The ICAR prior is very popular throughout disease mapping due to its use in the BYM prior described in the next section. The use of  
-
-
-\begin{itemize}
-
-\item Cite http://www.biostat.umn.edu/~brad/software/jbc.proofs.pdf
-
-
-\item Spatial dependence parameter $\alpha$ --- to prior or not to prior?
-
-\item Intrinsically autoregressive model --- improper as covariance matrix is semi-definite
-
-\end{itemize}
-
-\subsection{BYM prior}
-
-\begin{itemize}
-\item CIte Besag York Mollie paper
-\item Increases degrees of freedom for spatial componenet
-\end{itemize}
-
-\subsection{Temporal smoothing}
-
-Similarly to in the spatial setting we can use a prior on the temporal component that assumes a level of similarity between adjacent regions -- here consecutive time points. The prior prefered here is the one dimensional random walk prior, which we will denote by
+When we take the CAR distribution under the limiting case of $\alpha \to 1$ we obtain the intrinsically autoregressive prior (ICAR/IAR). The ICAR prior is very popular throughout disease mapping, due to its use in the BYM prior described in the next section, but its important to note that it does not define a proper probability distribution as the integral of \ref{eq:car} with $\alpha = 1$ over the real line is infinite. Indeed the precision matrix
 \begin{equation}
-\xi_{1:T} \sim \operatorname{RW}(1)
+\tau = \sigma_v^2 \cdot [D - W]
 \end{equation}
+is singular. \\
 
-where the dimensionality will often be infered from the context. Note that this can be represented by a CAR model and is sometimes represented as such in the literature. 
+Not only this, but the mean is also undefined. However, the density function can still be evaluated pointwise (up to a constant), and if we constrain the variates to sum-to-zero then a posterior distribution using it as a prior should still be well defined. \\
+
+As an aside, the conditional distributions of each region in the intrinsic CAR are given by
+\begin{equation} \label{aside}
+f(v_i | \kappa) \; \propto \; \exp{- \sum_{j \sim i} \omega_{ij} \phi(v_i - v_j)}
+\end{equation}
+where
+\begin{equation*}
+\phi(z) = \frac{z^2}{2\kappa}.
+\end{equation*} \\
+
+Although, as discussed in \citet{bym}, the form of \ref{aside} with other choices of $\phi(z)$ may be appropriate in different situations. For example if discontinuities in the risk surface are expected then
+\begin{equation*}
+\phi(z) = \frac{|z|}{\kappa}
+\end{equation*}
+would provide shrinkage consistent with that belief.
+
+\subsection{BYM prior} \label{bym}
+
+In reality, the parameter $\alpha$ in \ref{eq:car} will often be close to its maximum value to confer even a moderate amount of spatial dependence \citep{bugs}. Therefore, the prior first suggested in \citet*{bym}, often now refered to as the BYM prior after its authors, is widely employed in disease mapping. The prior consists, first, of an intrisic CAR variable
+\begin{equation*}
+v \; \sim \; \operatorname{IAR}(W, \sigma_v^2)
+\end{equation*}
+which captures the spatial dependence between regions. However, this imposes the spatial structure on $v$ a priori and there is no `Bayesian learning' about the strength of the dependence. Therefore, in the BYM prior a second, unstructured random effect, is added as a degree of freedom which captures the effect of any unobserved unstructured latent variables \citep{bugs}. \\
+
+So the base level of the BYM prior takes the form
+\begin{equation}
+\lambda \; \sim \; \mathcal{N}(v, I_n \cdot \sigma_{\lambda}^2)
+\end{equation}
+where $I_n$ is the identity matrix of size $n$. \\
+
+As noted in the \emph{BUGS book}, one of these two effects will tend to dominate the other in the posterior. Although we don't know which until the model is fit. \\
+
+In this project, the BYM prior is the preferred to capture the underlying spatial effects but in practice we substitute the first layer ICAR for the non-intrinsic CAR model with a reasonably high value of $\alpha$. Computation of the ICAR model \emph{is} possible is Stan \citep{car} but, due to the relative recentness of its implementation, we avoid it \emph{just in case} there are any unknown computational irregularities with respect to HMC. \\
+
+This alterated prior, in Stan, was tested against the standard implementation, in BUGS, on the classic Scottish lip cancer dataset from \citet{lipcancer} and the results were essentially identical.   
+
+\section{Temporal smoothing}
+
+Similarly to in the spatial setting, we can use a prior on the temporal component that assumes a level of similarity between adjacent regions -- here consecutive time points. The prior prefered here is the one dimensional random walk prior, which we will denote by
+\begin{equation}
+\xi_{1:T} \sim \operatorname{RW}_1(\sigma_\xi^2)
+\end{equation}
+where the dimensionality will often be infered from the context. Note that this can be represented by a CAR model and is sometimes represented as such in the literature. \\
+
+Explicitly, this is defined as
+\begin{gather}
+\xi_1 ~ N(0, \sigma_\xi^2) 
+\xi_{t+1} ~ N(\xi_{t}, \sigma_{\xi}^2), \ \ \ t = 2, \ldots, T.
+\end{gather}
 
 \chapter{Individual trend model}
 
-The first Bayesian model we wil consider is similar to that which is formed in Someone et al. In this setting we construct two alternate hypothesis for each region, one where the counts at the region are broadly in keeping with some ``global'' temporal trend (subject to localised spatial deviations captured with a conditionally autoregressive prior), and in the other the region has its own individual temporal trend. Then by some method of classification we sort the regions into those deemed most likely to follow the global model and those exhibiting behaviour more typical of the second model - and label these regions ``unusual''.
+The first Bayesian model we wil consider is the BaySTDetect model, first introduced in \citet{baystdetect}. In this setting, we construct two competing hypothesis for each region, one where the counts at the region are broadly in keeping with some `global' temporal trend (subject to localised spatial deviations captured with a CAR prior), and another where the region is free to vary with its own individual temporal trend. Then by some method of classification we sort the regions into those deemed most likely to follow the global model and those exhibiting behaviour more typical of the second model -- labeling these regions `unusual'. \\
 
-\section{Baystdetect and the cut function}
-
-In the original paper \citet{baystdetect} the use of the cut function in the \emph{BUGS} language is employed to fit the two models to the data seperately and then the model selection is undertaken afterward. This method, which prevents the flow of information between the two models is defended in (Nicky Best presentation here) but has been met with some level of skepticism in the community, for example in Andrew Gelmans posts to the Stan mailing list here (insert link), as the analysis is not ``truly Bayesian''. Nethertheless, we examine this paradigm and compare it to fully Bayesian methods. 
-
-\begin{itemize}
-\item Include discussion of model averaging vs larger model
-\item Cite Gelman et al 2013
-\end{itemize}
+In the original paper \citet{baystdetect} the use of the cut function in the \emph{BUGS} language is employed to fit the two models to the data seperately, with model selection undertaken afterward. This method, which prevents the flow of information between the two models, has been met with some level of skepticism \citep{gelmancut} as the analysis is not `truly Bayesian'. Nethertheless, we examine this paradigm and compare it to the fully Bayesian methods. 
 
 \section{Model specification}
 
-We denote the counts at region $i$ at time $t$ by $Y_{i,t}$ and model them by a Poisson process
-
+Proceeding as in \citet{baystdetect}, we denote the counts at region $i$ at time $t$ by $Y_{i,t}$ and model them by a Poisson process
 \begin{equation}
 Y_{i,t} \sim \operatorname{Poisson}(E_{i,t} \cdot \mu_{i,t})
 \end{equation}
 
-where $E_{it}$ is the expected count based on population numbers, demographics etc and $\mu_{i,t}$ is the rate parameter by which we impute the two models behaviours. This rate variable we parameterize additively on the log scale for both models as follows
-
+where $E_{i,t}$ are the expected counts by region based on population numbers, demographics etc and $\mu_{i,t}$ is the rate parameter by which we impute the two models behaviours. This rate variable we parameterize additively on the log scale for both models as follows
 \begin{equation}
 \log{(\mu_{i,t})} = \begin{cases}
 \ \lambda_{i} + \gamma_{t} \  (+ \  \alpha_0) & \textrm{Model 1 for all } i, t \\
 \ u_{i} + \xi_{i,t} & \textrm{Model 2 for all } i, t
 \end{cases}
-\end{equation} 
-
-Here we see that for Model 1 we assume space-time seperability in the rate paramater with the components given the following priors
-
-\begin{align}
-\alpha_0 &\sim \operatorname{Flat}(\mathbb{R}) \\
-v_{1:N} &\sim \operatorname{CAR}(W, \sigma_v) \\
-\lambda_{1:N} &\sim \operatorname{Normal}(v, \sigma_\lambda) \\
-\gamma_{1:T} &\sim \operatorname{RW}(1)
-\end{align}
-
-We see here the BYM prior on the spatial component, imposing a smoothing constraint, and a one-dimensional random walk prior on the temporal component. 
-
-The variance hyperparameters are given (insert prior here) as recomended in (possibly Gelman 2006). \\
-
-For the second model we drop the assumption of space-time seperability and each region gets its own temporal trend as follows
-
-\begin{equation}
-i \in 1,\ldots,N \
-\begin{cases}
-\ u_i \sim \operatorname{Normal}(0, 1000) \\
-\ \xi_{i, 1:T} \sim \operatorname{RW}(1) 
-\end{cases}
 \end{equation}
+
+For the first model, \emph{Model 1} we split any heterogeneity in spatial and temporal components, assuming that the variation is at least mostly seperable. The intercept term is given an uninformative (ill-defined) flat prior over the real line
+\begin{equation} \label{eq:intercept}
+\alpha_0 \;\sim\; \operatorname{Flat}(\mathbb{R}).
+\end{equation}
+The spatial component is given a BYM prior as described in \ref{bym},
+\begin{align}
+v_{1:N} &\sim \operatorname{CAR}(W, \sigma_v) \\
+\lambda_{1:N} &\sim \mathcal{N}(v, I_N \cdot \sigma_\lambda).
+\end{align}
+With the temporal component following a 1D random walk,
+\begin{equation*}
+\gamma_{1:T} \;\sim\; \operatorname{RW}_1(\sigma_\gamma^2)
+\end{equation*}
+
+Here our BYM prior on the spatial component imposes a smoothing constraint which allows adjacent regions to share information. This helps to combat the issues, described in Chapter 1, raised by any sparse counts at the individual level. Likewise, the random walk prior captures the general temporal variation that we believe is typical/non-anomylous. \\
+
+The variance hyperparameters are given half-normal, weakly informative, priors
+\begin{gather}
+\sigma_v, \sigma_\lambda, \sigma_\gamma \; \sim \; N(0, 1) \cdot I(\sigma_k > 0)
+\end{gather}
+as recomended in \citet{gelman2006prior}. \\
+
+For the second model we drop the assumption of space-time seperability and each region gets their own temporal trend
+\begin{equation*}
+\xi_{i, 1:T} \sim \operatorname{RW}_1(\sigma_{\xi, i}^2), \ \ i=1,\ldots, R 
+\end{equation*}
+and an individual intercept term with an uninformative prior
+\begin{equation*}
+\ u_i \sim \operatorname{N}(0, 1000), \ \  i=1,\ldots, R. \\
+\end{equation*}
+
+The temporal trends for each region are taken to have individual variance parameters, allowing for greater diversity in the forms of abnormal trends detected. These variance parameters are given log-normal priors
+\begin{equation*}
+\log(\sigma_{\xi, i}^2) \; \sim \; N(a, b^2), \ \ i=1,\ldots,R
+\end{equation*}
+where $a$ and $b^2$ are defined hierarchically
+\begin{align*}
+a \; &\sim \; N(0, 1000) \\
+b \; \sim \; N(0, 2.5^2) \cdot I(b > 0).
+\end{align*}
+
+This prior structure represents the belief that 10\% of the regions will have local temporal variance 10 times greater than the median. That is,
+\begin{equation*}
+P(\sigma_{i, \xi}^2 > 10\cdot\exp{a}) \approx 0.1.
+\end{equation*} 
+
+Finally these two models are combined via the indicator
+\begin{equation}
+z_i \; \sim \; \operatorname{Bernoulli}(0.95)
+\end{equation}
+which is a latent variable that assigns a prior probability of 5\% that a given region is `unusual'. \\
+
+It is important to note that this is \textbf{not} a mixture model in the traditional sense. The two models are fit \emph{seperately} and only \emph{then} are they combined
+\begin{equation}
+\mu_{i,t} = z_i \cdot \mu_{i,t}^{(G)} + (1 - z_i) \cdot \mu_{i,t}^{(I)}
+\end{equation}
+where $\mu_{i,t}^{(G)}$ is the rate parameter implied by Model 1 (the general model) and $\mu_{i,t}^{(I)}$ is that which is implied by Model 2 (the individual trend model). Here, information is not allowed to flow back from this combination back to the model fits themselves. Graphically this can be represented by the directed acyclic graph we generated 
+
 
 \section{Combining the models}
 
@@ -528,6 +583,8 @@ i \in 1,\ldots,N \
 \item In this case the likelihood can be worked out by hand with the probability of the mixture component prior
 \item Describe likelihood code
 \end{itemize}
+
+\section{Baystdetect and the cut function}
 
 \subsection{Implementation}
 

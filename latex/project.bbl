@@ -44,6 +44,26 @@
       \field{pages}{1111}
       \range{pages}{1}
     \endentry
+    \entry{banerjeebook}{book}{}
+      \name{author}{3}{}{%
+        {{uniquename=0,hash=2f89b8a28f371cc1eee016f2b855a3bf}{Banerjee}{B\bibinitperiod}{Sudipto}{S\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=ad13da83ac0f67014db8a3306a0581a8}{Carlin}{C\bibinitperiod}{Bradley\bibnamedelima P}{B\bibinitperiod\bibinitdelim P\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=9de8c0eb750b924296c8f8f817dd06d0}{Gelfand}{G\bibinitperiod}{Alan\bibnamedelima E}{A\bibinitperiod\bibinitdelim E\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Crc Press}%
+      }
+      \strng{namehash}{00ac74a0b1e8fd8e5fb7822bc05e6e91}
+      \strng{fullhash}{a3c7a2eda6538453baeb9bd99bfb7842}
+      \field{sortinit}{B}
+      \field{sortinithash}{4ecbea03efd0532989d3836d1a048c32}
+      \field{labelyear}{2014}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Hierarchical modeling and analysis for spatial data}
+      \field{year}{2014}
+    \endentry
     \entry{banerjee}{article}{}
       \name{author}{3}{}{%
         {{uniquename=0,hash=2f89b8a28f371cc1eee016f2b855a3bf}{Banerjee}{B\bibinitperiod}{Sudipto}{S\bibinitperiod}{}{}{}{}}%
@@ -156,6 +176,45 @@
       \verb http://CRAN.R-project.org/package=rgdal
       \endverb
     \endentry
+    \entry{lipcancer}{article}{}
+      \name{author}{2}{}{%
+        {{uniquename=0,hash=71477ff5281ea7e7dbf77a29c316ee8f}{Clayton}{C\bibinitperiod}{David}{D\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=0005aa0d4776eb948e0443d6868db3ca}{Kaldor}{K\bibinitperiod}{John}{J\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {JSTOR}%
+      }
+      \strng{namehash}{d08a1b9b4f0715d26a62df8fcbf8ad28}
+      \strng{fullhash}{458f1c4ac5e85f8de80be6989c4adda3}
+      \field{sortinit}{C}
+      \field{sortinithash}{59f25d509f3381b07695554a9f35ecb2}
+      \field{labelyear}{1987}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Biometrics}
+      \field{title}{Empirical Bayes estimates of age-standardized relative risks for use in disease mapping}
+      \field{year}{1987}
+      \field{pages}{671\bibrangedash 681}
+      \range{pages}{11}
+    \endentry
+    \entry{spline}{article}{}
+      \name{author}{3}{}{%
+        {{uniquename=0,hash=a0c282fc8ec15861da4c88b02e4a95c9}{Crainiceanu}{C\bibinitperiod}{Ciprian\bibnamedelima M}{C\bibinitperiod\bibinitdelim M\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=ca15388bebf8dfd3024fe7557ae32d5c}{Ruppert}{R\bibinitperiod}{David}{D\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=1865dabd80d05c74ec0754ff7276683a}{Wand}{W\bibinitperiod}{Matthew\bibnamedelima P}{M\bibinitperiod\bibinitdelim P\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{f2382770531eaba2724a2fc769dad90c}
+      \strng{fullhash}{36cd5fa3ffe2fa7209d37e2aadb87aaf}
+      \field{sortinit}{C}
+      \field{sortinithash}{59f25d509f3381b07695554a9f35ecb2}
+      \field{labelyear}{2007}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Bayesian analysis for penalized spline regression using Win BUGS}
+      \field{year}{2007}
+    \endentry
     \entry{spatialcusum}{article}{}
       \name{author}{1}{}{%
         {{uniquename=0,hash=bf7aad0356600542c44dfc1a36263c2a}{Dassanayaka}{D\bibinitperiod}{Sesha\bibnamedelima K}{S\bibinitperiod\bibinitdelim K\bibinitperiod}{}{}{}{}}%
@@ -173,20 +232,20 @@
       \field{labeltitlesource}{title}
       \field{journaltitle}{Online journal of public health informatics}
       \field{number}{1}
-      \field{title}{Spatial CUSUM Chart Based Method for Rapid Detection ofOutbreaks.}
+      \field{title}{Spatial CUSUM Chart Based Method for Rapid Detection of Outbreaks.}
       \field{volume}{7}
       \field{year}{2014}
     \endentry
     \entry{gandy}{article}{}
       \name{author}{2}{}{%
         {{uniquename=0,hash=7849c722c9d519d377dbcb5a9308c276}{Gandy}{G\bibinitperiod}{Axel}{A\bibinitperiod}{}{}{}{}}%
-        {{uniquename=0,hash=965d8f9f7a9eb8dc8cb601a73d259b8d}{Kval{\o{}}y}{K\bibinitperiod}{Jan\bibnamedelima Terje}{J\bibinitperiod\bibinitdelim T\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=8951e93a8337b6c40fa63d0bac0844e2}{Kvaloy}{K\bibinitperiod}{Jan\bibnamedelima Terje}{J\bibinitperiod\bibinitdelim T\bibinitperiod}{}{}{}{}}%
       }
       \list{publisher}{1}{%
         {Wiley Online Library}%
       }
       \strng{namehash}{d6eba55f342eb6e98d7c6d455e59ebfa}
-      \strng{fullhash}{2cd3b9af0f03a700b82102d771e8c8e8}
+      \strng{fullhash}{489eeba52e94e60686017091f09c680f}
       \field{sortinit}{G}
       \field{sortinithash}{1c854ef9177a91bf894e66485bdbd3ed}
       \field{labelyear}{2013}
@@ -200,6 +259,75 @@
       \field{year}{2013}
       \field{pages}{647\bibrangedash 668}
       \range{pages}{22}
+    \endentry
+    \entry{gelman2006prior}{article}{}
+      \true{moreauthor}
+      \name{author}{1}{}{%
+        {{uniquename=0,hash=1e1eb60e3b6e222217bf8e9b24070b28}{Gelman}{G\bibinitperiod}{Andrew}{A\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {International Society for Bayesian Analysis}%
+      }
+      \strng{namehash}{7b511f44eded88e08c98470ecd75568d}
+      \strng{fullhash}{7b511f44eded88e08c98470ecd75568d}
+      \field{sortinit}{G}
+      \field{sortinithash}{1c854ef9177a91bf894e66485bdbd3ed}
+      \field{labelyear}{2006}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Bayesian analysis}
+      \field{number}{3}
+      \field{title}{Prior distributions for variance parameters in hierarchical models (comment on article by Browne and Draper)}
+      \field{volume}{1}
+      \field{year}{2006}
+      \field{pages}{515\bibrangedash 534}
+      \range{pages}{20}
+    \endentry
+    \entry{gelmancut}{article}{}
+      \name{author}{1}{}{%
+        {{uniquename=0,hash=1e1eb60e3b6e222217bf8e9b24070b28}{Gelman}{G\bibinitperiod}{Andrew}{A\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Stan mailing list}%
+      }
+      \strng{namehash}{1e1eb60e3b6e222217bf8e9b24070b28}
+      \strng{fullhash}{1e1eb60e3b6e222217bf8e9b24070b28}
+      \field{sortinit}{G}
+      \field{sortinithash}{1c854ef9177a91bf894e66485bdbd3ed}
+      \field{labelyear}{2013}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{workaround for cut() function? -- comments}
+      \field{year}{2013}
+      \verb{url}
+      \verb https://groups.google.com/forum/#!msg/stan-users/ruxPAhBPI4A/SrsbM-rese0J
+      \endverb
+    \endentry
+    \entry{splinecompare}{article}{}
+      \name{author}{4}{}{%
+        {{uniquename=0,hash=ed8516112e3b19ff2fe92fa9f21bd4d2}{Goicoa}{G\bibinitperiod}{T}{T\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=c24f1193ace46155b70ae34193f204e8}{Ugarte}{U\bibinitperiod}{MD}{M\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=9c1987fb8f34575ab7016b8a6aa0c5b8}{Etxeberria}{E\bibinitperiod}{J}{J\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=8135baed67db32017898463226bfe66a}{Militino}{M\bibinitperiod}{AF}{A\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{6ae2f3cb681224d3873010082aa8eff6}
+      \strng{fullhash}{36cc537d8bd147633135404fbc210f52}
+      \field{sortinit}{G}
+      \field{sortinithash}{1c854ef9177a91bf894e66485bdbd3ed}
+      \field{labelyear}{2012}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Environmental and Ecological Statistics}
+      \field{title}{Comparing CAR and P-spline models in spatial disease mapping}
+      \field{year}{2012}
+      \field{pages}{1\bibrangedash 27}
+      \range{pages}{27}
     \endentry
     \entry{weighed}{article}{}
       \name{author}{3}{}{%
@@ -269,14 +397,14 @@
         {{uniquename=0,hash=73e4bb016728a9a83d92c1653795e904}{Li}{L\bibinitperiod}{Guangquan}{G\bibinitperiod}{}{}{}{}}%
         {{uniquename=0,hash=0b722de921c70fe17432894948d786b1}{Best}{B\bibinitperiod}{Nicky}{N\bibinitperiod}{}{}{}{}}%
         {{uniquename=0,hash=122399f75dcb998bea43b86940f7f4a4}{Hansell}{H\bibinitperiod}{Anna\bibnamedelima L}{A\bibinitperiod\bibinitdelim L\bibinitperiod}{}{}{}{}}%
-        {{uniquename=0,hash=a2d50242115b192f2e0406f1482fde30}{Ahmed}{A\bibinitperiod}{Isma\"{\i{}}l}{I\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=523a7cb1ff803f4eec27f662fd2d61cb}{Ahmed}{A\bibinitperiod}{Ismail}{I\bibinitperiod}{}{}{}{}}%
         {{uniquename=0,hash=71425b355b472529d862b325802115e6}{Richardson}{R\bibinitperiod}{Sylvia}{S\bibinitperiod}{}{}{}{}}%
       }
       \list{publisher}{1}{%
         {Biometrika Trust}%
       }
       \strng{namehash}{331c36e2257a8e78b98302df7e3179b9}
-      \strng{fullhash}{ed6c035ec213f536b4bab2629b7748d3}
+      \strng{fullhash}{00a9f07493b034e73169be98275770a2}
       \field{sortinit}{L}
       \field{sortinithash}{872351f18d0f736066eda0bf18bfa4f7}
       \field{labelyear}{2012}
@@ -288,6 +416,28 @@
       \field{year}{2012}
       \field{pages}{kxs005}
       \range{pages}{-1}
+    \endentry
+    \entry{bugs}{book}{}
+      \name{author}{5}{}{%
+        {{uniquename=0,hash=42f16391523f208a7d0690014e1fe150}{Lunn}{L\bibinitperiod}{David}{D\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=bd1dee39006921bf78063dbfd8c81e83}{Jackson}{J\bibinitperiod}{Chris}{C\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=0b722de921c70fe17432894948d786b1}{Best}{B\bibinitperiod}{Nicky}{N\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=b99ea0936dc45f26fe8f2f1ca302216d}{Thomas}{T\bibinitperiod}{Andrew}{A\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=dadfd2ad5a7739518422ca8ed14b77cf}{Spiegelhalter}{S\bibinitperiod}{David}{D\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {CRC press}%
+      }
+      \strng{namehash}{e4c073ff33c98182b2ced6b1af4de70f}
+      \strng{fullhash}{29ca021a136d6d82d2710a713d7af8d1}
+      \field{sortinit}{L}
+      \field{sortinithash}{872351f18d0f736066eda0bf18bfa4f7}
+      \field{labelyear}{2012}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{The BUGS book: A practical introduction to Bayesian analysis}
+      \field{year}{2012}
     \endentry
     \entry{stoch}{article}{}
       \name{author}{3}{}{%
