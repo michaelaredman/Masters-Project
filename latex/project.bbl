@@ -176,6 +176,30 @@
       \verb http://CRAN.R-project.org/package=rgdal
       \endverb
     \endentry
+    \entry{rao}{article}{}
+      \name{author}{2}{}{%
+        {{uniquename=0,hash=c7abc90e14f2761d9325ee092fda0de7}{Casella}{C\bibinitperiod}{George}{G\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=b75bd725848d49b652183a672969f8af}{Robert}{R\bibinitperiod}{Christian\bibnamedelima P}{C\bibinitperiod\bibinitdelim P\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Biometrika Trust}%
+      }
+      \strng{namehash}{d2b21dee23e968b79d4d2a09c762a2f3}
+      \strng{fullhash}{c1191c54064096b3e280fc9170c4165b}
+      \field{sortinit}{C}
+      \field{sortinithash}{59f25d509f3381b07695554a9f35ecb2}
+      \field{labelyear}{1996}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Biometrika}
+      \field{number}{1}
+      \field{title}{Rao-Blackwellisation of sampling schemes}
+      \field{volume}{83}
+      \field{year}{1996}
+      \field{pages}{81\bibrangedash 94}
+      \range{pages}{14}
+    \endentry
     \entry{lipcancer}{article}{}
       \name{author}{2}{}{%
         {{uniquename=0,hash=71477ff5281ea7e7dbf77a29c316ee8f}{Clayton}{C\bibinitperiod}{David}{D\bibinitperiod}{}{}{}{}}%
@@ -526,6 +550,29 @@
       \field{pages}{100\bibrangedash 115}
       \range{pages}{16}
     \endentry
+    \entry{plummer2015cuts}{article}{}
+      \name{author}{1}{}{%
+        {{uniquename=0,hash=03045332bafe41c19537db736466eb0f}{Plummer}{P\bibinitperiod}{Martyn}{M\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{03045332bafe41c19537db736466eb0f}
+      \strng{fullhash}{03045332bafe41c19537db736466eb0f}
+      \field{sortinit}{P}
+      \field{sortinithash}{c0a4896d0e424f9ca4d7f14f2b3428e7}
+      \field{labelyear}{2015}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Statistics and Computing}
+      \field{number}{1}
+      \field{title}{Cuts in Bayesian graphical models}
+      \field{volume}{25}
+      \field{year}{2015}
+      \field{pages}{37\bibrangedash 43}
+      \range{pages}{7}
+    \endentry
     \entry{raubertas}{article}{}
       \name{author}{1}{}{%
         {{uniquename=0,hash=ec5c3c46b32bcaebe53550b53379fbc5}{Raubertas}{R\bibinitperiod}{Richard\bibnamedelima F}{R\bibinitperiod\bibinitdelim F\bibinitperiod}{}{}{}{}}%
@@ -620,6 +667,7 @@
       \field{year}{1998}
     \endentry
   \endsortlist
+  \missing{spatial}
 \endrefsection
 \endinput
 

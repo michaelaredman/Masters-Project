@@ -44,48 +44,36 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {6.2}Combining the models}{25}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {6.3}Baystdetect and the cut function}{25}
+\contentsline {section}{\numberline {6.3}Classification and accuracy}{27}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {6.3.1}Implementation}{25}
+\contentsline {section}{\numberline {6.4}Fully Bayesian model}{27}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {6.4}Classification and accuracy}{25}
+\contentsline {section}{\numberline {6.5}The cut function}{28}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {6.5}Fully Bayesian model}{26}
+\contentsline {chapter}{\numberline {7}Excess variability model}{29}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {7}Excess variability model}{27}
+\contentsline {section}{\numberline {7.1}Model specification}{29}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {7.1}Model specification}{27}
+\contentsline {section}{\numberline {7.2}Classification and accuracy}{30}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {7.2}Classification and accuracy}{28}
+\contentsline {section}{\numberline {7.3}Over-smoothing}{31}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {7.3}Over-smoothing}{28}
+\contentsline {section}{\numberline {7.4}Simulated Data}{33}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {7.4}Simulated Data}{28}
+\contentsline {chapter}{\numberline {8}Computational considerations}{35}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {8}Computational considerations}{29}
+\contentsline {section}{\numberline {8.1}Computational software}{35}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {8.1}Basic Sampling methods}{29}
+\contentsline {subsection}{\numberline {8.1.1}Auto differentiation}{35}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{Gibbs sampling}{29}
+\contentsline {subsubsection}{Symplectic Integration}{35}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{Metropolis}{29}
+\contentsline {subsubsection}{Integration time}{35}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{Auto differentiation}{29}
+\contentsline {section}{\numberline {8.2}Autodiff/black-box variational inference?}{35}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{Symplectic Integration}{29}
+\contentsline {section}{\numberline {8.3}Reparameterization of the models}{35}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{Auto differentiation}{29}
+\contentsline {section}{\numberline {8.4}Marginilizing over the discrte parameters}{36}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{Symplectic Integration}{29}
-\defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{Integration time}{30}
-\defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{Integration time}{30}
-\defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {8.2}Autodiff/black-box variational inference?}{30}
-\defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {8.3}Reparameterization of the models}{30}
-\defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {8.4}Marginilizing over the discrte parameters}{31}
-\defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {9}Comparisions and conclusions}{32}
+\contentsline {chapter}{\numberline {9}Comparisions and conclusions}{37}

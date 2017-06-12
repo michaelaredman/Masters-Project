@@ -36,7 +36,7 @@ model_data = {'numRegions': numRegions,
 
 print('Starting fit at: ', time.ctime())
 
-iter_num = 500
+iter_num = 2000
 
 fit = pystan.stan(file='var.stan', data=model_data, iter=iter_num, chains=4)
 

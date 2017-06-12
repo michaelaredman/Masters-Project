@@ -17,8 +17,8 @@ unusual_temp <- read.csv('~/4th Year/project/data/csv/prefUnusual.csv', header=F
 unusual <- sort(unusual_temp$V1) + 1 #add one as python had zero index
 
 numRegions <- length(shape@data$SP_ID)
-cols <- rep('blue', numRegions)
-cols[unusual] <- rep('red', length(unusual))
+cols <- rep('white', numRegions)
+cols[unusual] <- rep('yellow', length(unusual))
 
 plot(shape, col=cols)
 
@@ -39,7 +39,7 @@ rwalk <- rwalk - mean(rwalk)
 rwalk_unusual <- rwalk
 rwalk_unusual[10:15] <- rwalk_unusual[10:15] + abs(rnorm(n=6, sd = 0.3))
 
-plot(rwalk_unusual, type='l', col='red')
+plot(rwalk_unusual, type='l', col='red', ylab = 'Temporal trend', xlab = 't')
 lines(rwalk, type='l', col='blue')
 
 neib <- poly2nb(shape)

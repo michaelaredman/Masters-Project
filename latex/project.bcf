@@ -2931,9 +2931,27 @@
     <bcf:citekey order="57">baystdetect</bcf:citekey>
     <bcf:citekey order="58">gelman2006prior</bcf:citekey>
     <bcf:citekey order="59">gelman2006prior</bcf:citekey>
-    <bcf:citekey order="60">stability</bcf:citekey>
-    <bcf:citekey order="61">stability</bcf:citekey>
-    <bcf:citekey order="62">stan</bcf:citekey>
+    <bcf:citekey order="60">baystdetect</bcf:citekey>
+    <bcf:citekey order="61">baystdetect</bcf:citekey>
+    <bcf:citekey order="62">baystdetect</bcf:citekey>
+    <bcf:citekey order="63">baystdetect</bcf:citekey>
+    <bcf:citekey order="64">plummer2015cuts</bcf:citekey>
+    <bcf:citekey order="65">baystdetect</bcf:citekey>
+    <bcf:citekey order="66">baystdetect</bcf:citekey>
+    <bcf:citekey order="67">stability</bcf:citekey>
+    <bcf:citekey order="68">stability</bcf:citekey>
+    <bcf:citekey order="69">stability</bcf:citekey>
+    <bcf:citekey order="70">stability</bcf:citekey>
+    <bcf:citekey order="71">baystdetect</bcf:citekey>
+    <bcf:citekey order="72">baystdetect</bcf:citekey>
+    <bcf:citekey order="73">best2005comparison</bcf:citekey>
+    <bcf:citekey order="74">baystdetect</bcf:citekey>
+    <bcf:citekey order="75">baystdetect</bcf:citekey>
+    <bcf:citekey order="76">baystdetect</bcf:citekey>
+    <bcf:citekey order="77">baystdetect</bcf:citekey>
+    <bcf:citekey order="78">spatial</bcf:citekey>
+    <bcf:citekey order="80">rao</bcf:citekey>
+    <bcf:citekey order="81">stan</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" name="cms" type="entry" sortscheme="cms">
   <bcf:sorting>

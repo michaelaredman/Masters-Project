@@ -47,7 +47,6 @@ class generate_unusual:
         self.weights[indicies] = self.weights[indicies] + self.pref_weight
 
     def sample(self, sample_size):
-        
         for i in range(sample_size):
             new_node = self.select_node()
             self.remove_node(new_node)

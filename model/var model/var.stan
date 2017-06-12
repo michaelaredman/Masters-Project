@@ -116,7 +116,7 @@ model {
     v ~ sparse_car(sigma_v, alpha, W_sparse, D_sparse, lambda, numRegions, W_n);
     lmbda ~ normal(v, sigma_l);
 
-    indicator ~ uniform(0, 1);
+    indicator ~ beta(0.3, 0.6);
 
     tau_1 ~ normal(0, 0.1);
     k ~ normal(0, 10);

@@ -13,7 +13,7 @@
 \usepackage{subcaption}
 \usepackage{enumerate}
 \usepackage{booktabs}
-
+\usepackage{csquotes}
 
 \usepackage[
 authordate,
@@ -25,7 +25,7 @@ maxbibnames=6
 \addbibresource{project.bib}
 \bibliography{project}
 
-\usepackage[usenames,dvipsnames]{color}
+\usepackage[usenames,dvipsnames]{xcolor}
 \usepackage{tikz}
 \usetikzlibrary{arrows}
 
@@ -573,73 +573,153 @@ It is important to note that this is \textbf{not} a mixture model in the traditi
 \begin{equation}
 \mu_{i,t} = z_i \cdot \mu_{i,t}^{(G)} + (1 - z_i) \cdot \mu_{i,t}^{(I)}
 \end{equation}
-where $\mu_{i,t}^{(G)}$ is the rate parameter implied by Model 1 (the general model) and $\mu_{i,t}^{(I)}$ is that which is implied by Model 2 (the individual trend model). Here, information is not allowed to flow back from this combination back to the model fits themselves. Graphically this can be represented by the directed acyclic graph we generated 
+where $\mu_{i,t}^{(G)}$ is the rate parameter implied by Model 1 (the general model) and $\mu_{i,t}^{(I)}$ is that which is implied by Model 2 (the individual trend model). Here, information is not allowed to flow back from this combination back to the model fits themselves. Graphically this can be represented by the Bayesian network in fig \ref{fig:baystdetect} which shows the conditional dependencies between variables in the model. Note that we essentially copy the data for the fitting of the two seperate models and then the final inference step. \\
+
+
+\begin{figure}
+\centering
+\begin{tikzpicture}[thick,scale=0.7, every node/.style={scale=0.8}]
+\tikzset{vertex/.style = {shape=circle,draw,minimum size=3em, thick}}
+\tikzset{edge/.style = {ultra thick, ->,> = latex'}}
+% main
+\node[vertex] (mu) at (9.5,2) {\large$\mu_{i,t}$};
+\node[vertex] (y) at  (9.5,0) {\large$y_{i,t}$};
+\node[vertex] (E) at  (6.5,1) {\large$E_{i,t}$};
+\node[vertex] (z) at  (12.5,1) {\large$z_i$};
+% model 1
+\node[vertex] (mug) at (5,5) {\large$\mu_{i,t}^{(G)}$};
+\node[vertex] (yg) at  (5,3) {\large$y_{i,t}$};
+\node[vertex] (Eg) at  (2,4) {\large$E_{i,t}$};
+\node[vertex] (gamma) at (8,6) {\large$\gamma_t$};
+\node[vertex] (lambda) at (2,6) {\large$\lambda_i$};
+% model 2
+\node[vertex] (mus) at (14,5) {\large$\mu_{i,t}^{(I)}$};
+\node[vertex] (ys) at  (14,3) {\large$y_{i,t}$};
+\node[vertex] (Es) at  (17,4) {\large$E_{i,t}$};
+\node[vertex] (u) at (17,6) {\large$\gamma_t$};
+\node[vertex] (xi) at (11,6) {\large$\xi_{i,t}$};
+%edges
+\draw[edge] (E) to (y);
+\draw[edge] (mu) to (y);
+\draw[edge] (z) to (mu);
+%edges 1
+\draw[edge] (Eg) to (yg);
+\draw[edge] (mug) to (yg);
+\draw[edge] (gamma) to (mug);
+\draw[edge] (lambda) to (mug);
+\draw[edge, dashed] (mug) to (mu);
+%edges 2
+\draw[edge] (Es) to (ys);
+\draw[edge] (mus) to (ys);
+\draw[edge] (u) to (mus);
+\draw[edge] (xi) to (mus);
+\draw[edge, dashed] (mus) to (mu);
+
+\end{tikzpicture}
+\label{fig:baystdetect}
+\caption{Directed acyclic graph showing conditional dependencies between model variables for the BaySTDetect model. Dashed lines indicte one way flow of information. Based on figure in \citet{baystdetect}.}
+\end{figure}
 
 
 \section{Combining the models}
 
-\begin{itemize}
-\item BUGS can be used with a mixture component
-\item In this case the likelihood can be worked out by hand with the probability of the mixture component prior
-\item Describe likelihood code
-\end{itemize}
+The original computational specification of BaySTDetect was in \emph{BUGS}, using the cut function\footnote{The original BUGS code can be difficult to find on the Journal website: a copy can be found on my Github under /model/bugs/}. The cut function, essentially, makes a copy of the model structure and data \emph{downstream} from the variable and uses standard Gibbs to produce samples of the variable, isolated from the rest of the model. The samples of this variable are then used downstream in the model as specified but are treated as though they came from some fixed distribution. \\
 
-\section{Baystdetect and the cut function}
+However, this implementation can be improved upon in a number of ways. Firstly, as found by \citep{plummer2015cuts}, the method that is applied in the BUGS software will not converge to a well defined limiting distribution, although there may exist modifications to the algorithm that resolve this. Secondly, as described in section 2545, Gibbs sampling will be very slow to converge to true result -- where Hamiltonian Monte-Carlo may improve on this. And thirdly, the base level of the model is simply a mixture on the rate component of a Poisson random variable -- this can be simplified to a direct calculation by hand. \\
 
-\subsection{Implementation}
+In our implementation we first fit the two models individually in Stan, the code can for this be found in codeblahref. Four chains, with dispersed starting positions, were run for x iterations each for model 1 and y iterations for model 2. Where these numbers was chosen to be a short chain length where the $\hat{R}$ values (the Gelman-Rubin statistic) were consistently $<1.01$ over multiple runs, indicating good convergence. Additionally a visual inspection of the trace plots for some select parameters did not indicate any worrying pathalogical behaviour. \\
 
-The two models were fit to the data using Hamiltonian Monte-Carlo in the \emph{Stan} package -- both for over 2000 samples over 4 chains after a ``warm-up'' period of 1000 samples. Gelman-Rubin statistics for all parameters were under 1.05 (find exact figure) indicating that the had chains converged. Additionally a visual inspection of the trace plots for some select parameters did not indicate any worrying pathalogical behaviour.
+We then extracted a sample (without replacement) of the $\mu^{(G)}$ and $\mu^{(I)}$ from the chains and used these to contruct two models
+\begin{equation}
+P(y_{i,1:T} | M_1, \mu^{(G)}) = \prod_{t=1}^T \frac{{\left(\mu_{i,t}^{(G)}\right)}^{y_{i,t}} \cdot \exp{\left\{-\mu_{i,t}^{(G)}}\right\}}{y_{i, t}!} 
+\end{equation}
+\begin{equation}
+P(y_{i,1:T} | M_2, \mu^{(I)}) = \prod_{t=1}^T \frac{{\left(\mu_{i,t}^{(I)}\right)}^{y_{i,t}} \cdot \exp{\left\{-\mu_{i,t}^{(I)}}\right\}}{y_{i, t}!}.
+\end{equation}
+That is, the likelihood of the data at each region under each model is that of a series of independent Poisson variables where the rate parameters are decided by one of the samples from either the general or independent trend model. \\
 
-These two fits took under 5 minutes each to run after a short compilation which is a huge speed increase over typical \emph{BUGS} implementation.
+We calculate both these likelihoods, for each region, for every sample of the $\mu$. Then, using these likelihoods we can perform Bayesian model comparison as
+\begin{equation}
+P(M_j | y_{i, 1:T}) = \frac{P(y_{i, 1:T} | M_2) P(M_2)}{P(y_{i, 1:T})}
+\end{equation}
+where our prior for the probability of each model being correct follows from the definition of $z_i$ as
+\begin{equation}
+\begin{array}{cc}
+P(M_1) = 0.95 & P(M_2) = 0.05
+\end{array}
+\end{equation}
+
+We can then, ignoring the denominator as it is the same for both models, compute the unnormalised posteriors for the two models. Comparing these two values, we can assign an indicator to the $z_i$
+\begin{equation}
+z_i = \left\{%
+\begin{array}{ll}
+1, & \text{if } 0.95 \cdot P(y_{i,1:T} | M_1) > 0.05 \cdot P(y_{i,1:T} | M_2) \\
+0, & \text{otherwise}
+\end{array}\right.
+\end{equation}
+
+So, $z_i$ is $1$ if the posterior probability of the general model is greater than that of the specific trend model. Finally, we an average of the $z_i$ over the samples and call this $\bar{z}_i$. \\
+
+To test if this procedure works as expected, we take the samples from our \emph{Stan} chains and use them in a BUGS model with the true Bernoulli indicator. Taking the MCMC based posterior mean of the $z_i$ in this gave very similar values to our method. 
+
+
 
 \section{Classification and accuracy}
 
-First looking at the general trend model we see that it has accurately identified the global temporal trend. 
+We can use the $\bar{z}_i$ values to classify regions as either `normal' and `unusual'. We could simply say, any regions which are more likely to be `unusual' are classed as such. However given we are performing this for 210 regions we run into issues of multiple comparison. Therefore, \citet{baystdetect} uses the Benjamini-Hochberg procedure to find at which level probability we should classify all with lower probabilities as being `unusual'. This procedure ensures, under some assumptions, that we keep the false discovery rate (FDR) under a given value. \\
 
+With the values we found, explicitly implementing this procedure was not neccesary as a set of 16 regions had $z_i$ values of 0 while the others had much higher values. Of these 16 regions, 15 were the correctly identified unsual regions. Giving a power of 100\% and an FDR of about 0.51\%.
+
+As a sanity check, we look at the samples of $\gamma_t$ from model 1 to see if it approximates the true general temporal trend. A violin plot of the samples can be seen in fig \ref{fig:temporaltrend}. Comparing this trend to that in fig \ref{fig:timeeffects}
 \begin{figure}
 \centering
+\label{fig:temporaltrend}
 \includegraphics[width=\textwidth]{global_temporal}
+\caption{Violin plot of the samples from $\gamma_t$ in model 1 of BayeSTDetect.}
 \end{figure}
 
 \section{Fully Bayesian model}
 
-\begin{itemize}
-\item Can be fit fully in Stan
-\item Reference the use of Rao-Blackwellization
-\item Graph the temporal components failure
-\end{itemize}
+The BaySTDetect method, as originally applied is clearly very accurate in its identification of the `unusual' regions. Though, the use of the cut function is puzzling. The model, when specified as a true mixture model, essentially describes how the data was generated originally. To test this, we combined the two models as specified without the cut function and fit the entire model in \emph{Stan}. This was done by specifying the probability of the Bernoulli as the Beta prior with mean 0.90 -- allowing the use of HMC and gaining computational efficiency as described in section 73826. \\
+
+The resulting values of $q_i$, however, was barely more accurate than random in ordering the probabilities of each region being `unusual'. In fact, looking at the posterior mean of some the individual temporal trends we found they did not resemble the regions true trend -- even for the `unusual' regions. The following section discusses why this is the case.
+
+\section{The cut function}
+
 
 \chapter{Excess variability model}
 
-The second Bayesian model we will look at also attempts to classify the regions, into typical and atypical sets, using a mixture model. Here our abnormal regions, rather than coming from an individual temporal trend, simply have excess inseperable spatio-temporal variance. Some potential advantages of such a model compared to Baystdetect are immediately clear:
-\begin{itemize}
-\item It's relative simplicity allows for easier computation
-\item It is not immediately clear that an abnormal temporal trend is symptomatic of an endemic problem --- variance is a more straightforwardly interpretable parameter
-\item Identification issues
-\item Mixture model issues reduced due to setup of variance
-\end{itemize}
+The second Bayesian model we will look at also attempts to classify the regions, into typical and atypical sets, using a mixture model. I this model, the pathology that defines an atypical areas is not an individual temporal trend, but possesing excessive inseperable spatiotemporal variance. \\
+
+In this paradigm, we use seperate temporal and spatial random effects to capture most ot the heterogeneity between counts. Then any significant space-time interactions that are not common to the shared random effects would indicate a departure from what we would consider typical behaviour. \\
+
+This model primarily based is on the one proposed in \citet{stability}, with two modifications. First, our latent variable works at the regional level -- as opposed to classifying regions based on a decision rule for a mixture component for each count (i.e. we use $z_{i}$ rather than their $z_{i,t}$). And secondly, we take the response as Poisson distributed rather than Binomial as we do not know the population sizes explicitly.
 
 \section{Model specification}
 
-The model is similar to that of \citet{stability}, but with a mixture component that's hierachical at the regional level. Like before we model the counts as a Poisson process, $Y_{i,t} \sim \operatorname{Poisson}(E_{i,t} \cdot \mu_{i,t})$, with a rate parameter defined additively on the log-scale
-
+Like in the previous model we model the counts as a Poisson process, $Y_{i,t} \sim \operatorname{Poisson}(E_{i,t} \cdot \mu_{i,t})$, with a rate parameter defined additively on the log-scale
 \begin{equation}
-\log(\mu_{i,t}) = \lambda_i + \gamma_t + \psi_{i,t}
+\log(\mu_{i,t}) = \lambda_i + \gamma_t + \psi_{i,t}.
 \end{equation}
 
-where, as before,
-\begin{align}
+where, as before, the spatial effects are given a BYM prior
+\begin{align*}
 v_{1:N} &\sim \operatorname{CAR}(W, \sigma_v^2) \\
-\lambda_{1:N} &\sim \operatorname{Normal}(v, \sigma_\lambda^2) \\
-\gamma_{1:T} &\sim \operatorname{RW}(1).
-\end{align}
+\lambda_{1:N} &\sim \mathcal{N}(v, I_N \cdot \sigma_\lambda^2) \\
+\end{align*}
 
-We see the new component $\psi$ captures a level of space-time inseperability to the counts. At every point $(i, t)$ each component is modeled as coming from a mixture of two normal distributions, with the mixture component at the regional level,
+and the 
+\begin{equation*}
+\gamma_{1:T} \sim \operatorname{RW}_1(\sigma_\gamma^2).
+\end{equation*}
+
+With the new component $\psi$ we wish to capture any residual space-time inseperable heterogeneity in the counts. However, we would expect that the is \emph{some} level of interaction at each region, so we define $\psi$ as the mixture of two normal distributions, with the mixture component at the regional level
 \begin{equation}
 \psi_{i,t} \sim z_i \cdot \operatorname{Normal}(0, \tau_1^2) + (1 - z_i) \cdot \operatorname{Normal}(0, \tau_2^2)
 \end{equation} 
+where the first normal mixture captures only minor interactions, to which we do not assign any epidemiological significance, and the second mixture captures that we would consider atypical. \\
 
-where
+The mixture components are each assigned Bernoulli priors 
 \begin{equation}
   z_i \sim \operatorname{Bernoulli}(q_i)
 \end{equation}
@@ -652,62 +732,130 @@ and the $q_i$ are given Uniform priors on (0, 1). Here we are marginilizing out 
 \begin{equation}
  \tau_2 = \tau_2 + k
 \end{equation}
+where $I$ is the indicator function. \\
 
-Here $I$ is the indicator function.
+The structure of this model, based on the conditional dependencies between variables can be seen in the Bayesian network in fig fweufno. 
+
+Unlike the BaySTDetect model, when we classify the regions in the two sets, we can not use the numerical values of the posterior means of the $q_i$ to define a decision rule by region. This is because the $q_i$ are given uniform priors on the unit interval which does not adequetly convey our prior beliefs that the typical regions should far outnumer the atypical ones. Such a prior could be constructed but a simple Beta prior or similar will not accurately represent this belief. \\
+
+Instead, we select a preselected number of regions ordinally based on these posterior means of the $q_i$.
 
 \section{Classification and accuracy}
 
-This model was fit using HMC in \emph{Stan} 
+This model was fit entirely within \emph{Stan}, as before, and the fifteen regions with the greatest values of $q_i$ were selected as the atypical regions. This procedure correctly identified 11 of the fifteen `unusual' regions giving a false negative rate of 26.7\% and a false positive rate of 2.05\%. This improves on the false positive rate of the CUSUM model but demonstrates much lower power than either CUSUM or BaySTDetect. The performace the method can be seen graphically in fig 1984. \\
+
+Despite the reasonable performance of the \citet{stability} model, it has a number of stark disadvantages compared to BaySTDetect. Firstly, as noted in \citet{baystdetect}
+\begin{displayquote}
+``However, by construction, this model may not be particularly sensitive when the departures exhibit particular time patterns, for example, higher risks occurring at some consecutive time points.''.
+\end{displayquote}
+
+And secondly, the BYM prior has a tendancy to oversmooth the pointwise data -- leading some to develop semiparametric models to counteract this \citep{best2005comparison}.
+
+\begin{figure}
+\centering
+\begin{tikzpicture}[thick,scale=0.7, every node/.style={scale=0.8}]
+\tikzset{vertex/.style = {shape=circle,draw,minimum size=3em, thick}}
+\tikzset{edge/.style = {ultra thick, ->,> = latex'}}
+% main
+\node[vertex] (mu) at (8,2) {\large$\mu_{i,t}$};
+\node[vertex] (y) at  (8,0) {\large$y_{i,t}$};
+\node[vertex] (E) at  (6,1) {\large$E_{i}$};
+\node[vertex] (lambda) at  (6,3) {\large$\lambda_i$};
+
+\node[vertex] (gamma) at  (8,4) {\large$\gamma_{t}$};
+\node[vertex] (psi) at  (11,2) {\large$\psi_{i,t}$};
+\node[vertex] (z) at  (13.5,2) {\large$z_i$};
+\node[vertex] (q) at  (15,4) {\large$q_i$};
+
+\node[vertex] (tau1) at  (10,4) {\large$\tau_1$};
+\node[vertex] (tau2) at  (12.5,4) {\large$\tau_2$};
+
+%edges
+\draw[edge] (mu) to (y);
+\draw[edge] (E) to (y);
+\draw[edge] (gamma) to (mu);
+\draw[edge] (lambda) to (mu);
+\draw[edge] (psi) to (mu);
+\draw[edge] (z) to (psi);
+\draw[edge] (q) to (z);
+\draw[edge] (tau1) to (psi);
+\draw[edge] (tau2) to (psi);
+\draw[edge] (tau1) to (tau2);
+
+\end{tikzpicture}
+\label{fig:baystdetect}
+\caption{Directed acyclic graph showing conditional dependencies between model variables for the excess variability model. Dashed lines indicte one way flow of information. Based on figure in \citet{baystdetect}.}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=5in]{variden}
+\label{fig:variden}
+\caption{Map of unusual regions for the excess variance model. Correctly identified regions are {\color{Green} \bf green}, false-negatives are {\color{Blue}\bf blue} and false-positives are {\color{Red}\bf red}}
+\end{figure}
 
 \section{Over-smoothing}
 
-\begin{itemize}
-\item Expected disease trends will cluster
-\item Model relies on finding unseperable variance but local high variance could be explained by CAR component
-\item Need a model which smooths regions but is able to still identify clustered unusual areas
-\end{itemize}
+As noted in the previous section, the BYM prior has a tendancy to oversmooth the counts at each regions. This can be of particular hinderance to models such as \citet{spatial}, and the modified version above, as we specifically looking for regions which can not be explained by the spatial smoothing term. This leaves regions that would otherwise have been correctly identified as atypical, deemed typical due to the smooth progression of the spatial heterogeneity locally. \\
+
+Of course, from an epidemiological perspective, the transmission of disease and the dispersed nature of some enviromental hazards would lead us to \emph{expect} pathalogical regions to cluster. Ideally, we need our model that is able to smooth the counts while retaining the ability to identify clustered unusual areas.
 
 \section{Simulated Data}
 
-\begin{itemize}
-\item Preferential attachment scheme
-\item Describe full data generation parameters and process
-\item Include plots of temporal and spatial components
-\end{itemize}
+We test the severity of this issue of generating a new set of simulated data where the unusual areas are clustered together. \\
+
+In order to generate the list of unusual areas we suggest a simple algorithm inspired by preferential attatchment processes in network theory. The method is as follows
+\begin{enumerate}
+\item Construct a list of the regions and a corresponding list of `weights'. 
+\item Assign all regions $i$ an initial weight of $1$ and set $k=1$.
+\item Select a new region $u_k$ from the list of potential regions with probability corresponding to the categorical distribution defined by
+\begin{equation}
+P(u_k = j) = \frac{w_j}{\sum_{i} w_i}
+\end{equation}
+\item Mark the selected region as unusual and remove it (and its weight) from the list of potential regions.
+\item Add $w^*$ to each region $i$ that was adjacent to the region removed
+\begin{equation}
+w_i = w_i + w^* \ \ \forall i \in \partial u_k
+\end{equation}
+where we call $w^*$ the preference weight.
+\item Increment $k$ and return to step 3 until the desired number of unusual regions have been selected. 
+\end{enumerate}
+
+This procedure was applied to the shape data of the 210 CCGs with a preference weight of $w^* = 20$ to select 15 regions in total. The resulting unusual regions selected can be seen in fig fkjhk. We see that the selected regions form a series of clusters of varying sizes. \\
+
+Using this list of unusual regions we proceeded to generate the data as follows. A random walk was simulated
+\begin{equation*}
+\gamma_{1:15} \sim \operatorname{RW}_1(0.1^2)
+\end{equation*}
+and then normalised to have a mean of zero. The deviant temporal trend was created generated by adding seperate half-normal variables to the final six time points of the general trend. The resulting two trends can be seen in fig 543. \\
+
+The spatial component was simulated from a BYM prior and was combined with the temporal trend, identically to as in Chapter 2, to create the rate variables for each region and time point. Multiplying by the same expected values as previously, we drew from a Poisson distribution to arrive at the final values. The code for this can be found in the appendix. \\
+
+Now applying the same procedure as described earlier in the chapter, we only 3 of the total 15 regions were correctly identified. For a null hypothesis where we select the atypical regions randomly, this number of identified regions would give a p-value of around 8\%\footnote{> 1 - phyper(2, 15, 195, 15) = 0.07968} -- not very good! Examining the regions identified in fig 321, we that the regions we did correctly identify are non-contiguous. Futher confirming our hypothesis that this method will fail to identify unusual areas when they cluster together.
+
+
+\begin{figure}
+\centering
+\includegraphics[width=5in]{preftemporal}
+\label{fig:preftemporal}
+\caption{Simulated temporal trend for data with clustered unusual regions. The general temporal trend is blue and the red line shows the departure that the deviant trend exhibits.}
+\end{figure}
+
+\begin{figure}
+\centering
+\subfloat[Truly unsual regions]{\includegraphics[width=0.5\textwidth]{trueunusual}}
+\subfloat[Model classification]{\includegraphics[width=0.5\textwidth]{var}}
+\label{fig:var}
+\caption{Map of unusual regions for the excess variance model where there are clustered unusual regions. Correctly identified regions are {\color{Green} \bf green}, false-negatives are {\color{Blue}\bf blue} and false-positives are {\color{Red}\bf red}}
+\end{figure}
 
 \chapter{Computational considerations}
 
-\section{Basic Sampling methods}
+In this chapter we briefly note some of the computational considerations that one should be cogent of for some the methods used in this project.
 
-\begin{itemize}
+\section{Computational software}
 
-\item Mainly using stan for the model
-
-\item Also used BUGS for mixing and speed comparison
-
-\item Discuss pymc3 too and compare with stan's parameter tuning/ initilization with ADVI
-
-\end{itemize}
-
-\subsubsection{Gibbs sampling}
-
-\subsubsection{Metropolis}
-
-<<<<<<< HEAD
-=======
-
-\subsubsection{Auto differentiation}
-
-\subsubsection{Symplectic Integration}
->>>>>>> origin/master
-
-\begin{itemize}
-\item Leap-frog integration
-\item Metropolis correction
-\end{itemize}
-
-<<<<<<< HEAD
-\subsubsection{Auto differentiation}
+\subsection{Auto differentiation}
 
 \subsubsection{Symplectic Integration}
 
@@ -727,19 +875,6 @@ This model was fit using HMC in \emph{Stan}
 \item \emph{Identifying the Optimal Integration Time in Hamiltonian Monte-Carlo} (Betancourt 2016)
 \end{itemize}
 
-=======
-\subsubsection{Integration time}
-
-\begin{itemize}
-\item Naive implementations will not preserve detailed balance
-\item Short-time will give large autocorrelations
-\item Long-time will face diminishing returns
-\item Integration time obviously linear in time, so compare to linear
-\item Exhuastive monte-carlo
-\item \emph{Identifying the Optimal Integration Time in Hamiltonian Monte-Carlo} (Betancourt 2016)
-\end{itemize}
-
->>>>>>> origin/master
 \section{Autodiff/black-box variational inference?}
 
 \section{Reparameterization of the models}
@@ -752,7 +887,7 @@ Removing conditional dependencies e.g.
 
 \section{Marginilizing over the discrte parameters}
 
-As \emph{Stan} uses Hamiltonian Monte-Carlo, which is a gradient based sampler, we can't directly specify a discrete prior as used in mixture models. Instead we can ``marginalize out'' the mixture component to obtain a purely continuous distribution. This also has significan computational benefits (expand on this). \\
+As \emph{Stan} uses Hamiltonian Monte-Carlo, which is a gradient based sampler, we can't directly specify a discrete prior as used in mixture models. Instead we can ``marginalize out'' the mixture component to obtain a purely continuous distribution. This also confers some computational benefits in terms of the speed at which the chain converges due to the Rao-Blackwellization of the estimator \citep{rao}. \\
 
 Take for example a mixture of two Normal distributions
 \begin{equation}
@@ -781,15 +916,12 @@ which we can see is continuous. The way we can specifically implement this in \e
 
 For more on this see page 185 of \cite{stan}.
 
-\begin{itemize}
-
-\item Cite Stan manual
-
-\item Rao-Blackwellization? 
-
-\end{itemize}
-
 \chapter{Comparisions and conclusions}
+
+It's relative simplicity allows for easier computation
+It is not immediately clear that an abnormal temporal trend is symptomatic of an endemic problem --- variance is a more straightforwardly interpretable parameter
+Identification issues
+Mixture model issues reduced due to setup of variance
 
 Timing things
 

@@ -41,9 +41,9 @@ cut_model_sampling <- jags.model('cutNew.jags',
                                               'specific_flat' = specific_flat,
                                               'y' = observed_duplicated),
                                   n.chains = 4,
-                                  n.adapt = 10000)
+                                  n.adapt = 1000)
 
-predict_samples <- coda.samples(cut_model,
+predict_samples <- coda.samples(cut_model_sampling,
                                 c('z'),
                                 n.iter = 10000)
 
