@@ -84,7 +84,7 @@ A real dataset of asthma hospitalisation counts was used to contruct the expecte
 A binomial random variable might be the most principled choice of response but the expected counts we have calculated are large enough for using a Poisson response to be essentially equivalent. Indeed this is the most popular choice in the literature. The data was generated across 15 time points, so our values are drawn from
 \begin{equation}
 Y_{i,t} \; \sim \; \operatorname{Poisson}(E_i \cdot \mu_{i,t}), \ \ \ \ i=1,\ldots,221 \ \ \ \ t=1,\ldots,15
-\end{equation} 
+\end{equation}
 
 where $\mu_{i,t}$ allows us to add random effects to our model. \\
 
@@ -392,11 +392,48 @@ Other things to talk about:
 
 \end{itemize}
 
-\subsection{General Model Form}
+\section{General Model Form}
 
+There are a large number of possible prior structures that could feasibly be used for the spatiotemporal modelling of disease but the most common framework is the form described in \citet{best2005comparison}. Here, the model can be expressed as the composition of three hierarchical layers. First, we assume the observed values were drawn from a Poisson random variable with the following form
+\begin{equation}
+Y_{i,t} \sim \operatorname{Poisson}(E_i\cdot \exp{\mu_{i,t}})
+\end{equation}
+where $E_i$ are the expected counts at region $i$. \\
+
+The second layel of the model represents the log-relative risk in area $i$ at time $t$
+\begin{equation}
+\mu_{i,t} \sim p(\cdot | \theta).
+\end{equation}
+
+And the last layer consists of the priors applied to the hyperparameters in the model
+\begin{equation}
+\theta \sim \pi(\cdot),
+\end{equation}
+for example the variances of the distributions in the second layer. \\
+
+The relatively sparse observed counts can be viewed as the problem of infering the nature of some underlying spatial heterogeneity which is corrupted by observational noise. In order to isolate the noise that is obscuring this inference we use the $\mu_{i,t}$, in the second layer of the model, which will be designed in such a way to seperate the different aspects of this heterogeneity. \\
+
+In order to do this, one must assume some level of similarity throughout the parameter space. The structure of this similarity is specified through the use of shared random effects across space and time, allowing regions or time points with some presumed commonality to `share' information about this mutual component between each other. This information sharing takes the form of a soft restraint that encourages some measure of smoothness across the risk surface, either spatially or temporally. \\
+
+This prior specification can be thought of in contrast to a theoretical Bayesian analogue to a saturated model, where a completely uninformative prior structure--indexed at each point in space and time--results in a posterior which conforms exactly to the data, make useful inference impossible. \\
+
+The structure of prior on $\mu_{i,t}$ will apply shrinkage relative to this uninformative model, allowing the seperation of its components. For example, in the context of identifying a temporal trend, two assumptions are typically made: 
 \begin{itemize}
-\item Use best et al to summarise basic model form
+\item In some sense, the temporal trend is common throughout the regions. This prevents overfitting by, in some sense, taking an average across the regions.
+\item A degree of similarity is assumed between time points that are closer together. Again, this is providing shrinkage by smoothing the interpolation fo the points.  
 \end{itemize}
+
+These, taken together, enable the identification of the underlying trend while preventing the model from fruitlessly fitting to the noise. \\
+
+The two Bayesian models that we consider in this project make use of this specification in different ways. The first compares two submodels against each other for each region. One with strong smoothness constraints and another whose constraints are much more relaxed. The latter submodel will clearly fit the data more intimately, but by ordaining the first model as far more likely---a priori---the second must fit outstandingly better for it to be deemed more likely. \\
+
+The second model we consider uses a structure on $\mu_{i,t}$ that measures the extent to which the observed data can be explained by the smoothness constraints -- where those that deviate most significantly are considered anomalous. \\
+
+The following section goes into more detail around the priors typically used in these contexts.
+
+ 
+
+
 
 \chapter{Smoothing}
 
@@ -419,7 +456,7 @@ where $k_i$ is the number of neighbours adjacent to region $i$,
 
 and $\alpha \in (0, 1)$ is a parameter measuring the degree of spatial dependence. \\
 
-However, while this defines a Markov random field, it is not a directed acyclic graph and we can't use this definition in non-gibbs sampling methods -- we need the $v_i$ to be jointly specified. Thankfully it is possible \citep{banerjeebook} for this to be expressed in terms of a multivariate normal distribution as follows,
+However, while this defines a Markov random field, which is not neccesarily a directed acyclic graph and we can't use this definition in non-gibbs sampling methods -- we need the $v_i$ to be jointly specified. Thankfully it is possible \citep{banerjeebook} for this to be expressed in terms of a multivariate normal distribution as follows,
 \begin{equation} \label{eq:car}
 v \ \sim \ N(0, \ \sigma_v^2 \cdot {[D(I_n - \alpha B)]}^{-1})
 \end{equation}
@@ -492,8 +529,8 @@ where the dimensionality will often be infered from the context. Note that this 
 
 Explicitly, this is defined as
 \begin{gather}
-\xi_1 ~ N(0, \sigma_\xi^2) 
-\xi_{t+1} ~ N(\xi_{t}, \sigma_{\xi}^2), \ \ \ t = 2, \ldots, T.
+\xi_1 \sim N(0, \sigma_\xi^2) \\
+\xi_{t+1} \sim N(\xi_{t}, \sigma_{\xi}^2), \ \ \ t = 2, \ldots, T.
 \end{gather}
 
 \chapter{Individual trend model}
@@ -686,6 +723,20 @@ The resulting values of $q_i$, however, was barely more accurate than random in 
 
 \section{The cut function}
 
+The BUGS book describes how the cut function should be used when we wish to prevent the feedback from some response data to the variables that it depends on. For example, in PKPD modelling we have two models which have some shared parameters that are fit to two seperate sets data. It is suggested in \citet{lunn} that the conflict between these two data sources will impede the correct fitting of these parameters if we believe that the two sets of data are quantifying the same underlying feature but one is considered to be a less noisy measurment than the other. In this case, we may wish to prevent the feedback of information from the less accurate data to model based on the more accurate data. At least heuristicaly this might make sense as we dont want the non-shared model parameters of the more accurate model to be affected by the low quality data of the other. Although, as mentioned previously, others may disagree with is model formulation. To quote Andrew Gelman,
+\begin{displayquote}
+The reason why I (and others) perceive "cut" as bad news is because when you do "cut",  you are no longer doing Bayesian inference.  To put it another way, if it's really true that you don't want inference going from A to B, I don't think you want it going from B to A either.  Joint distributions go both ways.     
+\end{displayquote}
+It might be more fruitfull to design a prior structure which takes into account the quality of the data, rather than resorting to the breaking of inference. \\
+
+However, to our understanding, this data conflict issue is not present in the BaySTDetect model -- so why do we use the cut function? The original paper \citep{baystdetect} justified its use by asserting it prevents ``double counting'' although it is not clear what this would mean in this context. \\
+
+Evidently the cut model, in some sense, recovers the ground truth better than the fully Bayesian model which seems to describe the data generatively so something must be going on here. We suspect, observing the individual trends, that the trend of each region is being fit primarily via the general trend, with the temporal trends varying wildly in order to influence the posterior density of the regions temporal structure. This leads us to conclude that the fully Bayesian model is not identifiable. This should not come as a surprise. Mixture models are beginning to become notorious for their both idenitfiability issues and difficulty of computation. To quote Michael Betancourt,
+\begin{displayquote}
+Friends don't let friends fit mixture models, at least not for problems that matter.
+\end{displayquote}
+
+When such identifiability arise we can sometimes specify the prior in such a way as to negate teh problem. Such as enforcing an ordering to counter the label swithcing problem. In this context though, we are unaware of any prior or restraint which would solve our issue. This could be a useful avenue for future research.
 
 \chapter{Excess variability model}
 
@@ -918,12 +969,38 @@ For more on this see page 185 of \cite{stan}.
 
 \chapter{Comparisions and conclusions}
 
-It's relative simplicity allows for easier computation
-It is not immediately clear that an abnormal temporal trend is symptomatic of an endemic problem --- variance is a more straightforwardly interpretable parameter
-Identification issues
-Mixture model issues reduced due to setup of variance
+We now consider the relative benefits of each of the techniques we have implemented and suggest some natural avenues by which the models could be improved. A summary of the timing, false-postive and false-negative rates can be found in table 543. \\
 
-Timing things
+The CUSUM procedure, as we have defined, shows excellent sensitivity to the types of pathologies that we which to detect. However, the model performes relatively poorly in terms of specificity -- with the highest false-positive rate of the three techniques. The use of an adaptation to the model, such as the spatial CUSUM, could further improve the model in this respect by the shrinkage granted by a smoothing procedure. \\
+
+Furthermore, the speed at which the CUSUM--as implemented--performs the classification may suit it better to applications where the length of the time interval or the number of regions render the analogous Bayesian methods impractical. \\
+
+The excess variance model performs reasonably well in terms of sensitivity and specificity, although it is outclassed in both of these respects compared to the BaySTDetect model. Though this is to be expected as the generation of the data followed a very similar form to the latter. While we are testing the abilities of the models to detect an unusal temporal trend it is unclear whether such a pathology is truly indicative of those which are epidemiologically significant. Additionaly, the fully Bayesian nature of the variance model may make the interpretation of both the model parameters and the addition of any futher complexity more straightforward. \\
+
+However, we have shown that this model will fall short when we wish to detect a group of unusual areas which are tightly clustered together due to the oversmoothing caused by the BYM prior. Perhaps, as suggested in \cite{best2005comparison}, the model could be improved by the use of a semi-parametric specification of the spatial component or, as mentioned in \cite{bym}, the use of a prior with a different distance metric as both would allow for discontinuities in the risk surface. \\
+
+The BaySTDetect model clearly performs the best on this data but the neccesity of the cut function should be explored further to see if there is a prior structure which allows for a greater independence between the fitting of the geenral and specific temporal trends. Moreover, the fitting of an individual trend to each region is extremely compuationally expensive and may become unfeasible as the number of regions grows. \\
+
+With regards to the timing of the methods, a like-for-like comparison with BUGS was not possible as OpenBUGS had to be used through a compatability layer (WINE) due to operating system requirements over certain aspects of the GeoBUGS package. This disclaimer aside, the original implementation of the BaySTDetect algorithm in \citet{baystdetect} was ran in BUGS to a length that generated a similar effective sample size to that used in Stan. The chains took a number of hours generate these samples---an order of magnitude slower than in Stan---and the Gelman-Rubin statistics, while within reasonable bounds, were not as low as in Stan. \\
+
+Therefore, we have shown that the use of Stan in epidemiological models is both feasable and advantageous over typical implementations. Also note that computational time should scale much better under Hamiltonial Monte-Carlo than under Gibbs and Metropolis-Hastings as outlined earlier, suggesting that for larger and more complex models, that may be explored in the future, software such as Stan may be uniquely suited.
+
+\bgroup
+\def\arraystretch{1.5}%
+\begin{figure}
+\centering
+\begin{tabular}{| c | c | c | c |}
+\hline
+Method & False-positive rate (\%) & False-negative rate (\%) & Wall time (seconds) \\ \hline
+CUSUM & 5.12 & 0.00 & 34 \\ \hline
+BaySTDetect & 0.512 & 0.00 & 1944 \\ \hline
+Excess Variance & 2.05 & 26.7 & 720 \\
+\hline
+\end{tabular}
+\label{fig:table}
+\caption{Comparison of the methods implemented on the simualted data.}
+\end{figure}
+\egroup
 
 \printbibliography
 
