@@ -1,0 +1,74 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{k+kn}{import} \PYGdefault{n+nn}{pystan}
+\PYGdefault{k+kn}{import} \PYGdefault{n+nn}{pandas} \PYGdefault{k+kn}{as} \PYGdefault{n+nn}{pd}
+\PYGdefault{k+kn}{import} \PYGdefault{n+nn}{numpy} \PYGdefault{k+kn}{as} \PYGdefault{n+nn}{np}
+\PYGdefault{k+kn}{import} \PYGdefault{n+nn}{time}
+\PYGdefault{k+kn}{import} \PYGdefault{n+nn}{pickle}
+\PYGdefault{k+kn}{import} \PYGdefault{n+nn}{seaborn} \PYGdefault{k+kn}{as} \PYGdefault{n+nn}{sns}
+\PYGdefault{k+kn}{from} \PYGdefault{n+nn}{matplotlib} \PYGdefault{k+kn}{import} \PYGdefault{n}{pyplot} \PYGdefault{k}{as} \PYGdefault{n}{plt}
+
+\PYGdefault{k}{def} \PYGdefault{n+nf}{load\PYGdefaultZus{}data}\PYGdefault{p}{():}
+    \PYGdefault{n}{temp\PYGdefaultZus{}expected} \PYGdefault{o}{=} \PYGdefault{n}{pd}\PYGdefault{o}{.}\PYGdefault{n}{read\PYGdefaultZus{}csv}\PYGdefault{p}{(}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}../../data/csv/expected.csv\PYGdefaultZsq{}}\PYGdefault{p}{)}
+    \PYGdefault{n}{E} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{array}\PYGdefault{p}{(}\PYGdefault{n}{temp\PYGdefaultZus{}expected}\PYGdefault{p}{[}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}x\PYGdefaultZsq{}}\PYGdefault{p}{])}
+
+    \PYGdefault{n}{temp\PYGdefaultZus{}sim} \PYGdefault{o}{=} \PYGdefault{n}{pd}\PYGdefault{o}{.}\PYGdefault{n}{read\PYGdefaultZus{}csv}\PYGdefault{p}{(}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}../../data/csv/simulated.csv\PYGdefaultZsq{}}\PYGdefault{p}{)}
+    \PYGdefault{n}{temp\PYGdefaultZus{}times} \PYGdefault{o}{=} \PYGdefault{n}{temp\PYGdefaultZus{}sim}\PYGdefault{p}{[[}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time1\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time2\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time3\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time4\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time5\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time6\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time7\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time8\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time9\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time10\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time11\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time12\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time13\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time14\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time15\PYGdefaultZsq{}}\PYGdefault{p}{]]}
+    \PYGdefault{n}{observed\PYGdefaultZus{}values} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{matrix}\PYGdefault{p}{(}\PYGdefault{n}{temp\PYGdefaultZus{}times}\PYGdefault{p}{,} \PYGdefault{n}{dtype}\PYGdefault{o}{=}\PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{int}\PYGdefault{p}{)}
+
+    \PYGdefault{n}{adj} \PYGdefault{o}{=} \PYGdefault{n}{pd}\PYGdefault{o}{.}\PYGdefault{n}{read\PYGdefaultZus{}csv}\PYGdefault{p}{(}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}../../data/csv/adjacency.csv\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{n}{index\PYGdefaultZus{}col}\PYGdefault{o}{=}\PYGdefault{l+m+mi}{0}\PYGdefault{p}{)}
+    \PYGdefault{n}{W} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{matrix}\PYGdefault{p}{(}\PYGdefault{n}{adj}\PYGdefault{p}{)}
+
+    \PYGdefault{n}{numRegions} \PYGdefault{o}{=} \PYGdefault{n}{observed\PYGdefaultZus{}values}\PYGdefault{o}{.}\PYGdefault{n}{shape}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{0}\PYGdefault{p}{]} \PYGdefault{c+c1}{\PYGdefaultZsh{}number of regions}
+    \PYGdefault{n}{nt} \PYGdefault{o}{=} \PYGdefault{n}{observed\PYGdefaultZus{}values}\PYGdefault{o}{.}\PYGdefault{n}{shape}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{1}\PYGdefault{p}{]} \PYGdefault{c+c1}{\PYGdefaultZsh{}number of time points}
+
+    \PYGdefault{n}{alpha} \PYGdefault{o}{=} \PYGdefault{l+m+mf}{0.9} \PYGdefault{c+c1}{\PYGdefaultZsh{}this was 1 in the model but that makes the covariance matrix singular}
+
+    \PYGdefault{k}{return} \PYGdefault{n}{numRegions}\PYGdefault{p}{,} \PYGdefault{n}{nt}\PYGdefault{p}{,} \PYGdefault{n}{E}\PYGdefault{p}{,} \PYGdefault{n}{W}\PYGdefault{p}{,} \PYGdefault{n}{alpha}\PYGdefault{p}{,} \PYGdefault{n}{observed\PYGdefaultZus{}values}
+
+\PYGdefault{n}{numRegions}\PYGdefault{p}{,} \PYGdefault{n}{nt}\PYGdefault{p}{,} \PYGdefault{n}{E}\PYGdefault{p}{,} \PYGdefault{n}{W}\PYGdefault{p}{,} \PYGdefault{n}{alpha}\PYGdefault{p}{,} \PYGdefault{n}{observed\PYGdefaultZus{}values} \PYGdefault{o}{=} \PYGdefault{n}{load\PYGdefaultZus{}data}\PYGdefault{p}{()}
+
+\PYGdefault{n}{model\PYGdefaultZus{}data} \PYGdefault{o}{=} \PYGdefault{p}{\PYGdefaultZob{}}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}numRegions\PYGdefaultZsq{}}\PYGdefault{p}{:} \PYGdefault{n}{numRegions}\PYGdefault{p}{,}
+              \PYGdefault{l+s+s1}{\PYGdefaultZsq{}nt\PYGdefaultZsq{}}\PYGdefault{p}{:} \PYGdefault{n}{nt}\PYGdefault{p}{,}
+              \PYGdefault{l+s+s1}{\PYGdefaultZsq{}observed\PYGdefaultZsq{}}\PYGdefault{p}{:} \PYGdefault{n}{observed\PYGdefaultZus{}values}\PYGdefault{p}{,}
+              \PYGdefault{l+s+s1}{\PYGdefaultZsq{}log\PYGdefaultZus{}expected\PYGdefaultZsq{}}\PYGdefault{p}{:} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{log}\PYGdefault{p}{(}\PYGdefault{n}{E}\PYGdefault{p}{),}
+              \PYGdefault{l+s+s1}{\PYGdefaultZsq{}W\PYGdefaultZus{}n\PYGdefaultZsq{}}\PYGdefault{p}{:} \PYGdefault{n+nb}{int}\PYGdefault{p}{(}\PYGdefault{n}{W}\PYGdefault{o}{.}\PYGdefault{n}{sum}\PYGdefault{p}{()}\PYGdefault{o}{/}\PYGdefault{l+m+mf}{2.0}\PYGdefault{p}{),}
+              \PYGdefault{l+s+s1}{\PYGdefaultZsq{}W\PYGdefaultZsq{}}\PYGdefault{p}{:} \PYGdefault{n}{W}\PYGdefault{p}{,}
+              \PYGdefault{l+s+s1}{\PYGdefaultZsq{}alpha\PYGdefaultZsq{}}\PYGdefault{p}{:} \PYGdefault{n}{alpha}\PYGdefault{p}{\PYGdefaultZcb{}}
+
+\PYGdefault{k}{print}\PYGdefault{p}{(}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}Starting fit at: \PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{n}{time}\PYGdefault{o}{.}\PYGdefault{n}{ctime}\PYGdefault{p}{())}
+
+\PYGdefault{n}{iter\PYGdefaultZus{}num} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{2000}
+
+\PYGdefault{n}{fit} \PYGdefault{o}{=} \PYGdefault{n}{pystan}\PYGdefault{o}{.}\PYGdefault{n}{stan}\PYGdefault{p}{(}\PYGdefault{n+nb}{file}\PYGdefault{o}{=}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}var.stan\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{n}{data}\PYGdefault{o}{=}\PYGdefault{n}{model\PYGdefaultZus{}data}\PYGdefault{p}{,} \PYGdefault{n+nb}{iter}\PYGdefault{o}{=}\PYGdefault{n}{iter\PYGdefaultZus{}num}\PYGdefault{p}{,} \PYGdefault{n}{chains}\PYGdefault{o}{=}\PYGdefault{l+m+mi}{4}\PYGdefault{p}{)}
+
+\PYGdefault{k}{print}\PYGdefault{p}{(}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}Finished fit at: \PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{n}{time}\PYGdefault{o}{.}\PYGdefault{n}{ctime}\PYGdefault{p}{())}
+
+\PYGdefault{n}{trace} \PYGdefault{o}{=} \PYGdefault{n}{fit}\PYGdefault{o}{.}\PYGdefault{n}{extract}\PYGdefault{p}{()}
+
+\PYGdefault{n}{ts} \PYGdefault{o}{=} \PYGdefault{n}{time}\PYGdefault{o}{.}\PYGdefault{n}{localtime}\PYGdefault{p}{()}
+\PYGdefault{n}{file\PYGdefaultZus{}name} \PYGdefault{o}{=} \PYGdefault{l+s+s2}{\PYGdefaultZdq{}trace/model\PYGdefaultZus{}\PYGdefaultZob{}\PYGdefaultZcb{}\PYGdefaultZhy{}\PYGdefaultZob{}\PYGdefaultZcb{}\PYGdefaultZhy{}\PYGdefaultZob{}\PYGdefaultZcb{}\PYGdefaultZus{}\PYGdefaultZus{}\PYGdefaultZob{}\PYGdefaultZcb{}\PYGdefaultZhy{}\PYGdefaultZob{}\PYGdefaultZcb{}.pkl\PYGdefaultZdq{}}\PYGdefault{o}{.}\PYGdefault{n}{format}\PYGdefault{p}{(}\PYGdefault{n}{ts}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{2}\PYGdefault{p}{],} \PYGdefault{n}{ts}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{1}\PYGdefault{p}{],} \PYGdefault{n}{ts}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{0}\PYGdefault{p}{],} \PYGdefault{n}{ts}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{3}\PYGdefault{p}{],} \PYGdefault{n}{ts}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{4}\PYGdefault{p}{])}
+
+\PYGdefault{k}{with} \PYGdefault{n+nb}{open}\PYGdefault{p}{(}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}summary.txt\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}w\PYGdefaultZsq{}}\PYGdefault{p}{)} \PYGdefault{k}{as} \PYGdefault{n}{f}\PYGdefault{p}{:}
+    \PYGdefault{k}{print}\PYGdefault{p}{(}\PYGdefault{n}{fit}\PYGdefault{p}{,} \PYGdefault{n+nb}{file}\PYGdefault{o}{=}\PYGdefault{n}{f}\PYGdefault{p}{)}
+
+\PYGdefault{k}{with} \PYGdefault{n+nb}{open}\PYGdefault{p}{(}\PYGdefault{n}{file\PYGdefaultZus{}name}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}wb\PYGdefaultZsq{}}\PYGdefault{p}{)} \PYGdefault{k}{as} \PYGdefault{n}{f}\PYGdefault{p}{:}
+    \PYGdefault{n}{pickle}\PYGdefault{o}{.}\PYGdefault{n}{dump}\PYGdefault{p}{(}\PYGdefault{n}{trace}\PYGdefault{p}{,} \PYGdefault{n}{f}\PYGdefault{p}{)}
+
+\PYGdefault{n}{true\PYGdefaultZus{}unusual} \PYGdefault{o}{=} \PYGdefault{n}{pd}\PYGdefault{o}{.}\PYGdefault{n}{read\PYGdefaultZus{}csv}\PYGdefault{p}{(}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}../../data/csv/unusual.csv\PYGdefaultZsq{}}\PYGdefault{p}{)}
+\PYGdefault{n}{unusual\PYGdefaultZus{}regions} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{array}\PYGdefault{p}{(}\PYGdefault{n}{true\PYGdefaultZus{}unusual}\PYGdefault{p}{[}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}x\PYGdefaultZsq{}}\PYGdefault{p}{])}
+
+\PYGdefault{n}{indicator} \PYGdefault{o}{=} \PYGdefault{n}{trace}\PYGdefault{p}{[}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}indicator\PYGdefaultZsq{}}\PYGdefault{p}{]}
+\PYGdefault{n}{indicator\PYGdefaultZus{}av} \PYGdefault{o}{=} \PYGdefault{n}{pd}\PYGdefault{o}{.}\PYGdefault{n}{DataFrame}\PYGdefault{p}{(}\PYGdefault{n}{indicator}\PYGdefault{o}{.}\PYGdefault{n}{mean}\PYGdefault{p}{(}\PYGdefault{n}{axis}\PYGdefault{o}{=}\PYGdefault{l+m+mi}{0}\PYGdefault{p}{))}
+
+\PYGdefault{n}{indicator\PYGdefaultZus{}av}\PYGdefault{o}{.}\PYGdefault{n}{index} \PYGdefault{o}{=} \PYGdefault{n+nb}{range}\PYGdefault{p}{(}\PYGdefault{l+m+mi}{1}\PYGdefault{p}{,} \PYGdefault{l+m+mi}{211}\PYGdefault{p}{)}
+\PYGdefault{n}{predictor} \PYGdefault{o}{=} \PYGdefault{n}{indicator\PYGdefaultZus{}av}\PYGdefault{o}{.}\PYGdefault{n}{sort}\PYGdefault{p}{(}\PYGdefault{l+m+mi}{0}\PYGdefault{p}{)}
+\PYGdefault{n}{regions} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{array}\PYGdefault{p}{(}\PYGdefault{n}{predictor}\PYGdefault{o}{.}\PYGdefault{n}{index}\PYGdefault{p}{)}
+
+\PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{savetxt}\PYGdefault{p}{(}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}predicted.csv\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{n}{regions}\PYGdefault{p}{,} \PYGdefault{n}{delimiter}\PYGdefault{o}{=}\PYGdefault{l+s+s1}{\PYGdefaultZsq{},\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{n}{fmt}\PYGdefault{o}{=}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{l+s+si}{\PYGdefaultZpc{}i}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}}\PYGdefault{p}{)}
+
+\PYGdefault{n}{fifteen} \PYGdefault{o}{=} \PYGdefault{n}{regions}\PYGdefault{p}{[}\PYGdefault{o}{\PYGdefaultZhy{}}\PYGdefault{l+m+mi}{15}\PYGdefault{p}{:]}
+
+\PYGdefault{n}{regions\PYGdefaultZus{}identified} \PYGdefault{o}{=} \PYGdefault{n+nb}{set}\PYGdefault{p}{(}\PYGdefault{n}{unusual\PYGdefaultZus{}regions}\PYGdefault{p}{)}\PYGdefault{o}{.}\PYGdefault{n}{intersection}\PYGdefault{p}{(}\PYGdefault{n}{fifteen}\PYGdefault{p}{)}
+
+\PYGdefault{n}{num\PYGdefaultZus{}regions\PYGdefaultZus{}identified} \PYGdefault{o}{=} \PYGdefault{n+nb}{len}\PYGdefault{p}{(}\PYGdefault{n}{regions\PYGdefaultZus{}identified}\PYGdefault{p}{)}
+\end{Verbatim}

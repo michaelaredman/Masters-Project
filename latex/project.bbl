@@ -130,6 +130,50 @@
       \field{pages}{35\bibrangedash 59}
       \range{pages}{25}
     \endentry
+    \entry{conceptual}{article}{}
+      \name{author}{1}{}{%
+        {{uniquename=0,hash=1982fa604a3f94837efceaa53330b2a4}{Betancourt}{B\bibinitperiod}{Michael}{M\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{1982fa604a3f94837efceaa53330b2a4}
+      \strng{fullhash}{1982fa604a3f94837efceaa53330b2a4}
+      \field{sortinit}{B}
+      \field{sortinithash}{4ecbea03efd0532989d3836d1a048c32}
+      \field{labelyear}{2017}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{arXiv preprint arXiv:1701.02434}
+      \field{title}{A Conceptual Introduction to Hamiltonian Monte Carlo}
+      \field{year}{2017}
+    \endentry
+    \entry{geometric}{article}{}
+      \true{moreauthor}
+      \name{author}{4}{}{%
+        {{uniquename=0,hash=1982fa604a3f94837efceaa53330b2a4}{Betancourt}{B\bibinitperiod}{Michael}{M\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=5251f1a0e695f0e0d885ec2633b5d085}{Byrne}{B\bibinitperiod}{Simon}{S\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=c88254b4375921ad777a21e2e9ead9c4}{Livingstone}{L\bibinitperiod}{Sam}{S\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=29d5a93ca5a81c990256c62b097f65bb}{Girolami}{G\bibinitperiod}{Mark}{M\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{2}{%
+        {Bernoulli Society for Mathematical Statistics}%
+        {Probability}%
+      }
+      \strng{namehash}{26fa1bf1e9296d1bfa8db01cc1b3e946}
+      \strng{fullhash}{1aead7bbc7070803f3a3285ad88d0607}
+      \field{sortinit}{B}
+      \field{sortinithash}{4ecbea03efd0532989d3836d1a048c32}
+      \field{labelyear}{2017}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Bernoulli}
+      \field{number}{4A}
+      \field{title}{The geometric foundations of Hamiltonian Monte Carlo}
+      \field{volume}{23}
+      \field{year}{2017}
+      \field{pages}{2257\bibrangedash 2298}
+      \range{pages}{42}
+    \endentry
     \entry{shape}{article}{}
       \name{author}{3}{}{%
         {{uniquename=0,hash=a48f5d015a48190e796b22a334e99aa1}{Bivand}{B\bibinitperiod}{Roger}{R\bibinitperiod}{}{}{}{}}%
@@ -441,6 +485,33 @@
       \field{pages}{kxs005}
       \range{pages}{-1}
     \endentry
+    \entry{lunn}{article}{}
+      \name{author}{5}{}{%
+        {{uniquename=0,hash=42f16391523f208a7d0690014e1fe150}{Lunn}{L\bibinitperiod}{David}{D\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=0b722de921c70fe17432894948d786b1}{Best}{B\bibinitperiod}{Nicky}{N\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=dadfd2ad5a7739518422ca8ed14b77cf}{Spiegelhalter}{S\bibinitperiod}{David}{D\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=48cae0e80b6011177c9ccfc27510f52a}{Graham}{G\bibinitperiod}{Gordon}{G\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=d7038f33425f779f1991b1c41602392b}{Neuenschwander}{N\bibinitperiod}{Beat}{B\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{e4c073ff33c98182b2ced6b1af4de70f}
+      \strng{fullhash}{691ad26c4670e929ab4149f7d9794a08}
+      \field{sortinit}{L}
+      \field{sortinithash}{872351f18d0f736066eda0bf18bfa4f7}
+      \field{labelyear}{2009}
+      \field{datelabelsource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Pharmacokinetics and Pharmacodynamics}
+      \field{number}{1}
+      \field{title}{Combining MCMC with sequential PKPD modelling}
+      \field{volume}{36}
+      \field{year}{2009}
+      \field{pages}{19}
+      \range{pages}{1}
+    \endentry
     \entry{bugs}{book}{}
       \name{author}{5}{}{%
         {{uniquename=0,hash=42f16391523f208a7d0690014e1fe150}{Lunn}{L\bibinitperiod}{David}{D\bibinitperiod}{}{}{}{}}%
@@ -667,6 +738,7 @@
       \field{year}{1998}
     \endentry
   \endsortlist
+  \missing{(}
   \missing{spatial}
 \endrefsection
 \endinput

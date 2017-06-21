@@ -1,0 +1,84 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{k+kn}{library}\PYGdefault{p}{(}maptools\PYGdefault{p}{)}
+\PYGdefault{k+kn}{library}\PYGdefault{p}{(}CARBayesdata\PYGdefault{p}{)}
+\PYGdefault{k+kn}{library}\PYGdefault{p}{(}rgdal\PYGdefault{p}{)}
+\PYGdefault{k+kn}{library}\PYGdefault{p}{(}spdep\PYGdefault{p}{)}
+\PYGdefault{k+kn}{library}\PYGdefault{p}{(}MASS\PYGdefault{p}{)}
+\PYGdefault{k+kn}{library}\PYGdefault{p}{(}classInt\PYGdefault{p}{)}
+\PYGdefault{k+kn}{library}\PYGdefault{p}{(}RColorBrewer\PYGdefault{p}{)}
+\PYGdefault{k+kp}{setwd}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}\PYGdefaultZti{}/4th Year/project/data/shapefiles\PYGdefaultZdq{}}\PYGdefault{p}{)}
+shape.basic \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} readOGR\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZsq{}.\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s}{\PYGdefaultZsq{}CCG\PYGdefaultZus{}BSC Feb2013  (clipcoast 200m)\PYGdefaultZsq{}}\PYGdefault{p}{)}
+shape\PYGdefaultZus{}deathtowales \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} shape.basic\PYGdefault{p}{[}shape.basic\PYGdefault{o}{@}data\PYGdefault{o}{\PYGdefaultZdl{}}CCGname \PYGdefault{o}{!=} \PYGdefault{l+s}{\PYGdefaultZsq{}Wales\PYGdefaultZsq{}}\PYGdefault{p}{,]}
+shape \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} shape\PYGdefaultZus{}deathtowales\PYGdefault{p}{[}shape\PYGdefaultZus{}deathtowales\PYGdefault{o}{@}data\PYGdefault{o}{\PYGdefaultZdl{}}CCGname \PYGdefault{o}{!=} \PYGdefault{l+s}{\PYGdefaultZsq{}NHS Isle of Wight CCG\PYGdefaultZsq{}}\PYGdefault{p}{,]}
+\PYGdefault{k+kp}{load}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}\PYGdefaultZti{}/4th Year/project/data/rdata/expected\PYGdefaultZus{}data.Rda\PYGdefaultZdq{}}\PYGdefault{p}{)}
+asthma \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} asthma\PYGdefaultZus{}expected\PYGdefaultZus{}i\PYGdefault{p}{[}asthma\PYGdefaultZus{}expected\PYGdefaultZus{}i\PYGdefault{o}{\PYGdefaultZdl{}}CCG \PYGdefault{o}{!=} \PYGdefault{l+s}{\PYGdefaultZsq{}10L\PYGdefaultZsq{}}\PYGdefault{p}{,]}
+expected \PYGdefault{o}{=} \PYGdefault{k+kp}{as.vector}\PYGdefault{p}{(}asthma\PYGdefault{p}{[}\PYGdefault{l+s}{\PYGdefaultZsq{}E\PYGdefaultZsq{}}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZdl{}}E\PYGdefault{p}{)}
+
+unusual\PYGdefaultZus{}temp \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} read.csv\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZsq{}\PYGdefaultZti{}/4th Year/project/data/csv/prefUnusual.csv\PYGdefaultZsq{}}\PYGdefault{p}{,} header\PYGdefault{o}{=}\PYGdefault{k+kc}{FALSE}\PYGdefault{p}{)}
+unusual \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} \PYGdefault{k+kp}{sort}\PYGdefault{p}{(}unusual\PYGdefaultZus{}temp\PYGdefault{o}{\PYGdefaultZdl{}}V1\PYGdefault{p}{)} \PYGdefault{o}{+} \PYGdefault{l+m}{1} \PYGdefault{c+c1}{\PYGdefaultZsh{}add one as python had zero index}
+
+numRegions \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} \PYGdefault{k+kp}{length}\PYGdefault{p}{(}shape\PYGdefault{o}{@}data\PYGdefault{o}{\PYGdefaultZdl{}}SP\PYGdefaultZus{}ID\PYGdefault{p}{)}
+cols \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} \PYGdefault{k+kp}{rep}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZsq{}white\PYGdefaultZsq{}}\PYGdefault{p}{,} numRegions\PYGdefault{p}{)}
+cols\PYGdefault{p}{[}unusual\PYGdefault{p}{]} \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} \PYGdefault{k+kp}{rep}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZsq{}yellow\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{k+kp}{length}\PYGdefault{p}{(}unusual\PYGdefault{p}{))}
+
+plot\PYGdefault{p}{(}shape\PYGdefault{p}{,} col\PYGdefault{o}{=}cols\PYGdefault{p}{)}
+
+random\PYGdefaultZus{}walk \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} \PYGdefault{k+kr}{function}\PYGdefault{p}{(}len\PYGdefault{p}{,} sigma\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+  walk \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} \PYGdefault{k+kp}{rep}\PYGdefault{p}{(}\PYGdefault{l+m}{0}\PYGdefault{p}{,} len\PYGdefault{p}{)}
+  walk\PYGdefault{p}{[}\PYGdefault{l+m}{1}\PYGdefault{p}{]} \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} rnorm\PYGdefault{p}{(}\PYGdefault{l+m}{1}\PYGdefault{p}{,} sd\PYGdefault{o}{=}sigma\PYGdefault{p}{)}
+  \PYGdefault{k+kr}{for}\PYGdefault{p}{(}i \PYGdefault{k+kr}{in} \PYGdefault{l+m}{2}\PYGdefault{o}{:}len\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+    walk\PYGdefault{p}{[}i\PYGdefault{p}{]} \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} walk\PYGdefault{p}{[}i\PYGdefault{l+m}{\PYGdefaultZhy{}1}\PYGdefault{p}{]} \PYGdefault{o}{+} rnorm\PYGdefault{p}{(}\PYGdefault{l+m}{1}\PYGdefault{p}{,} sd\PYGdefault{o}{=}sigma\PYGdefault{p}{)}
+  \PYGdefault{p}{\PYGdefaultZcb{}}
+  \PYGdefault{k+kr}{return}\PYGdefault{p}{(}walk\PYGdefault{p}{)}
+\PYGdefault{p}{\PYGdefaultZcb{}}
+
+\PYGdefault{k+kp}{set.seed}\PYGdefault{p}{(}\PYGdefault{l+m}{314}\PYGdefault{p}{)}
+
+rwalk \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} random\PYGdefaultZus{}walk\PYGdefault{p}{(}len\PYGdefault{o}{=}\PYGdefault{l+m}{15}\PYGdefault{p}{,} sigma\PYGdefault{o}{=}\PYGdefault{l+m}{0.1}\PYGdefault{p}{)}
+rwalk \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} rwalk \PYGdefault{o}{\PYGdefaultZhy{}} \PYGdefault{k+kp}{mean}\PYGdefault{p}{(}rwalk\PYGdefault{p}{)}
+
+rwalk\PYGdefaultZus{}unusual \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} rwalk
+rwalk\PYGdefaultZus{}unusual\PYGdefault{p}{[}\PYGdefault{l+m}{10}\PYGdefault{o}{:}\PYGdefault{l+m}{15}\PYGdefault{p}{]} \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} rwalk\PYGdefaultZus{}unusual\PYGdefault{p}{[}\PYGdefault{l+m}{10}\PYGdefault{o}{:}\PYGdefault{l+m}{15}\PYGdefault{p}{]} \PYGdefault{o}{+} \PYGdefault{k+kp}{abs}\PYGdefault{p}{(}rnorm\PYGdefault{p}{(}n\PYGdefault{o}{=}\PYGdefault{l+m}{6}\PYGdefault{p}{,} sd \PYGdefault{o}{=} \PYGdefault{l+m}{0.3}\PYGdefault{p}{))}
+
+plot\PYGdefault{p}{(}rwalk\PYGdefaultZus{}unusual\PYGdefault{p}{,} type\PYGdefault{o}{=}\PYGdefault{l+s}{\PYGdefaultZsq{}l\PYGdefaultZsq{}}\PYGdefault{p}{,} col\PYGdefault{o}{=}\PYGdefault{l+s}{\PYGdefaultZsq{}red\PYGdefaultZsq{}}\PYGdefault{p}{,} ylab \PYGdefault{o}{=} \PYGdefault{l+s}{\PYGdefaultZsq{}Temporal trend\PYGdefaultZsq{}}\PYGdefault{p}{,} xlab \PYGdefault{o}{=} \PYGdefault{l+s}{\PYGdefaultZsq{}t\PYGdefaultZsq{}}\PYGdefault{p}{)}
+lines\PYGdefault{p}{(}rwalk\PYGdefault{p}{,} type\PYGdefault{o}{=}\PYGdefault{l+s}{\PYGdefaultZsq{}l\PYGdefaultZsq{}}\PYGdefault{p}{,} col\PYGdefault{o}{=}\PYGdefault{l+s}{\PYGdefaultZsq{}blue\PYGdefaultZsq{}}\PYGdefault{p}{)}
+
+neib \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} poly2nb\PYGdefault{p}{(}shape\PYGdefault{p}{)}
+adj \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} nb2mat\PYGdefault{p}{(}neib\PYGdefault{p}{,} style\PYGdefault{o}{=}\PYGdefault{l+s}{\PYGdefaultZdq{}B\PYGdefaultZdq{}}\PYGdefault{p}{)}
+num.neib \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} \PYGdefault{k+kp}{colSums}\PYGdefault{p}{(}adj\PYGdefault{p}{)}
+alpha \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} \PYGdefault{l+m}{0.9}
+prec.matrix \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} \PYGdefault{k+kp}{diag}\PYGdefault{p}{(}num.neib\PYGdefault{p}{)} \PYGdefault{o}{\PYGdefaultZhy{}} alpha\PYGdefault{o}{*}adj
+cov.matrix \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} \PYGdefault{k+kp}{solve}\PYGdefault{p}{(}prec.matrix\PYGdefault{p}{)}
+spatial.sd \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} \PYGdefault{l+m}{0.02}
+
+CAR \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} mvrnorm\PYGdefault{p}{(}mu\PYGdefault{o}{=}\PYGdefault{k+kp}{rep}\PYGdefault{p}{(}\PYGdefault{l+m}{0}\PYGdefault{p}{,} \PYGdefault{k+kp}{length}\PYGdefault{p}{(}num.neib\PYGdefault{p}{)),} Sigma\PYGdefault{o}{=}cov.matrix\PYGdefault{o}{*}spatial.sd\PYGdefault{p}{)}
+
+class \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} classIntervals\PYGdefault{p}{(}CAR\PYGdefault{p}{,} \PYGdefault{l+m}{9}\PYGdefault{p}{,} style\PYGdefault{o}{=}\PYGdefault{l+s}{\PYGdefaultZdq{}quantile\PYGdefaultZdq{}}\PYGdefault{p}{)}
+display.brewer.pal\PYGdefault{p}{(}name \PYGdefault{o}{=} \PYGdefault{l+s}{\PYGdefaultZdq{}YlOrRd\PYGdefaultZdq{}}\PYGdefault{p}{,} n\PYGdefault{o}{=}\PYGdefault{l+m}{9}\PYGdefault{p}{)}
+plotclr \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} brewer.pal\PYGdefault{p}{(}\PYGdefault{l+m}{9}\PYGdefault{p}{,}\PYGdefault{l+s}{\PYGdefaultZdq{}YlOrRd\PYGdefaultZdq{}}\PYGdefault{p}{)}
+colcode \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} findColours\PYGdefault{p}{(}\PYGdefault{k+kp}{class}\PYGdefault{p}{,} plotclr\PYGdefault{p}{)}
+plot\PYGdefault{p}{(}shape\PYGdefault{p}{,} col\PYGdefault{o}{=}colcode\PYGdefault{p}{)}
+
+mu \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} \PYGdefault{k+kt}{matrix}\PYGdefault{p}{(}data\PYGdefault{o}{=}\PYGdefault{l+m}{0}\PYGdefault{p}{,} nrow\PYGdefault{o}{=}\PYGdefault{l+m}{210}\PYGdefault{p}{,} ncol\PYGdefault{o}{=}\PYGdefault{l+m}{15}\PYGdefault{p}{)}
+\PYGdefault{k+kr}{for}\PYGdefault{p}{(}i \PYGdefault{k+kr}{in} \PYGdefault{l+m}{1}\PYGdefault{o}{:}\PYGdefault{l+m}{210}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+  mu\PYGdefault{p}{[}i\PYGdefault{p}{,} \PYGdefault{p}{]} \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} mu\PYGdefault{p}{[}i\PYGdefault{p}{,} \PYGdefault{p}{]} \PYGdefault{o}{+} rwalk
+\PYGdefault{p}{\PYGdefaultZcb{}}
+\PYGdefault{k+kr}{for}\PYGdefault{p}{(}i \PYGdefault{k+kr}{in} unusual\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+  mu\PYGdefault{p}{[}i\PYGdefault{p}{,} \PYGdefault{p}{]} \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} rwalk\PYGdefaultZus{}unusual
+\PYGdefault{p}{\PYGdefaultZcb{}}
+\PYGdefault{k+kr}{for}\PYGdefault{p}{(}i \PYGdefault{k+kr}{in} \PYGdefault{l+m}{1}\PYGdefault{o}{:}\PYGdefault{l+m}{15}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+  mu\PYGdefault{p}{[,} i\PYGdefault{p}{]} \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} mu\PYGdefault{p}{[,} i\PYGdefault{p}{]} \PYGdefault{o}{+} CAR \PYGdefault{o}{+} \PYGdefault{k+kp}{log}\PYGdefault{p}{(}expected\PYGdefault{p}{)}
+\PYGdefault{p}{\PYGdefaultZcb{}}
+rate.matrix \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} \PYGdefault{k+kp}{exp}\PYGdefault{p}{(}mu\PYGdefault{p}{)}
+
+pois \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} \PYGdefault{k+kr}{function}\PYGdefault{p}{(}lambda\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}rpois\PYGdefault{p}{(}n\PYGdefault{o}{=}\PYGdefault{l+m}{1}\PYGdefault{p}{,} lambda\PYGdefault{p}{)\PYGdefaultZcb{}}
+simulated \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} \PYGdefault{k+kp}{apply}\PYGdefault{p}{(}rate.matrix\PYGdefault{p}{,} MARGIN\PYGdefault{o}{=}\PYGdefault{k+kt}{c}\PYGdefault{p}{(}\PYGdefault{l+m}{1}\PYGdefault{p}{,} \PYGdefault{l+m}{2}\PYGdefault{p}{),} FUN\PYGdefault{o}{=}pois\PYGdefault{p}{)}
+write.csv\PYGdefault{p}{(}simulated\PYGdefault{p}{,} \PYGdefault{l+s}{\PYGdefaultZsq{}\PYGdefaultZti{}/4th Year/project/data/csv/simulated\PYGdefaultZus{}spatial\PYGdefaultZus{}corr.csv\PYGdefaultZsq{}}\PYGdefault{p}{)}
+
+\PYGdefault{k+kr}{for}\PYGdefault{p}{(}i \PYGdefault{k+kr}{in} \PYGdefault{l+m}{1}\PYGdefault{o}{:}\PYGdefault{l+m}{15}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+  class2 \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} classIntervals\PYGdefault{p}{(}simulated\PYGdefault{p}{[,}i\PYGdefault{p}{],} \PYGdefault{l+m}{9}\PYGdefault{p}{,} style\PYGdefault{o}{=}\PYGdefault{l+s}{\PYGdefaultZdq{}quantile\PYGdefaultZdq{}}\PYGdefault{p}{)}
+  plotclr2 \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} brewer.pal\PYGdefault{p}{(}\PYGdefault{l+m}{9}\PYGdefault{p}{,}\PYGdefault{l+s}{\PYGdefaultZdq{}YlOrRd\PYGdefaultZdq{}}\PYGdefault{p}{)}
+  colcode2 \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} findColours\PYGdefault{p}{(}class2\PYGdefault{p}{,} plotclr2\PYGdefault{p}{)}
+  plot\PYGdefault{p}{(}shape\PYGdefault{p}{,} col\PYGdefault{o}{=}colcode2\PYGdefault{p}{)}
+\PYGdefault{p}{\PYGdefaultZcb{}}
+\end{Verbatim}

@@ -1,0 +1,63 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{k+kn}{import} \PYGdefault{n+nn}{numpy} \PYGdefault{k+kn}{as} \PYGdefault{n+nn}{np}
+\PYGdefault{k+kn}{import} \PYGdefault{n+nn}{pandas} \PYGdefault{k+kn}{as} \PYGdefault{n+nn}{pd}
+
+\PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{random}\PYGdefault{o}{.}\PYGdefault{n}{seed}\PYGdefault{p}{(}\PYGdefault{l+m+mi}{21}\PYGdefault{p}{)}
+
+\PYGdefault{n}{adj} \PYGdefault{o}{=} \PYGdefault{n}{pd}\PYGdefault{o}{.}\PYGdefault{n}{read\PYGdefaultZus{}csv}\PYGdefault{p}{(}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}../data/csv/adjacency.csv\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{n}{index\PYGdefaultZus{}col}\PYGdefault{o}{=}\PYGdefault{l+m+mi}{0}\PYGdefault{p}{)}
+\PYGdefault{n}{W} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{matrix}\PYGdefault{p}{(}\PYGdefault{n}{adj}\PYGdefault{p}{)}
+
+\PYGdefault{k}{class} \PYGdefault{n+nc}{generate\PYGdefaultZus{}unusual}\PYGdefault{p}{:}
+    \PYGdefault{l+s+sd}{\PYGdefaultZdq{}\PYGdefaultZdq{}\PYGdefaultZdq{}}
+\PYGdefault{l+s+sd}{    Iterative selector for regions from an adjacency matrix with preferential attatchment}
+\PYGdefault{l+s+sd}{    \PYGdefaultZdq{}\PYGdefaultZdq{}\PYGdefaultZdq{}}
+
+    \PYGdefault{k}{def} \PYGdefault{n+nf}{\PYGdefaultZus{}\PYGdefaultZus{}init\PYGdefaultZus{}\PYGdefaultZus{}}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{p}{,} \PYGdefault{n}{adj}\PYGdefault{p}{,} \PYGdefault{n}{pref\PYGdefaultZus{}weight}\PYGdefault{o}{=}\PYGdefault{l+m+mi}{1}\PYGdefault{p}{):}
+
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{adj} \PYGdefault{o}{=} \PYGdefault{n}{adj}
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{num\PYGdefaultZus{}regions} \PYGdefault{o}{=} \PYGdefault{n}{adj}\PYGdefault{o}{.}\PYGdefault{n}{shape}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{0}\PYGdefault{p}{]}
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{pref\PYGdefaultZus{}weight} \PYGdefault{o}{=} \PYGdefault{n}{pref\PYGdefaultZus{}weight}
+
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{nodes} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{array}\PYGdefault{p}{(}\PYGdefault{n+nb}{range}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{num\PYGdefaultZus{}regions}\PYGdefault{p}{))}
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{weights} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{ones}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{num\PYGdefaultZus{}regions}\PYGdefault{p}{)}
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{unusual} \PYGdefault{o}{=} \PYGdefault{p}{[]}
+
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{form\PYGdefaultZus{}probabilities}\PYGdefault{p}{()}
+
+    \PYGdefault{k}{def} \PYGdefault{n+nf}{form\PYGdefaultZus{}probabilities}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{p}{):}
+        \PYGdefault{l+s+sd}{\PYGdefaultZdq{}\PYGdefaultZdq{}\PYGdefaultZdq{}}
+\PYGdefault{l+s+sd}{        Calculate the vector of probabilities corresponding to each region being picked as the next regions to be selected}
+\PYGdefault{l+s+sd}{        \PYGdefaultZdq{}\PYGdefaultZdq{}\PYGdefaultZdq{}}
+        \PYGdefault{n}{total\PYGdefaultZus{}weight} \PYGdefault{o}{=} \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{weights}\PYGdefault{o}{.}\PYGdefault{n}{sum}\PYGdefault{p}{()}
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{prob} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{array}\PYGdefault{p}{([}\PYGdefault{n}{weight}\PYGdefault{o}{/}\PYGdefault{n}{total\PYGdefaultZus{}weight} \PYGdefault{k}{for} \PYGdefault{n}{weight} \PYGdefault{o+ow}{in} \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{weights}\PYGdefault{p}{])}
+
+    \PYGdefault{k}{def} \PYGdefault{n+nf}{select\PYGdefaultZus{}node}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{p}{):}
+        \PYGdefault{n}{new\PYGdefaultZus{}node} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{random}\PYGdefault{o}{.}\PYGdefault{n}{choice}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{nodes}\PYGdefault{p}{,} \PYGdefault{n}{p} \PYGdefault{o}{=} \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{prob}\PYGdefault{p}{)}
+        \PYGdefault{k}{return} \PYGdefault{n}{new\PYGdefaultZus{}node}
+
+    \PYGdefault{k}{def} \PYGdefault{n+nf}{remove\PYGdefaultZus{}node}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{p}{,} \PYGdefault{n}{new\PYGdefaultZus{}node}\PYGdefault{p}{):}
+        \PYGdefault{n}{index} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{where}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{nodes} \PYGdefault{o}{==} \PYGdefault{n}{new\PYGdefaultZus{}node}\PYGdefault{p}{)[}\PYGdefault{l+m+mi}{0}\PYGdefault{p}{][}\PYGdefault{l+m+mi}{0}\PYGdefault{p}{]}
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{nodes} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{delete}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{nodes}\PYGdefault{p}{,} \PYGdefault{n}{index}\PYGdefault{p}{)}
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{weights} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{delete}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{weights}\PYGdefault{p}{,} \PYGdefault{n}{index}\PYGdefault{p}{)}
+
+    \PYGdefault{k}{def} \PYGdefault{n+nf}{update\PYGdefaultZus{}weights}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{p}{,} \PYGdefault{n}{new\PYGdefaultZus{}node}\PYGdefault{p}{):}
+        \PYGdefault{n}{new\PYGdefaultZus{}node\PYGdefaultZus{}adj} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{array}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{adj}\PYGdefault{p}{[}\PYGdefault{n}{new\PYGdefaultZus{}node}\PYGdefault{p}{])[}\PYGdefault{l+m+mi}{0}\PYGdefault{p}{]}
+        \PYGdefault{n}{neib} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{where}\PYGdefault{p}{(}\PYGdefault{n}{new\PYGdefaultZus{}node\PYGdefaultZus{}adj} \PYGdefault{o}{==} \PYGdefault{l+m+mi}{1}\PYGdefault{p}{)[}\PYGdefault{l+m+mi}{0}\PYGdefault{p}{]}
+        \PYGdefault{c+c1}{\PYGdefaultZsh{}get the indicies of each neighbour in the remaining list of nodes}
+        \PYGdefault{n}{indicies} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{concatenate}\PYGdefault{p}{([}\PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{where}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{nodes} \PYGdefault{o}{==} \PYGdefault{n}{node}\PYGdefault{p}{)[}\PYGdefault{l+m+mi}{0}\PYGdefault{p}{]} \PYGdefault{k}{for} \PYGdefault{n}{node} \PYGdefault{o+ow}{in} \PYGdefault{n}{neib}\PYGdefault{p}{])}
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{weights}\PYGdefault{p}{[}\PYGdefault{n}{indicies}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{weights}\PYGdefault{p}{[}\PYGdefault{n}{indicies}\PYGdefault{p}{]} \PYGdefault{o}{+} \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{pref\PYGdefaultZus{}weight}
+
+    \PYGdefault{k}{def} \PYGdefault{n+nf}{sample}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{p}{,} \PYGdefault{n}{sample\PYGdefaultZus{}size}\PYGdefault{p}{):}
+        \PYGdefault{k}{for} \PYGdefault{n}{i} \PYGdefault{o+ow}{in} \PYGdefault{n+nb}{range}\PYGdefault{p}{(}\PYGdefault{n}{sample\PYGdefaultZus{}size}\PYGdefault{p}{):}
+            \PYGdefault{n}{new\PYGdefaultZus{}node} \PYGdefault{o}{=} \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{select\PYGdefaultZus{}node}\PYGdefault{p}{()}
+            \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{remove\PYGdefaultZus{}node}\PYGdefault{p}{(}\PYGdefault{n}{new\PYGdefaultZus{}node}\PYGdefault{p}{)}
+            \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{update\PYGdefaultZus{}weights}\PYGdefault{p}{(}\PYGdefault{n}{new\PYGdefaultZus{}node}\PYGdefault{p}{)}
+            \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{form\PYGdefaultZus{}probabilities}\PYGdefault{p}{()}
+            \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{unusual}\PYGdefault{o}{.}\PYGdefault{n}{append}\PYGdefault{p}{(}\PYGdefault{n}{new\PYGdefaultZus{}node}\PYGdefault{p}{)}
+
+\PYGdefault{n}{gen} \PYGdefault{o}{=} \PYGdefault{n}{generate\PYGdefaultZus{}unusual}\PYGdefault{p}{(}\PYGdefault{n}{W}\PYGdefault{p}{,} \PYGdefault{n}{pref\PYGdefaultZus{}weight}\PYGdefault{o}{=}\PYGdefault{l+m+mi}{20}\PYGdefault{p}{)}
+\PYGdefault{n}{gen}\PYGdefault{o}{.}\PYGdefault{n}{sample}\PYGdefault{p}{(}\PYGdefault{l+m+mi}{15}\PYGdefault{p}{)}
+
+\PYGdefault{n}{unusual} \PYGdefault{o}{=} \PYGdefault{n}{gen}\PYGdefault{o}{.}\PYGdefault{n}{unusual}
+\PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{savetxt}\PYGdefault{p}{(}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}../data/csv/prefUnusual.csv\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{n}{unusual}\PYGdefault{p}{)}
+\end{Verbatim}

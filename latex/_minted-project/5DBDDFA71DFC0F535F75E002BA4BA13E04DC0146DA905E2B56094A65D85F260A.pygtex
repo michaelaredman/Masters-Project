@@ -1,0 +1,136 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+functions \PYGdefault{p}{\PYGdefaultZob{}}
+  \PYGdefault{o}{/**}
+  \PYGdefault{o}{*} This part is taken from Max Joseph\PYGdefault{l+s}{\PYGdefaultZsq{}s write\PYGdefaultZhy{}up here: http://mc\PYGdefaultZhy{}stan.org/documentation/case\PYGdefaultZhy{}studies/mbjoseph\PYGdefaultZhy{}CARStan.html}
+\PYGdefault{l+s}{  *}
+\PYGdefault{l+s}{  * Return the log probability of a proper conditional autoregressive (CAR) prior}
+\PYGdefault{l+s}{  * with a sparse representation for the adjacency matrix}
+\PYGdefault{l+s}{  *}
+\PYGdefault{l+s}{  * @param phi Vector containing the parameters with a CAR prior}
+\PYGdefault{l+s}{  * @param tau Precision parameter for the CAR prior (real)}
+\PYGdefault{l+s}{  * @param alpha Dependence (usually spatial) parameter for the CAR prior (real)}
+\PYGdefault{l+s}{  * @param W\PYGdefaultZus{}sparse Sparse representation of adjacency matrix (int array)}
+\PYGdefault{l+s}{  * @param n Length of phi (int)}
+\PYGdefault{l+s}{  * @param W\PYGdefaultZus{}n Number of adjacent pairs (int)}
+\PYGdefault{l+s}{  * @param D\PYGdefaultZus{}sparse Number of neighbors for each location (vector)}
+\PYGdefault{l+s}{  * @param lambda Eigenvalues of D\PYGdefaultZca{}\PYGdefaultZob{}\PYGdefaultZhy{}1/2\PYGdefaultZcb{}*W*D\PYGdefaultZca{}\PYGdefaultZob{}\PYGdefaultZhy{}1/2\PYGdefaultZcb{} (vector)}
+\PYGdefault{l+s}{  *}
+\PYGdefault{l+s}{  * @return Log probability density of CAR prior up to additive constant}
+\PYGdefault{l+s}{  */}
+\PYGdefault{l+s}{  real sparse\PYGdefaultZus{}car\PYGdefaultZus{}lpdf(vector phi, real tau, real alpha,}
+\PYGdefault{l+s}{    int[,] W\PYGdefaultZus{}sparse, vector D\PYGdefaultZus{}sparse, vector lambda, int n, int W\PYGdefaultZus{}n) \PYGdefaultZob{}}
+\PYGdefault{l+s}{      row\PYGdefaultZus{}vector[n] phit\PYGdefaultZus{}D; // phi\PYGdefaultZsq{}} \PYGdefault{o}{*} D
+      row\PYGdefaultZus{}vector\PYGdefault{p}{[}n\PYGdefault{p}{]} phit\PYGdefaultZus{}W\PYGdefault{p}{;} \PYGdefault{o}{//} phi\PYGdefault{l+s}{\PYGdefaultZsq{} * W}
+\PYGdefault{l+s}{      vector[n] ldet\PYGdefaultZus{}terms;}
+
+\PYGdefault{l+s}{      phit\PYGdefaultZus{}D = (phi .* D\PYGdefaultZus{}sparse)\PYGdefaultZsq{}}\PYGdefault{p}{;}
+      phit\PYGdefaultZus{}W \PYGdefault{o}{=} rep\PYGdefaultZus{}row\PYGdefaultZus{}vector\PYGdefault{p}{(}\PYGdefault{l+m}{0}\PYGdefault{p}{,} n\PYGdefault{p}{);}
+      \PYGdefault{k+kr}{for} \PYGdefault{p}{(}i \PYGdefault{k+kr}{in} \PYGdefault{l+m}{1}\PYGdefault{o}{:}W\PYGdefaultZus{}n\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+        phit\PYGdefaultZus{}W\PYGdefault{p}{[}W\PYGdefaultZus{}sparse\PYGdefault{p}{[}i\PYGdefault{p}{,} \PYGdefault{l+m}{1}\PYGdefault{p}{]]} \PYGdefault{o}{=} phit\PYGdefaultZus{}W\PYGdefault{p}{[}W\PYGdefaultZus{}sparse\PYGdefault{p}{[}i\PYGdefault{p}{,} \PYGdefault{l+m}{1}\PYGdefault{p}{]]} \PYGdefault{o}{+} phi\PYGdefault{p}{[}W\PYGdefaultZus{}sparse\PYGdefault{p}{[}i\PYGdefault{p}{,} \PYGdefault{l+m}{2}\PYGdefault{p}{]];}
+        phit\PYGdefaultZus{}W\PYGdefault{p}{[}W\PYGdefaultZus{}sparse\PYGdefault{p}{[}i\PYGdefault{p}{,} \PYGdefault{l+m}{2}\PYGdefault{p}{]]} \PYGdefault{o}{=} phit\PYGdefaultZus{}W\PYGdefault{p}{[}W\PYGdefaultZus{}sparse\PYGdefault{p}{[}i\PYGdefault{p}{,} \PYGdefault{l+m}{2}\PYGdefault{p}{]]} \PYGdefault{o}{+} phi\PYGdefault{p}{[}W\PYGdefaultZus{}sparse\PYGdefault{p}{[}i\PYGdefault{p}{,} \PYGdefault{l+m}{1}\PYGdefault{p}{]];}
+      \PYGdefault{p}{\PYGdefaultZcb{}}
+
+      \PYGdefault{k+kr}{for} \PYGdefault{p}{(}i \PYGdefault{k+kr}{in} \PYGdefault{l+m}{1}\PYGdefault{o}{:}n\PYGdefault{p}{)} ldet\PYGdefaultZus{}terms\PYGdefault{p}{[}i\PYGdefault{p}{]} \PYGdefault{o}{=} log1m\PYGdefault{p}{(}alpha \PYGdefault{o}{*} lambda\PYGdefault{p}{[}i\PYGdefault{p}{]);}
+      \PYGdefault{k+kr}{return} \PYGdefault{l+m}{0.5} \PYGdefault{o}{*} \PYGdefault{p}{(}n \PYGdefault{o}{*} \PYGdefault{k+kp}{log}\PYGdefault{p}{(}tau\PYGdefault{p}{)}
+                    \PYGdefault{o}{+} \PYGdefault{k+kp}{sum}\PYGdefault{p}{(}ldet\PYGdefaultZus{}terms\PYGdefault{p}{)}
+                    \PYGdefault{o}{\PYGdefaultZhy{}} tau \PYGdefault{o}{*} \PYGdefault{p}{(}phit\PYGdefaultZus{}D \PYGdefault{o}{*} phi \PYGdefault{o}{\PYGdefaultZhy{}} alpha \PYGdefault{o}{*} \PYGdefault{p}{(}phit\PYGdefaultZus{}W \PYGdefault{o}{*} phi\PYGdefault{p}{)));}
+  \PYGdefault{p}{\PYGdefaultZcb{}}
+\PYGdefault{p}{\PYGdefaultZcb{}}
+data \PYGdefault{p}{\PYGdefaultZob{}}
+    int\PYGdefault{o}{\PYGdefaultZlt{}}lower \PYGdefault{o}{=} \PYGdefault{l+m}{1}\PYGdefault{o}{\PYGdefaultZgt{}} numRegions\PYGdefault{p}{;} \PYGdefault{o}{//} The number of regions
+    int\PYGdefault{o}{\PYGdefaultZlt{}}lower \PYGdefault{o}{=} \PYGdefault{l+m}{1}\PYGdefault{o}{\PYGdefaultZgt{}} nt\PYGdefault{p}{;} \PYGdefault{o}{//} The number of time points
+    \PYGdefault{o}{//} \PYGdefault{k+kt}{matrix}\PYGdefault{p}{[}numRegions\PYGdefault{p}{,} nt\PYGdefault{p}{]} observed\PYGdefault{p}{;}  \PYGdefault{o}{//} The observed counts at each point
+    int observed\PYGdefault{p}{[}numRegions\PYGdefault{p}{,} nt\PYGdefault{p}{];}
+    \PYGdefault{k+kt}{vector}\PYGdefault{p}{[}numRegions\PYGdefault{p}{]} log\PYGdefaultZus{}expected\PYGdefault{p}{;} \PYGdefault{o}{//} The expected number of counts based on demographics etc
+    \PYGdefault{k+kt}{matrix}\PYGdefault{o}{\PYGdefaultZlt{}}lower \PYGdefault{o}{=} \PYGdefault{l+m}{0}\PYGdefault{p}{,} upper \PYGdefault{o}{=} \PYGdefault{l+m}{1}\PYGdefault{o}{\PYGdefaultZgt{}}\PYGdefault{p}{[}numRegions\PYGdefault{p}{,} numRegions\PYGdefault{p}{]} W\PYGdefault{p}{;} \PYGdefault{o}{//} The adjacency \PYGdefault{k+kt}{matrix}
+    int W\PYGdefaultZus{}n\PYGdefault{p}{;}
+    real\PYGdefault{o}{\PYGdefaultZlt{}}lower \PYGdefault{o}{=} \PYGdefault{l+m}{0}\PYGdefault{p}{,} upper \PYGdefault{o}{=} \PYGdefault{l+m}{1}\PYGdefault{o}{\PYGdefaultZgt{}} alpha\PYGdefault{p}{;} \PYGdefault{o}{//}The degree of spatial dependence
+\PYGdefault{p}{\PYGdefaultZcb{}}
+transformed data\PYGdefault{p}{\PYGdefaultZob{}}
+    int W\PYGdefaultZus{}sparse\PYGdefault{p}{[}W\PYGdefaultZus{}n\PYGdefault{p}{,} \PYGdefault{l+m}{2}\PYGdefault{p}{];}   \PYGdefault{o}{//} adjacency pairs
+    \PYGdefault{k+kt}{vector}\PYGdefault{p}{[}numRegions\PYGdefault{p}{]} D\PYGdefaultZus{}sparse\PYGdefault{p}{;}     \PYGdefault{o}{//} diagonal of D \PYGdefault{p}{(}number of neigbors \PYGdefault{k+kr}{for} each site\PYGdefault{p}{)}
+    \PYGdefault{k+kt}{vector}\PYGdefault{p}{[}numRegions\PYGdefault{p}{]} lambda\PYGdefault{p}{;}       \PYGdefault{o}{//} eigenvalues of invsqrtD \PYGdefault{o}{*} W \PYGdefault{o}{*} invsqrtD
+
+    \PYGdefault{p}{\PYGdefaultZob{}} \PYGdefault{o}{//} generate sparse representation \PYGdefault{k+kr}{for} W
+	int counter\PYGdefault{p}{;}
+	counter \PYGdefault{o}{=} \PYGdefault{l+m}{1}\PYGdefault{p}{;}
+	\PYGdefault{o}{//} loop over upper triangular part of W to identify neighbor pairs
+	\PYGdefault{k+kr}{for} \PYGdefault{p}{(}i \PYGdefault{k+kr}{in} \PYGdefault{l+m}{1}\PYGdefault{o}{:}\PYGdefault{p}{(}numRegions \PYGdefault{o}{\PYGdefaultZhy{}} \PYGdefault{l+m}{1}\PYGdefault{p}{))} \PYGdefault{p}{\PYGdefaultZob{}}
+	    \PYGdefault{k+kr}{for} \PYGdefault{p}{(}j \PYGdefault{k+kr}{in} \PYGdefault{p}{(}i \PYGdefault{o}{+} \PYGdefault{l+m}{1}\PYGdefault{p}{)}\PYGdefault{o}{:}numRegions\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+		\PYGdefault{k+kr}{if} \PYGdefault{p}{(}W\PYGdefault{p}{[}i\PYGdefault{p}{,} j\PYGdefault{p}{]} \PYGdefault{o}{==} \PYGdefault{l+m}{1}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+		    W\PYGdefaultZus{}sparse\PYGdefault{p}{[}counter\PYGdefault{p}{,} \PYGdefault{l+m}{1}\PYGdefault{p}{]} \PYGdefault{o}{=} i\PYGdefault{p}{;}
+		    W\PYGdefaultZus{}sparse\PYGdefault{p}{[}counter\PYGdefault{p}{,} \PYGdefault{l+m}{2}\PYGdefault{p}{]} \PYGdefault{o}{=} j\PYGdefault{p}{;}
+		    counter \PYGdefault{o}{=} counter \PYGdefault{o}{+} \PYGdefault{l+m}{1}\PYGdefault{p}{;}
+		\PYGdefault{p}{\PYGdefaultZcb{}}
+	    \PYGdefault{p}{\PYGdefaultZcb{}}
+	\PYGdefault{p}{\PYGdefaultZcb{}}
+    \PYGdefault{p}{\PYGdefaultZcb{}}
+    \PYGdefault{k+kr}{for} \PYGdefault{p}{(}i \PYGdefault{k+kr}{in} \PYGdefault{l+m}{1}\PYGdefault{o}{:}numRegions\PYGdefault{p}{)} D\PYGdefaultZus{}sparse\PYGdefault{p}{[}i\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{k+kp}{sum}\PYGdefault{p}{(}W\PYGdefault{p}{[}i\PYGdefault{p}{]);}
+    \PYGdefault{p}{\PYGdefaultZob{}}
+	\PYGdefault{k+kt}{vector}\PYGdefault{p}{[}numRegions\PYGdefault{p}{]} invsqrtD\PYGdefault{p}{;}
+	\PYGdefault{k+kr}{for} \PYGdefault{p}{(}i \PYGdefault{k+kr}{in} \PYGdefault{l+m}{1}\PYGdefault{o}{:}numRegions\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+	    invsqrtD\PYGdefault{p}{[}i\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{l+m}{1} \PYGdefault{o}{/} \PYGdefault{k+kp}{sqrt}\PYGdefault{p}{(}D\PYGdefaultZus{}sparse\PYGdefault{p}{[}i\PYGdefault{p}{]);}
+	\PYGdefault{p}{\PYGdefaultZcb{}}
+	lambda \PYGdefault{o}{=} eigenvalues\PYGdefaultZus{}sym\PYGdefault{p}{(}quad\PYGdefaultZus{}form\PYGdefault{p}{(}W\PYGdefault{p}{,} diag\PYGdefaultZus{}matrix\PYGdefault{p}{(}invsqrtD\PYGdefault{p}{)));}
+    \PYGdefault{p}{\PYGdefaultZcb{}}
+\PYGdefault{p}{\PYGdefaultZcb{}}
+parameters \PYGdefault{p}{\PYGdefaultZob{}}
+    \PYGdefault{k+kt}{vector}\PYGdefault{p}{[}nt\PYGdefault{p}{]} temporal\PYGdefault{p}{;}
+    \PYGdefault{k+kt}{vector}\PYGdefault{p}{[}numRegions\PYGdefault{p}{]} v\PYGdefault{p}{;} \PYGdefault{o}{//} Spatial smoothing component
+    \PYGdefault{k+kt}{vector}\PYGdefault{p}{[}numRegions\PYGdefault{p}{]} lmbda\PYGdefault{p}{;}
+    real\PYGdefault{o}{\PYGdefaultZlt{}}lower \PYGdefault{o}{=} \PYGdefault{l+m}{0}\PYGdefault{o}{\PYGdefaultZgt{}} sigma\PYGdefaultZus{}v\PYGdefault{p}{;} \PYGdefault{o}{//} Variance of spatial component\PYGdefault{p}{,} v
+    real\PYGdefault{o}{\PYGdefaultZlt{}}lower \PYGdefault{o}{=} \PYGdefault{l+m}{0}\PYGdefault{o}{\PYGdefaultZgt{}} sigma\PYGdefaultZus{}temporal\PYGdefault{p}{;} \PYGdefault{o}{//} Variance of temporal component
+    real\PYGdefault{o}{\PYGdefaultZlt{}}lower \PYGdefault{o}{=} \PYGdefault{l+m}{0}\PYGdefault{o}{\PYGdefaultZgt{}} sigma\PYGdefaultZus{}l\PYGdefault{p}{;}
+    \PYGdefault{o}{//}real constant\PYGdefault{p}{;}
+    \PYGdefault{o}{//}real\PYGdefault{o}{\PYGdefaultZlt{}}lower \PYGdefault{o}{=} \PYGdefault{l+m}{0}\PYGdefault{p}{,} upper \PYGdefault{o}{=} \PYGdefault{l+m}{1}\PYGdefault{o}{\PYGdefaultZgt{}} alpha\PYGdefault{p}{;} \PYGdefault{o}{//} The degree of spatial dependence \PYGdefault{o}{\PYGdefaultZhy{}} implicitly given flat prior
+
+    \PYGdefault{k+kt}{vector}\PYGdefault{o}{\PYGdefaultZlt{}}lower \PYGdefault{o}{=} \PYGdefault{l+m}{0}\PYGdefault{p}{,} upper \PYGdefault{o}{=} \PYGdefault{l+m}{1}\PYGdefault{o}{\PYGdefaultZgt{}}\PYGdefault{p}{[}numRegions\PYGdefault{p}{]} indicator\PYGdefault{p}{;} \PYGdefault{o}{//} Mixture component
+    \PYGdefault{k+kt}{matrix}\PYGdefault{p}{[}numRegions\PYGdefault{p}{,} nt\PYGdefault{p}{]} xi\PYGdefault{p}{;} \PYGdefault{o}{//} Space\PYGdefault{o}{\PYGdefaultZhy{}}time inseperable component
+
+    real\PYGdefault{o}{\PYGdefaultZlt{}}lower \PYGdefault{o}{=} \PYGdefault{l+m}{0}\PYGdefault{o}{\PYGdefaultZgt{}} tau\PYGdefaultZus{}1\PYGdefault{p}{;}
+    real\PYGdefault{o}{\PYGdefaultZlt{}}lower \PYGdefault{o}{=} \PYGdefault{l+m}{0}\PYGdefault{o}{\PYGdefaultZgt{}} k\PYGdefault{p}{;}
+
+
+\PYGdefault{p}{\PYGdefaultZcb{}}
+transformed parameters \PYGdefault{p}{\PYGdefaultZob{}}
+    real\PYGdefault{o}{\PYGdefaultZlt{}}lower \PYGdefault{o}{=} \PYGdefault{l+m}{0}\PYGdefault{o}{\PYGdefaultZgt{}} tau\PYGdefaultZus{}2\PYGdefault{p}{;}
+    \PYGdefault{k+kt}{matrix}\PYGdefault{p}{[}numRegions\PYGdefault{p}{,} nt\PYGdefault{p}{]} mu\PYGdefault{p}{;}
+
+    tau\PYGdefaultZus{}2 \PYGdefault{o}{=} tau\PYGdefaultZus{}1 \PYGdefault{o}{+} k\PYGdefault{p}{;}
+
+    \PYGdefault{o}{//}mu \PYGdefault{o}{=} rep\PYGdefaultZus{}matrix\PYGdefault{p}{(}constant\PYGdefault{p}{,} numRegions\PYGdefault{p}{,} nt\PYGdefault{p}{)} \PYGdefault{o}{+} rep\PYGdefaultZus{}matrix\PYGdefault{p}{(}temporal\PYGdefault{p}{,} numRegions\PYGdefault{p}{)}\PYGdefault{l+s}{\PYGdefaultZsq{} + rep\PYGdefaultZus{}matrix(lmbda, nt) + rep\PYGdefaultZus{}matrix(log\PYGdefaultZus{}expected, nt) + xi}
+\PYGdefault{l+s}{    mu = rep\PYGdefaultZus{}matrix(temporal, numRegions)\PYGdefaultZsq{}} \PYGdefault{o}{+} rep\PYGdefaultZus{}matrix\PYGdefault{p}{(}lmbda\PYGdefault{p}{,} nt\PYGdefault{p}{)} \PYGdefault{o}{+} rep\PYGdefaultZus{}matrix\PYGdefault{p}{(}log\PYGdefaultZus{}expected\PYGdefault{p}{,} nt\PYGdefault{p}{)} \PYGdefault{o}{+} xi\PYGdefault{p}{;}
+
+\PYGdefault{p}{\PYGdefaultZcb{}}
+model \PYGdefault{p}{\PYGdefaultZob{}}
+    sigma\PYGdefaultZus{}temporal \PYGdefault{o}{\PYGdefaultZti{}} normal\PYGdefault{p}{(}\PYGdefault{l+m}{0}\PYGdefault{p}{,} \PYGdefault{l+m}{1}\PYGdefault{p}{);}
+    sigma\PYGdefaultZus{}v \PYGdefault{o}{\PYGdefaultZti{}} normal\PYGdefault{p}{(}\PYGdefault{l+m}{0}\PYGdefault{p}{,} \PYGdefault{l+m}{1}\PYGdefault{p}{);}
+    sigma\PYGdefaultZus{}l \PYGdefault{o}{\PYGdefaultZti{}} normal\PYGdefault{p}{(}\PYGdefault{l+m}{0}\PYGdefault{p}{,} \PYGdefault{l+m}{1}\PYGdefault{p}{);}
+
+    temporal\PYGdefault{p}{[}\PYGdefault{l+m}{1}\PYGdefault{p}{]} \PYGdefault{o}{\PYGdefaultZti{}} normal\PYGdefault{p}{(}\PYGdefault{l+m}{0}\PYGdefault{p}{,} sigma\PYGdefaultZus{}temporal\PYGdefault{p}{);} \PYGdefault{o}{//} \PYGdefault{l+m}{1}d random walk prior on temporal component
+    \PYGdefault{k+kr}{for} \PYGdefault{p}{(}t \PYGdefault{k+kr}{in} \PYGdefault{l+m}{2}\PYGdefault{o}{:}nt\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+	temporal\PYGdefault{p}{[}\PYGdefault{k+kp}{t}\PYGdefault{p}{]} \PYGdefault{o}{\PYGdefaultZti{}} normal\PYGdefault{p}{(}temporal\PYGdefault{p}{[}t \PYGdefault{o}{\PYGdefaultZhy{}} \PYGdefault{l+m}{1}\PYGdefault{p}{],} sigma\PYGdefaultZus{}temporal\PYGdefault{p}{);}
+    \PYGdefault{p}{\PYGdefaultZcb{}}
+
+    \PYGdefault{o}{//}constant \PYGdefault{o}{\PYGdefaultZti{}} normal\PYGdefault{p}{(}\PYGdefault{l+m}{0}\PYGdefault{p}{,} \PYGdefault{l+m}{30}\PYGdefault{p}{);}
+
+    v \PYGdefault{o}{\PYGdefaultZti{}} sparse\PYGdefaultZus{}car\PYGdefault{p}{(}sigma\PYGdefaultZus{}v\PYGdefault{p}{,} alpha\PYGdefault{p}{,} W\PYGdefaultZus{}sparse\PYGdefault{p}{,} D\PYGdefaultZus{}sparse\PYGdefault{p}{,} lambda\PYGdefault{p}{,} numRegions\PYGdefault{p}{,} W\PYGdefaultZus{}n\PYGdefault{p}{);}
+    lmbda \PYGdefault{o}{\PYGdefaultZti{}} normal\PYGdefault{p}{(}v\PYGdefault{p}{,} sigma\PYGdefaultZus{}l\PYGdefault{p}{);}
+
+    indicator \PYGdefault{o}{\PYGdefaultZti{}} \PYGdefault{k+kp}{beta}\PYGdefault{p}{(}\PYGdefault{l+m}{0.3}\PYGdefault{p}{,} \PYGdefault{l+m}{0.6}\PYGdefault{p}{);}
+
+    tau\PYGdefaultZus{}1 \PYGdefault{o}{\PYGdefaultZti{}} normal\PYGdefault{p}{(}\PYGdefault{l+m}{0}\PYGdefault{p}{,} \PYGdefault{l+m}{0.1}\PYGdefault{p}{);}
+    k \PYGdefault{o}{\PYGdefaultZti{}} normal\PYGdefault{p}{(}\PYGdefault{l+m}{0}\PYGdefault{p}{,} \PYGdefault{l+m}{10}\PYGdefault{p}{);}
+
+    \PYGdefault{k+kr}{for} \PYGdefault{p}{(}i \PYGdefault{k+kr}{in} \PYGdefault{l+m}{1}\PYGdefault{o}{:}numRegions\PYGdefault{p}{)\PYGdefaultZob{}}
+	target \PYGdefault{o}{+=} log\PYGdefaultZus{}sum\PYGdefaultZus{}exp\PYGdefault{p}{(}log1m\PYGdefault{p}{(}indicator\PYGdefault{p}{[}i\PYGdefault{p}{])} \PYGdefault{o}{+} normal\PYGdefaultZus{}lpdf\PYGdefault{p}{(}xi\PYGdefault{p}{[}i\PYGdefault{p}{,]} \PYGdefault{o}{|} \PYGdefault{l+m}{0}\PYGdefault{p}{,} tau\PYGdefaultZus{}1\PYGdefault{p}{),}
+			      \PYGdefault{k+kp}{log}\PYGdefault{p}{(}indicator\PYGdefault{p}{[}i\PYGdefault{p}{])} \PYGdefault{o}{+} normal\PYGdefaultZus{}lpdf\PYGdefault{p}{(}xi\PYGdefault{p}{[}i\PYGdefault{p}{,]} \PYGdefault{o}{|} \PYGdefault{l+m}{0}\PYGdefault{p}{,} tau\PYGdefaultZus{}2\PYGdefault{p}{));}
+
+    \PYGdefault{p}{\PYGdefaultZcb{}}
+
+    \PYGdefault{k+kr}{for} \PYGdefault{p}{(}i \PYGdefault{k+kr}{in} \PYGdefault{l+m}{1}\PYGdefault{o}{:}numRegions\PYGdefault{p}{)\PYGdefaultZob{}}
+	observed\PYGdefault{p}{[}i\PYGdefault{p}{,]} \PYGdefault{o}{\PYGdefaultZti{}} poisson\PYGdefault{p}{(}\PYGdefault{k+kp}{exp}\PYGdefault{p}{(}mu\PYGdefault{p}{[}i\PYGdefault{p}{,]));}
+    \PYGdefault{p}{\PYGdefaultZcb{}}
+
+\PYGdefault{p}{\PYGdefaultZcb{}}
+\end{Verbatim}

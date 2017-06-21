@@ -1,19 +1,20 @@
 [0] Config.pm:324> INFO - This is Biber 2.1
 [0] Config.pm:327> INFO - Logfile is 'project.blg'
-[66] biber-darwin:276> INFO - === Mon Jun 12, 2017, 16:16:24
-[66] Biber.pm:333> INFO - Reading 'project.bcf'
-[243] Biber.pm:645> INFO - Found 30 citekeys in bib section 0
-[273] Biber.pm:2977> INFO - Processing section 0
-[305] Biber.pm:3115> INFO - Looking for bibtex format file 'project.bib' for section 0
-[309] bibtex.pm:1021> INFO - Decoding LaTeX character macros into UTF-8
-[315] bibtex.pm:895> INFO - Found BibTeX data source 'project.bib'
-[325] Utils.pm:146> WARN - Duplicate entry key: 'betancourt2015hamiltonian' in file 'project.bib', skipping ...
-[370] Utils.pm:146> WARN - I didn't find a database entry for 'spatial' (section 0)
-[767] UCollate.pm:66> INFO - Overriding locale 'en-US' defaults 'level = 4' with 'level = 2'
-[767] UCollate.pm:66> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
-[768] UCollate.pm:66> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[768] Biber.pm:2854> INFO - Sorting list 'cms' of type 'entry' with scheme 'cms' and locale 'en-US'
-[768] Biber.pm:2858> INFO - No sort tailoring available for locale 'en-US'
-[856] bbl.pm:505> INFO - Writing 'project.bbl' with encoding 'ascii'
-[862] bbl.pm:596> INFO - Output to project.bbl
-[862] Biber.pm:106> INFO - WARNINGS: 2
+[60] biber-darwin:276> INFO - === Tue Jun 13, 2017, 15:04:00
+[60] Biber.pm:333> INFO - Reading 'project.bcf'
+[220] Biber.pm:645> INFO - Found 34 citekeys in bib section 0
+[267] Biber.pm:2977> INFO - Processing section 0
+[294] Biber.pm:3115> INFO - Looking for bibtex format file 'project.bib' for section 0
+[299] bibtex.pm:1021> INFO - Decoding LaTeX character macros into UTF-8
+[304] bibtex.pm:895> INFO - Found BibTeX data source 'project.bib'
+[309] Utils.pm:146> WARN - Duplicate entry key: 'betancourt2015hamiltonian' in file 'project.bib', skipping ...
+[360] Utils.pm:146> WARN - I didn't find a database entry for '(' (section 0)
+[360] Utils.pm:146> WARN - I didn't find a database entry for 'spatial' (section 0)
+[815] UCollate.pm:66> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[815] UCollate.pm:66> INFO - Overriding locale 'en-US' defaults 'level = 4' with 'level = 2'
+[815] UCollate.pm:66> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[815] Biber.pm:2854> INFO - Sorting list 'cms' of type 'entry' with scheme 'cms' and locale 'en-US'
+[816] Biber.pm:2858> INFO - No sort tailoring available for locale 'en-US'
+[906] bbl.pm:505> INFO - Writing 'project.bbl' with encoding 'ascii'
+[912] bbl.pm:596> INFO - Output to project.bbl
+[921] Biber.pm:106> INFO - WARNINGS: 3

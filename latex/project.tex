@@ -30,7 +30,8 @@ maxbibnames=6
 \usetikzlibrary{arrows}
 
 \usepackage{listings}
-\lstset{language=Python, breaklines=true}  
+\usepackage{minted}
+\lstset{language=Python, breaklines=true, basicstyle=\footnotesize}  
 \usepackage{fancyhdr}
 \setlength{\parindent}{0pt}
 \pagestyle{fancy}
@@ -39,10 +40,21 @@ maxbibnames=6
 \fancyfoot[C]{\thepage}
 \begin{document}
 \title{Detecting pathologies in spatiotemporal data}
-\author{Michael Redman, CID:\ 0082686\textbf{3}}
-\date{December 2016}
+\author{Michael Redman, CID:\ 0082686\textbf{3} \\%
+Supervised by Professor Axel Gandy\\
+M4R}
+\date{June 2017}
 
 \maketitle
+
+\begin{abstract}
+In this project, we examine the application of spatiotemporal models on epidemiological data. Through the use of both descriptive and generative models, we seek to identify abnormal patterns in a set of simulated data and compare and contrast the different models accuracy and computational cost. We suggest a novel description of the `in-control' rate for a cumulative sum control chart and improve on the efficiency of two existing Bayesian models in the literature.
+\end{abstract}
+
+\renewcommand{\abstractname}{Acknowledgements}
+\begin{abstract}
+In addition to my advisor, Professor Axel Gandy, I would like to thank Dr. Marta Blangiardo for her invaluable advice and guidance throughout the project and Dr Fred Piel \& Areti Boulieri for their helpful and supportive conversations.
+\end{abstract}
 
 \tableofcontents
 
@@ -63,11 +75,11 @@ The most natural way to frame our problem is by the construction of a hierachica
 
 The examination, implementation and comparison of these Bayesian methods with discriminative models, specifically control charts, is the focus of this project. \\
 
-Working on simulated data, we first implement a CUSUM based classifier and suggest a novel(?) specification of the `in-control' process. With the efficiency of the method being of great importance, we implement the computations from scratch in Fortran rather than modifying the existing statistical routines in R. \\
+Working on simulated data, we first implement a CUSUM based classifier and suggest a novel specification of the `in-control' process. With the efficiency of the method being of great importance, we implement the computations from scratch in Fortran rather than modifying the existing statistical routines in R. \\
 
 Then, turning to Bayesian methods, we examine the general structure of the models employed in the literature and how this standard is well suited to the particular challenges of our problem. In particular, the favored priors for the smoothing of the data are reviewed. The difficulties and subtleties of computaion are addressed in detail, as are some of the superior techniques that have been developed in the past few years. \\
 
-We examine BaySTDetect, one of the existing models in the literature, discussing the rationales behind the construction of the model and the `cutting of feedback' that's employed -- where we demonstrate that this particular choice is fundamental to it's success. Rather than use the standard MCMC software in the field, we implement the model in Stan using Hamiltonial Monte Carlo and combine the submodels directly through the likelihoods. We show that this can lead to order of magnitude speed-ups over the original implementation in \citet{baystdetect}. \\
+We examine BaySTDetect, one of the existing models in the literature, discussing the rationales behind the construction of the model and the `cutting of feedback' that is employed -- where we demonstrate that this particular choice is fundamental to its success. Rather than use the standard MCMC software in the field, we implement the model in Stan using Hamiltonial Monte Carlo and combine the submodels directly through the likelihoods. We show that this can lead to order of magnitude speed-ups over the original implementation in \citet{baystdetect}. \\
 
 We then suggest a new model, based on \citet{stability}, that works fully within the Bayesian framework by identifying an excess in the variance which can not be explained by the shared random effects. Implementing this model, again in Stan, we show that this model obtains good results, despite not being the way in which our simulated data were originally created. However, as suggested in \citet{best2005comparison}, models of this kind may oversmooth the counts spatially. We demonstrate this by simulating a new set of data where the regions to be `unusual' are selected sequentially via a preferential attachment scheme and showing that our model performs poorly in this context. \\
 
@@ -75,11 +87,11 @@ Finally we compare the use three models on both sets of data with respect to the
 
 \chapter{Simulated data}
 
-In order to test the accuracy of any potential models we need some data that exhibits the type of pathological trends that we wish to identify. The following data was graciously supplied by Areti Boulieri.
+In order to test the accuracy of any potential models we need some data that exhibits the type of pathological trends that we wish to identify. The data used in this project that we describe here was graciously supplied by Areti Boulieri.
 
 \section{Specification}
 
-A real dataset of asthma hospitalisation counts was used to contruct the expected rates, adjusted by regional demographics by age and sex, for the 221 Clinical Commisioning Groups in England. These are the expected counts that we will standardize against when attempting to identify abnormalities. We denote these values throughout by $E_{i}, \text{ for } i=1,\ldots,221$. A plot that we generated to show the distribution of these values across the regions can be seen in fig \ref{}  \\
+A real dataset of asthma hospitalisation counts was used to contruct the expected rates, adjusted by regional demographics by age and sex, for the 221 Clinical Commisioning Groups in England. These are the expected counts that we will standardize against when attempting to identify abnormalities. We denote these values throughout by $E_{i}, \text{ for } i=1,\ldots,221$. A plot that we generated to show the distribution of these values across the regions can be seen in fig \ref{fig:mapped} (a). \\
 
 A binomial random variable might be the most principled choice of response but the expected counts we have calculated are large enough for using a Poisson response to be essentially equivalent. Indeed this is the most popular choice in the literature. The data was generated across 15 time points, so our values are drawn from
 \begin{equation}
@@ -128,19 +140,16 @@ This has the effect of either doubling or halving the expected counts depending 
 
 \begin{figure}
 \includegraphics[scale=0.5]{plot_time_effects}
-\label{fig:timeeffects}
 \centering
+\caption{The general and abnormal temporal trends of the generated data. Created by Areti Boulieri}
+\label{fig:timeeffects}
 \end{figure}
-
-\begin{itemize}
-\item Check this trend with Marta as the word document and pictured trend are different.
-\end{itemize}
 
 \section{Cleaning and wrangling}
 
-Of the 211 regions only one one had no neighbours, the Isle of Wight. As this will complicate some of the smoothing calculations we need to perform for the Bayesian procedures (and the Isle of Wight was not one of those selected as unusual), the region was removed to simplify calculations.
+Of the 211 regions only one had no neighbours, the Isle of Wight. As this will complicate some of the smoothing calculations we need to perform for the Bayesian procedures (and the Isle of Wight was not one of those selected as unusual), the region was removed to simplify calculations.
 
-Shape data for the 211 Clinical Commisioning Groups plus wales was provided by CITE HERE. The regions of Wales and the Isle of Wight were of course removed. The shapefiles were imported and edited using the package \emph{rgdal} created by \citet{shaperead}. Then, using the package \emph{spdep} created by \citet{shape}, the shapefile was used to generate an object which calculates all of the adjacent regions for each region. Then this object was converted into into an adjacency matrix $W$ such that
+Shape data for the 211 Clinical Commisioning Groups plus wales was provided by the SAHSU. The regions of Wales and the Isle of Wight were of course removed. The shapefiles were imported and edited using the package \emph{rgdal} created by \citet{shaperead}. Then, using the package \emph{spdep} created by \citet{shape}, the shapefile was used to generate an object which calculates all of the adjacent regions for each region. Then this object was converted into into an adjacency matrix $W$ such that
 \begin{equation*}
 {(W)}_{ij} &= 
 \begin{cases}
@@ -148,14 +157,15 @@ Shape data for the 211 Clinical Commisioning Groups plus wales was provided by C
 0, \ \ \textrm{otherwise}
 \end{cases}
 \end{equation*}
-where the double arrow signifies adjacency. The result of this procedure can be seen over the original shapedata in fig \ref{adj}.
+where the double arrow signifies adjacency. The result of this procedure can be seen over the original shapedata in fig \ref{fig:mapped} (b).
 
 
 \begin{figure}
 \centering
-\subfloat[Adjacency]{\includegraphics[width=0.5\textwidth]{adjacency}}
-\subfloat[Expected]{\includegraphics[width=0.5\textwidth]{expected}}
+\subfloat[Expected]{\includegraphics[width=0.5\textwidth]{expected}} \label{fig:expected}
+\subfloat[Adjacency]{\includegraphics[width=0.5\textwidth]{adjacency}} \label{fig:adjacency}
 \caption{Mapped data}
+\label{fig:mapped}
 \end{figure}
 
 \chapter{Control charts}
@@ -165,7 +175,7 @@ The use of control charts are widespead in the area of statistical quality contr
 
 \section{CUSUM}
 
-We will specifically be looking at the use of CUSUM models, which seek to identify a qualitative change in the nature of a time series via the evaluation of the cumulative sum of a relavant test statistic. In the setting of the inhomogenous Poisson CUSUM, we assume that the data follows a null model defined by a series of rate parameters which define the `in-control' Poisson process. Likewise we have a complementary set of parameters that define the rates of an `out-of-control' process. We wish to detect the point in time at which there is sufficient evidence that the process was switched from the null to the `out-of-control' process, as quickly as possible while not exceeding some measure of how often we err. \\
+We will specifically be looking at the use of CUSUM models, which seek to identify a qualitative change in the nature of a time series via the evaluation of the cumulative sum of a relavant test statistic. In the setting of the inhomogenous Poisson CUSUM, we assume that the data follows a null model defined by a series of rate parameters which define the `in-control' Poisson process. Likewise we have a complementary set of parameters that define the rates of an `out-of-control' process. We wish to detect the point in time at which there is sufficient evidence that the process has switched from the null to the `out-of-control' process, as quickly as possible while not exceeding some measure of how often we err. \\
 
 To do this, define $S_t$ as the value of the control chart at time $t$ and progress its value as follows
 \begin{gather}
@@ -179,7 +189,7 @@ As first proposed in \citet{page}, we will use
 K_t &= \log{\left(\frac{f_1(Y_{i,t})}{f_0(Y_{i,t})}\right)} \\
     &= \log{[f_1(Y_{i,t})]} - \log{[f_0(Y_{i,t})]}.
 \end{align}
-where $f_0$ is the likelihood of the 'in-control' rate and $f_1$ that of the 'out-of-control'. \\
+where $f_0$ is the likelihood of the `in-control' rate and $f_1$ that of the `out-of-control'. \\
 
 That is, the $\log$ of the ratio between the likelihoods of the data, at the time point, under the `in-control' and `out-of-control' Poisson process. So if likelihood of the `out-of-control' rate is greater than the `in-control' then the value of $S_t$ will increase and vice-versa. We then signal that the process is pathological if the value of $S_t$ exceeds some threshold value $h$. \\
 
@@ -205,7 +215,7 @@ So for the data $Y_{i,t}, \ i = 1, \ldots, R, \ t = 1, \ldots, T$ we normalize t
 
 We then construct the `in-control' rate for each region $I_{i, t}$ as described
 \begin{equation}
-I_{i, t} = E_i \cdot \frac{1}{R} \sum_{i=1}^N \tilde{Y}_{i, t}, \ \ \ \ i = 1, \ldots, R, \ t = 1, \ldots, T.
+I_{i, t} = E_i \cdot \frac{1}{R} \sum_{i=1}^R \tilde{Y}_{i, t}, \ \ \ \ i = 1, \ldots, R, \ t = 1, \ldots, T.
 \end{equation}
 
 For simplicity we only consider the case of abnormally high count rates and ignore artificially low counts although this could be incorporated into the CUSUM model if desired. So to define the `out-of-control' rate it makes sense to follow the same temporal trend but with a modified general rate. We do this by calculating the `out-of-control' rate $O_{i,t}$ as a multiple of the `in-control' as follows
@@ -214,13 +224,13 @@ O_{i,t} = \alpha \cdot I_{i,t}, \ \ \ \  i = 1, \ldots, R, \ t = 1, \ldots, T.
 \end{equation} 
 with $\alpha > 1$. \\
 
-Now for a given value of $\alpha$ we need a threshold level at which to signal. This can be done by caluclating the average-run length (ARL) which is the expected length of the series between flags of the model. The ARL on the `in-control' rate will then give a measure of the false positives for a given threshold $h$, which we can optimize with respect to. As the length of the series we are examining is fixed and the calculation of an ARL would not be clearly defined for a series of varying expectation we will not use the ARL metric here. Instead we simply simulate the `in-control' sequence for each region a large number of times and find the smallest value of $h$ for which the the false-postive rate is below some desired rate. \\
+Now for a given value of $\alpha$ we need a threshold level at which to signal. This can be done by calculating the average-run length (ARL) which is the expected length of the series between flags of the model. The ARL on the `in-control' rate will then give a measure of the false positives for a given threshold $h$, which we can optimize with respect to. As the length of the series we are examining is fixed and the calculation of an ARL would not be clearly defined for a series of varying expectation we will not use the ARL metric here. Instead we simply simulate the `in-control' sequence for each region a large number of times and find the smallest value of $h$ for which the the false-postive rate is below some desired rate. \\
 
 The setup as described was implemented as a Python class acting as a wrapper to a series of subroutines in Fortran via F2PY\footnote{I originally wrote the entire process in Python but the calculation of the $h$ values was far too slow to be practical. The original code can be on my Github.}. The code can be found in the appendix. \\
 
-This CUSUM process was applied to the asthma data with the ratio $\alpha$ set to $1.5$, indicating we consider the ``out-of-control'' rate to be 50\% greater than the ``in-control'', with each regions temporal pattern being simulated 10,000 times to determine the optimal threshold values. This identified 25 regions as ``out-of-control'' out of the total 210, giving a false-negative rate of 0\% and false-positive rate of 5.13\%. \\
+This CUSUM process was applied to the asthma data with the ratio $\alpha$ set to $1.5$, indicating we consider the `out-of-control' rate to be 50\% greater than the `in-control', with each regions temporal pattern being simulated 10,000 times to determine the optimal threshold values. This identified 25 regions as `out-of-control' out of the total 210, giving a false-negative rate of 0\% and false-positive rate of 5.13\%. \\
 
-The power of the test is clearly excellent, but the false-positive rate is clearly much greater than our desired limit of 1\%. Why is this? \\  
+The power of the test is excellent, but the false-positive rate is clearly much greater than our desired limit of 1\%. Why is this? \\  
 
 Note that the expected value of $K_t$ under the `out-of-control' model ($H_1$) will be the Kullback-Leibler divergence between the two models \citep{weighed},
 \begin{align*}
@@ -231,11 +241,11 @@ Note that the expected value of $K_t$ under the `out-of-control' model ($H_1$) w
 
 This gives an intuitive explanation of the procedure: under the alternate (`out-of-control') model, $K_t$ measures the information lost by attempting to approximate the (true) alternate model by the null. When the cumulative information lost by this approximation becomes intolerable, we reject the null. \\
 
-It can be shown that, under some assumptions, using this metric with the CUSUM method is in some sense optimal \citep{ritov1990}. However, the issues with the assumptions here are clear. The null model as we have defined attempts to incorporate the general temporal trend but we would also expect a level of random spaital variation which masks the underlying abnormalities and our procedure ignores this. Therefore for regions which are not unusual (call these $H_G$), the null model will underestimate the likelihood ($f_0(x_t)$) of their counts relative to the true likelihood $f_G(x_t)$. So, under $H_G$ one would expect $\log(f_1(x_t)) - \log(f_0(x_t))$ to be large more often than under the null, underestimating the value of $h$ which would be required to keep the FPR under 1\%. \\
+It can be shown that, under some assumptions, using this metric with the CUSUM method is in some sense optimal \citep{ritov1990}. However, the issues with the assumptions here are clear. The null model as we have defined attempts to incorporate the general temporal trend but we would also expect a level of random spaital variation which masks the underlying abnormalities and our procedure ignores this. Therefore for regions which are not unusual (call these $H_G$), the null model will underestimate the likelihood of their counts relative to the true likelihood. So, under $H_G$ one would expect $\log(f_1(x_t)) - \log(f_0(x_t))$ to be large more often than under the null, underestimating the value of $h$ which would be required to keep the FPR under 1\%. \\
 
 Additionally, even if the true data is distributed as we assume in the null, the parameters of the temporal trend that defines the `in-control' models are still an estimation from the data. The errors between this hypothetical `true' temporal trend and our estimate from the data will add additional noise into the process. In particular, this will affect the estimation of the optimal value of $h$ for a given FPR -- potentially increasing the number of false positives relative to what we might otherwise expect. \\
 
-A number of methods exist that attempt to account for this additional estimation error. For example, following the method devised in \citet{gandy}, we could estimate the `in-control' parameters as usual and then draw samples with replacement from the `in-control' model with these parameters. Then, calculating estimates of the `in-control' parameters from these samples, we obtain a series of bootstrap estimators. The optimal values of $h$ for each of these bootstrap estimators can be used to devise a threshold which posseses our desired properties with a certain probability. Of course, the data from which we estimate the temporal trend is not all `in-control', so our estimates will be even more biased than this would suggest. 
+A number of methods exist that attempt to account for this additional estimation error. For example, following the method devised in \citet{gandy}, we could estimate the `in-control' parameters as usual and then draw samples with replacement from the `in-control' model with these parameters. Then, calculating estimates of the `in-control' rates from these samples, we obtain a series of bootstrap estimators. The optimal values of $h$ for each of these bootstrap estimators can be used to devise a threshold which posseses our desired properties with a certain probability. Of course, the data from which we estimate the temporal trend is not all `in-control', so our estimates will be even more biased than this would suggest. 
  
 \section{Spatial CUSUM}
 
@@ -257,73 +267,49 @@ This approach could be used in conjunction with that of the previous section to 
 
 \chapter{The Bayesian Framework}
 
-A sensible way of improving on this would be to use a generative model which incorporates both a flexibility that describes our uncertainty around the parameterization of the model and makes explicit our beliefs as to the structure of the data. This is most naturally done in the Bayesian framework, where we specify the model in terms of a likelihood which describes how we simulate the data based on a set of parameters and a collection of---possibly hierarchical---priors which describe our uncertainty about these parameters ex ante. 
+A sensible way of improving on this would be to use a generative model which incorporates both a flexibility that describes our uncertainty around the parameterization of the model and makes explicit our beliefs as to the structure of the data. This is most naturally done in the Bayesian framework, where we specify the model in terms of a likelihood which describes how we simulate the data based on a set of parameters and a collection of---possibly hierarchical---priors which describe our uncertainty about these parameters ex ante. \\
 
-\begin{enumerate}
-\item Advantages of generative models
-\item Advantages over frequentist approaches, e.g. mean/mode often terrible approximations, in part due to concentration of measure
-\item Level of shrinkage attributable to closeness of prior structure to some ``true prior''
-\item Bayes formula
-\item Difficulty in evaluating integrals/expectations
-\item Samples will converge to expectation (use betancourts conceptual into here)
-\item Proposal density and preserving the pdf
-\item Metropolis-hastings
-\item Theory and issues including: large/small step sizes, large autocorrelation, slow exploration of the sample space, divergences
-\item Gibbs sampleing and blocked gibbs: overcomes some element of dimensionality but poor for highly correlated variables, compounded by issues with 
-\item Asymptotics not followed in finite time often
-\item Quick talk about existing software
-\item Hamiltonian monte carlo provides some solutions to many of these problems
-\item In last few years (get exact) emergence of better algorithms, tuning and software have made using HMC practical. Not used in epidemiology much yet though. Different fields different amounts due to issues with discrete paramters etc. that we will address later.
-\item Convergence statistics
-\end{enumerate}
+The evaluation of the posterior from this description is then given by Bayes formula
+\begin{equation}
+\pi(q | d) = \frac{L(d | q) \cdot \pi(q)}{\int_Q L(d | q) \cdot \pi(q)}
+\end{equation}
+where $\pi(q)$ is the prior and $L$ is the likelihood. \\
 
-\begin{itemize}
+However, the integral of the denominator is typically not possible analytically and is rarely feasable numerically in higher dimensions. Additionally, in complex models we rely on the use of summary statistics to categorize the behaviour of the posterior -- which are calculated as an expectation on this posterior, i.e. an integral. This complicates the computation of Bayesian models. \\
 
-\item Space-time seperability
+The following exposition uses the notation of and is heavily influenced by that of \citet{conceptual}. If we had a sample from the posterior $\{q_1, \ldots, q_N\}$ then we could approximate these expectations by averaging over the function in question
+\begin{equation} \label{fig:approx}
+\hat{f}_N = \frac{1}{N} \sum_{i=1}^N f(q_n).
+\end{equation} 
 
-\item Identification issuses in mixture model
+It is, in fact, possible obtain such samples from the posterior. Markov Chain Monte-Carlo (MCMC) achieves this via a specifically designed random walk through the posterior, where in Metropolis-Hastings we generate a proposal point based on our current location and accept with probability related to the ratio of the posterior at the two points. Note that we can evaluate the posterior up to a constant. \\
 
-\item Bayesian model selection
+Writing the conditional density of this Markov transition as $\mathbb{T}(q'|q)$, it is possible to design this transition to satify the detailed balance equations. Then we have for our posterior $\pi$ 
+\begin{equation}
+\pi(q) = \int_{Q} \pi(q') \mathbb{T}(q'|q) \; dq',
+\end{equation}  
+that is the transition preserves the distribution and we will have
+\begin{equation}
+\lim_{N\to\infty} \hat{f}_N = \mathbb{E}_\pi[f].
+\end{equation}
 
-\item Prior on mixture component probability
+While the most used MCMC methods satisfy this asymptotic limit, the reality in finite time can tell a very different story. Note that succesive points will correlate strongly with each other due to the conditional nature of the proposal density. Defining the effective sample size $n_{\text{eff}}$ as 
+\begin{equation}
+n_{\text{eff}} = \frac{N}{1 + \sum_{l=1}^N \rho_l}
+\end{equation}
+where $\rho_l$ is the lag-l autocorrelation of $f$ over the Markov chain, we can approximate the error of our estimator by one over the square root of $n_{\text{eff}}$. \\
 
-\item Bayesian classification
+Evaluated by this metric we find Metropolis-Hastings and Gibbs to exhibit very strong autocorrelations, limiting the effective sample size to a very small proportion of the total samples. This is due to the fixed nature of the step sizes in the proposal density and the shape of the typical set of the posterior. Too small a step size will take the chain a long time to explore the space while a too large a step will be rejected too often. \\
 
-\end{itemize}
+Observing the geometry of the typical set in fig \ref{fig:typical}, we postulate that an ideal transition routine would ideally glide through the typical set by following the contours of high probability \citep{conceptual}. \\
 
-\subsection{Hyperparameter priors}
+This would clearly be most naturally done by following the vector field transversally to the field lines -- allowing for some level of variation parallel to the field lines. This can be conceptualised by visualizing the posterior as a groove in a surface, where we let a ball roll around the groove, rocking back a forth in the `trough' formed.
 
-\begin{itemize}
-
-\item Gelman 2006 for variance parameters
-
-\item Stan wiki for others
-
-\end{itemize}
-
-\subsection{Convergence statistics}
-
-\begin{itemize}
-
-\item Trace plot
-
-\item Gelman-Rubin statistic
-
-\item Multiple-chains are run not for computational benefits but to assess convergence
-
-\item Gelman-Rubin-brooks plot
-
-\item Lack of divergences---which are ``incredibly sensitive to the kind of pathologies that can obstruct geometric ergodicity'' 
-
-
-\end{itemize}
-
-
-\subsection{Hamiltonian Monte-Carlo}
+\section{Hamiltonian Monte-Carlo}
 
 The previous methods, while possessing the desired asymptotic properties, can---and do---take a long time to converge to the target distribution (infinity is a long time!). The aim of \emph{Hamiltonian Monte-Carlo} is to reduce the correlations between successive samples and so dramatically increase the effective sample size with minimal computational overhead. It does this by introducing an auxilliary variable and exploiting the interplay between this and the variables of the posterioir distribution within the framework of Hamiltonian mechanics.
 
-\subsubsection{Background}
+\subsection{Background}
 
 We write $q$ for the variables of the posterior distribution and introduce a new variable $p$ which we will call the \emph{momentum} of the system. Drawing from statistical mechanics, we know that for a given energy function of a system $E(\theta)$ we have the canonical ensemble
 \begin{equation}
@@ -356,41 +342,21 @@ So draws from $\pi(p, q)$ will allow us to make inferences on the $q$, but what 
 \frac{dp}{dt} &= - \frac{\partial H}{\partial q} = - \frac{\partial T}{\partial q} - \frac{\partial V}{\partial q}
 \end{align}
 
-\begin{itemize}
-  \item Finish off this bit more gracefully
-\end{itemize}
+We can process these equations through the use of leap-frong integration in order to sample along the defined path.
 
-\subsubsection{The Method}
+\subsection{The Method}
 Hamiltonian monte-carlo works, not by applying a transition over $q_i$, but by giving our starting point ``a kick'' in the form of a random momentum and sampling along the level set of constant energy (defined by the Hamiltonian) using Hamilton's equations to evolve the joint system. Then---after some number of steps---we stop, sample a new momentum, and explore the new phase space that this defines. \\
 
-The questions now are obvious:
+The length at which we sample along a curve is a matter of some debate. The most used method is the No-U-turn sampler which doubles the integration length successively until the chain `turns-back' on itself in one of the variables. \\
 
-\begin{itemize}
-\item \emph{How} do we evolve the joint system in accordance with Hamilton's equations? (Leapfrog)
-\item Do we need to work out all of the partial deriavtives $\partial V/\partial q_i$ by hand? 
-\item For how long should we explore each level set before sampling a new momentum?
-\item What proposal density should we use for the momentum?
-\item Why does this method lead to samples with less autocorrelation?
-\end{itemize}
+For a greater understanding of the posterior geometry that make this method so much more effecient than the Metropolis-Hastings and Gibbs, see any of Michael Betancourts latest papers e.g. \citet{geometric}.
 
-Other things to talk about:
-\begin{itemize}
-\item \emph{How} do we evolve the joint system in accordance with Hamilton's equations?
-\item Do we need to work out all of the partial deriavtives $\partial V/\partial q_i$ by hand? 
-\item For how long should we explore each level set before sampling a new momentum?
-\item What proposal density should we use for the momentum?
-\item Why does this method lead to samples with less autocorrelation?
-\item Parameter tuning vs burn-in period
-\end{itemize}
-
-Other things to talk about:
-\begin{itemize}
-
-\item Rotational invariance
-
-\item Include some diagrams from Michael Betancourt's papers
-
-\end{itemize}
+\begin{figure}
+\centering
+\includegraphics[width=3in]{typical}
+\label{fig:typical}
+\caption{Example of a normal typical set. We have an annulus like structure due to concentration of measure. Taken from \citet{conceptual}.}
+\end{figure}
 
 \section{General Model Form}
 
@@ -717,7 +683,7 @@ As a sanity check, we look at the samples of $\gamma_t$ from model 1 to see if i
 
 \section{Fully Bayesian model}
 
-The BaySTDetect method, as originally applied is clearly very accurate in its identification of the `unusual' regions. Though, the use of the cut function is puzzling. The model, when specified as a true mixture model, essentially describes how the data was generated originally. To test this, we combined the two models as specified without the cut function and fit the entire model in \emph{Stan}. This was done by specifying the probability of the Bernoulli as the Beta prior with mean 0.90 -- allowing the use of HMC and gaining computational efficiency as described in section 73826. \\
+The BaySTDetect method, as originally applied is clearly very accurate in its identification of the `unusual' regions. Though, the use of the cut function is puzzling. The model, when specified as a true mixture model, essentially describes how the data was generated originally. To test this, we combined the two models as specified without the cut function and fit the entire model in \emph{Stan}. This was done by specifying the probability of the Bernoulli as the Beta prior with mean 0.90 -- allowing the use of HMC and gaining computational efficiency as described in the computational considerations section. \\
 
 The resulting values of $q_i$, however, was barely more accurate than random in ordering the probabilities of each region being `unusual'. In fact, looking at the posterior mean of some the individual temporal trends we found they did not resemble the regions true trend -- even for the `unusual' regions. The following section discusses why this is the case.
 
@@ -736,7 +702,7 @@ Evidently the cut model, in some sense, recovers the ground truth better than th
 Friends don't let friends fit mixture models, at least not for problems that matter.
 \end{displayquote}
 
-When such identifiability arise we can sometimes specify the prior in such a way as to negate teh problem. Such as enforcing an ordering to counter the label swithcing problem. In this context though, we are unaware of any prior or restraint which would solve our issue. This could be a useful avenue for future research.
+When such identifiability arise we can sometimes specify the prior in such a way as to negate the problem. Such as enforcing an ordering to counter the label swithcing problem. In this context though, we are unaware of any prior or restraint which would solve our issue. This could be a useful avenue for future research.
 
 \chapter{Excess variability model}
 
@@ -785,7 +751,7 @@ and the $q_i$ are given Uniform priors on (0, 1). Here we are marginilizing out 
 \end{equation}
 where $I$ is the indicator function. \\
 
-The structure of this model, based on the conditional dependencies between variables can be seen in the Bayesian network in fig fweufno. 
+The structure of this model, based on the conditional dependencies between variables can be seen in the Bayesian network in fig \ref{fig:bay}. 
 
 Unlike the BaySTDetect model, when we classify the regions in the two sets, we can not use the numerical values of the posterior means of the $q_i$ to define a decision rule by region. This is because the $q_i$ are given uniform priors on the unit interval which does not adequetly convey our prior beliefs that the typical regions should far outnumer the atypical ones. Such a prior could be constructed but a simple Beta prior or similar will not accurately represent this belief. \\
 
@@ -835,7 +801,7 @@ And secondly, the BYM prior has a tendancy to oversmooth the pointwise data -- l
 
 \end{tikzpicture}
 \label{fig:baystdetect}
-\caption{Directed acyclic graph showing conditional dependencies between model variables for the excess variability model. Dashed lines indicte one way flow of information. Based on figure in \citet{baystdetect}.}
+\caption{Directed acyclic graph showing conditional dependencies between model variables for the excess variability model. Dashed lines indicte one way flow of information.}
 \end{figure}
 
 \begin{figure}
@@ -872,17 +838,17 @@ where we call $w^*$ the preference weight.
 \item Increment $k$ and return to step 3 until the desired number of unusual regions have been selected. 
 \end{enumerate}
 
-This procedure was applied to the shape data of the 210 CCGs with a preference weight of $w^* = 20$ to select 15 regions in total. The resulting unusual regions selected can be seen in fig fkjhk. We see that the selected regions form a series of clusters of varying sizes. \\
+This procedure was applied to the shape data of the 210 CCGs with a preference weight of $w^* = 20$ to select 15 regions in total. The resulting unusual regions selected can be seen in fig \ref{fig:unusual}. We see that the selected regions form a series of clusters of varying sizes. \\
 
 Using this list of unusual regions we proceeded to generate the data as follows. A random walk was simulated
 \begin{equation*}
 \gamma_{1:15} \sim \operatorname{RW}_1(0.1^2)
 \end{equation*}
-and then normalised to have a mean of zero. The deviant temporal trend was created generated by adding seperate half-normal variables to the final six time points of the general trend. The resulting two trends can be seen in fig 543. \\
+and then normalised to have a mean of zero. The deviant temporal trend was created generated by adding seperate half-normal variables to the final six time points of the general trend. The resulting two trends can be seen in fig \ref{fig:unusual}. \\
 
 The spatial component was simulated from a BYM prior and was combined with the temporal trend, identically to as in Chapter 2, to create the rate variables for each region and time point. Multiplying by the same expected values as previously, we drew from a Poisson distribution to arrive at the final values. The code for this can be found in the appendix. \\
 
-Now applying the same procedure as described earlier in the chapter, we only 3 of the total 15 regions were correctly identified. For a null hypothesis where we select the atypical regions randomly, this number of identified regions would give a p-value of around 8\%\footnote{> 1 - phyper(2, 15, 195, 15) = 0.07968} -- not very good! Examining the regions identified in fig 321, we that the regions we did correctly identify are non-contiguous. Futher confirming our hypothesis that this method will fail to identify unusual areas when they cluster together.
+Now applying the same procedure as described earlier in the chapter, we only 3 of the total 15 regions were correctly identified. For a null hypothesis where we select the atypical regions randomly, this number of identified regions would give a p-value of around 8\%\footnote{\> 1 - phyper(2, 15, 195, 15) = 0.07968} -- not very good! Examining the regions identified in fig 321, we that the regions we did correctly identify are non-contiguous. Futher confirming our hypothesis that this method will fail to identify unusual areas when they cluster together.
 
 
 \begin{figure}
@@ -896,7 +862,7 @@ Now applying the same procedure as described earlier in the chapter, we only 3 o
 \centering
 \subfloat[Truly unsual regions]{\includegraphics[width=0.5\textwidth]{trueunusual}}
 \subfloat[Model classification]{\includegraphics[width=0.5\textwidth]{var}}
-\label{fig:var}
+\label{fig:unusual}
 \caption{Map of unusual regions for the excess variance model where there are clustered unusual regions. Correctly identified regions are {\color{Green} \bf green}, false-negatives are {\color{Blue}\bf blue} and false-positives are {\color{Red}\bf red}}
 \end{figure}
 
@@ -906,35 +872,19 @@ In this chapter we briefly note some of the computational considerations that on
 
 \section{Computational software}
 
-\subsection{Auto differentiation}
+Pymc3 was first used to fit the Bayesian models as it has the advantage of both using HMC for continuous variables and other sampling routines, e.g. slice, for discrete variables. However, we ran into intractable computational issues. A discussion of this with the developers can be found here: https://github.com/pymc-devs/pymc3/issues/1652. \\
 
-\subsubsection{Symplectic Integration}
-
-\begin{itemize}
-\item Leap-frog integration
-\item Metropolis correction
-\end{itemize}
-
-\subsubsection{Integration time}
-
-\begin{itemize}
-\item Naive implementations will not preserve detailed balance
-\item Short-time will give large autocorrelations
-\item Long-time will face diminishing returns
-\item Integration time obviously linear in time, so compare to linear
-\item Exhuastive monte-carlo
-\item \emph{Identifying the Optimal Integration Time in Hamiltonian Monte-Carlo} (Betancourt 2016)
-\end{itemize}
-
-\section{Autodiff/black-box variational inference?}
+Instead Stan was used throughout the project to fit continuous variables. As an aside, we attempted to use auto-diff variational inference but the uncorrelated form did not fit well and the full rank model was too slow to fit.
+ 
 
 \section{Reparameterization of the models}
 
-Removing conditional dependencies e.g.
+Removing conditional dependencies can be used to reduce local dependence between variables -- improving the exploration of the sample space.
 
 \begin{align*}
 \lambda \sim N(v, \sigma^2_\lambda) = N(0, 1) \cdot \sigma_\lambda^2 + v
 \end{align*}
+
 
 \section{Marginilizing over the discrte parameters}
 
@@ -969,7 +919,7 @@ For more on this see page 185 of \cite{stan}.
 
 \chapter{Comparisions and conclusions}
 
-We now consider the relative benefits of each of the techniques we have implemented and suggest some natural avenues by which the models could be improved. A summary of the timing, false-postive and false-negative rates can be found in table 543. \\
+We now consider the relative benefits of each of the techniques we have implemented and suggest some natural avenues by which the models could be improved. A summary of the timing, false-postive and false-negative rates can be found in table \ref{fig:table}. \\
 
 The CUSUM procedure, as we have defined, shows excellent sensitivity to the types of pathologies that we which to detect. However, the model performes relatively poorly in terms of specificity -- with the highest false-positive rate of the three techniques. The use of an adaptation to the model, such as the spatial CUSUM, could further improve the model in this respect by the shrinkage granted by a smoothing procedure. \\
 
@@ -1001,6 +951,765 @@ Excess Variance & 2.05 & 26.7 & 720 \\
 \caption{Comparison of the methods implemented on the simualted data.}
 \end{figure}
 \egroup
+
+\chapter{Code appendix}
+
+There is far too much code in this project to fit in the appendix. To code for the entire project can be found on my Github at https://github.com/michaelaredman/Masters-Project. A \textbf{very} select subset of the code is included here
+
+\begin{minted}
+functions {
+  /**
+  * This part is taken from Max Joseph's write-up here: http://mc-stan.org/documentation/case-studies/mbjoseph-CARStan.html
+  *
+  * Return the log probability of a proper conditional autoregressive (CAR) prior 
+  * with a sparse representation for the adjacency matrix
+  *
+  * @param phi Vector containing the parameters with a CAR prior
+  * @param tau Precision parameter for the CAR prior (real)
+  * @param alpha Dependence (usually spatial) parameter for the CAR prior (real)
+  * @param W_sparse Sparse representation of adjacency matrix (int array)
+  * @param n Length of phi (int)
+  * @param W_n Number of adjacent pairs (int)
+  * @param D_sparse Number of neighbors for each location (vector)
+  * @param lambda Eigenvalues of D^{-1/2}*W*D^{-1/2} (vector)
+  *
+  * @return Log probability density of CAR prior up to additive constant
+  */
+  real sparse_car_lpdf(vector phi, real tau, real alpha, 
+    int[,] W_sparse, vector D_sparse, vector lambda, int n, int W_n) {
+      row_vector[n] phit_D; // phi' * D
+      row_vector[n] phit_W; // phi' * W
+      vector[n] ldet_terms;
+    
+      phit_D = (phi .* D_sparse)';
+      phit_W = rep_row_vector(0, n);
+      for (i in 1:W_n) {
+        phit_W[W_sparse[i, 1]] = phit_W[W_sparse[i, 1]] + phi[W_sparse[i, 2]];
+        phit_W[W_sparse[i, 2]] = phit_W[W_sparse[i, 2]] + phi[W_sparse[i, 1]];
+      }
+    
+      for (i in 1:n) ldet_terms[i] = log1m(alpha * lambda[i]);
+      return 0.5 * (n * log(tau)
+                    + sum(ldet_terms)
+                    - tau * (phit_D * phi - alpha * (phit_W * phi)));
+  }
+}
+data {
+    int<lower = 1> numRegions; // The number of regions
+    int<lower = 1> nt; // The number of time points
+    // matrix[numRegions, nt] observed;  // The observed counts at each point
+    int observed[numRegions, nt];
+    vector[numRegions] log_expected; // The expected number of counts based on demographics etc
+    matrix<lower = 0, upper = 1>[numRegions, numRegions] W; // The adjacency matrix
+    int W_n;
+}
+transformed data{
+    int W_sparse[W_n, 2];   // adjacency pairs
+    vector[numRegions] D_sparse;     // diagonal of D (number of neigbors for each site)
+    vector[numRegions] lambda;       // eigenvalues of invsqrtD * W * invsqrtD
+    
+    { // generate sparse representation for W
+	int counter;
+	counter = 1;
+	// loop over upper triangular part of W to identify neighbor pairs
+	for (i in 1:(numRegions - 1)) {
+	    for (j in (i + 1):numRegions) {
+		if (W[i, j] == 1) {
+		    W_sparse[counter, 1] = i;
+		    W_sparse[counter, 2] = j;
+		    counter = counter + 1;
+		}
+	    }
+	}
+    }
+    for (i in 1:numRegions) D_sparse[i] = sum(W[i]);
+    {
+	vector[numRegions] invsqrtD;  
+	for (i in 1:numRegions) {
+	    invsqrtD[i] = 1 / sqrt(D_sparse[i]);
+	}
+	lambda = eigenvalues_sym(quad_form(W, diag_matrix(invsqrtD)));
+    }
+}
+parameters {
+    vector[nt] temporal;
+    vector[numRegions] v; // Spatial smoothing component
+    vector[numRegions] lmbda;
+    //real cons;
+    real<lower = 0> sigma_v; // Variance of spatial component, v
+    real<lower = 0> sigma_temporal; // Variance of temporal component
+    real<lower = 0> sigma_l;
+    real<lower=0, upper=1> alpha;
+
+}
+transformed parameters {
+
+    matrix[numRegions, nt] mu_general;
+    
+    mu_general = rep_matrix(log_expected, nt) + rep_matrix(lmbda, nt) + rep_matrix(temporal, numRegions)';
+    //mu_general = rep_matrix(log_expected, nt) + rep_matrix(lmbda, nt) + rep_matrix(temporal, numRegions)' + rep_matrix(cons, numRegions, nt);
+    
+}
+model {
+    sigma_temporal ~ normal(0, 1);
+    sigma_v ~ normal(0, 1);
+    sigma_l ~ normal(0, 1);
+    
+    temporal[1] ~ normal(0, sigma_temporal); // 1d random walk prior on temporal component
+    for (t in 2:nt) {
+	temporal[t] ~ normal(temporal[t - 1], sigma_temporal);
+    }
+    
+    //cons ~ normal(0, 30); // constant term for general
+    
+    v ~ sparse_car(sigma_v, alpha, W_sparse, D_sparse, lambda, numRegions, W_n);
+    lmbda ~ normal(v, sigma_l);
+    
+    for (t in 1:nt) {
+	observed[,t] ~ poisson_log(mu_general[,t]);
+    }
+    
+}
+\end{minted}
+
+\begin{minted}{r}
+data {
+    int<lower = 1> numRegions; // The number of regions
+    int<lower = 1> nt; // The number of time points
+    int observed[numRegions, nt];
+    vector[numRegions] log_expected; // The expected number of counts based on demographics etc
+}
+parameters {
+    real<lower = 0> var_ind_temporal[numRegions]; // The variance of the individual temporal trends
+    
+    matrix[numRegions, nt] ind_temporal; // The temporal trend of an individual region
+    vector[numRegions] ind_constant;
+
+    real a;
+    real<lower = 0> b;
+}
+transformed parameters {
+    matrix[numRegions, nt] mu_specific;
+    
+    mu_specific = ind_temporal + rep_matrix(ind_constant, nt) + rep_matrix(log_expected, nt);
+}
+model {
+    
+    ind_temporal[,1] ~ normal(0, sqrt(var_ind_temporal)); 
+    for (t in 2:nt) {
+	ind_temporal[,t] ~ normal(ind_temporal[, t - 1], sqrt(var_ind_temporal));
+    }
+
+    ind_constant ~ normal(0, 30); // non-informative prior on the constant term per region
+
+    var_ind_temporal ~ lognormal(a, b);
+    a ~ normal(0, 30);
+    b ~ normal(0, 2.5);
+    
+    for (t in 1:nt) {
+	observed[,t] ~ poisson_log(mu_specific[,t]);
+    }
+
+}
+
+\end{minted}
+
+\begin{minted}{r}
+functions {
+  /**
+  * This part is taken from Max Joseph's write-up here: http://mc-stan.org/documentation/case-studies/mbjoseph-CARStan.html
+  *
+  * Return the log probability of a proper conditional autoregressive (CAR) prior 
+  * with a sparse representation for the adjacency matrix
+  *
+  * @param phi Vector containing the parameters with a CAR prior
+  * @param tau Precision parameter for the CAR prior (real)
+  * @param alpha Dependence (usually spatial) parameter for the CAR prior (real)
+  * @param W_sparse Sparse representation of adjacency matrix (int array)
+  * @param n Length of phi (int)
+  * @param W_n Number of adjacent pairs (int)
+  * @param D_sparse Number of neighbors for each location (vector)
+  * @param lambda Eigenvalues of D^{-1/2}*W*D^{-1/2} (vector)
+  *
+  * @return Log probability density of CAR prior up to additive constant
+  */
+  real sparse_car_lpdf(vector phi, real tau, real alpha, 
+    int[,] W_sparse, vector D_sparse, vector lambda, int n, int W_n) {
+      row_vector[n] phit_D; // phi' * D
+      row_vector[n] phit_W; // phi' * W
+      vector[n] ldet_terms;
+    
+      phit_D = (phi .* D_sparse)';
+      phit_W = rep_row_vector(0, n);
+      for (i in 1:W_n) {
+        phit_W[W_sparse[i, 1]] = phit_W[W_sparse[i, 1]] + phi[W_sparse[i, 2]];
+        phit_W[W_sparse[i, 2]] = phit_W[W_sparse[i, 2]] + phi[W_sparse[i, 1]];
+      }
+    
+      for (i in 1:n) ldet_terms[i] = log1m(alpha * lambda[i]);
+      return 0.5 * (n * log(tau)
+                    + sum(ldet_terms)
+                    - tau * (phit_D * phi - alpha * (phit_W * phi)));
+  }
+}
+data {
+    int<lower = 1> numRegions; // The number of regions
+    int<lower = 1> nt; // The number of time points
+    // matrix[numRegions, nt] observed;  // The observed counts at each point
+    int observed[numRegions, nt];
+    vector[numRegions] log_expected; // The expected number of counts based on demographics etc
+    matrix<lower = 0, upper = 1>[numRegions, numRegions] W; // The adjacency matrix
+    int W_n;
+    real<lower = 0, upper = 1> alpha; //The degree of spatial dependence
+}
+transformed data{
+    int W_sparse[W_n, 2];   // adjacency pairs
+    vector[numRegions] D_sparse;     // diagonal of D (number of neigbors for each site)
+    vector[numRegions] lambda;       // eigenvalues of invsqrtD * W * invsqrtD
+    
+    { // generate sparse representation for W
+	int counter;
+	counter = 1;
+	// loop over upper triangular part of W to identify neighbor pairs
+	for (i in 1:(numRegions - 1)) {
+	    for (j in (i + 1):numRegions) {
+		if (W[i, j] == 1) {
+		    W_sparse[counter, 1] = i;
+		    W_sparse[counter, 2] = j;
+		    counter = counter + 1;
+		}
+	    }
+	}
+    }
+    for (i in 1:numRegions) D_sparse[i] = sum(W[i]);
+    {
+	vector[numRegions] invsqrtD;  
+	for (i in 1:numRegions) {
+	    invsqrtD[i] = 1 / sqrt(D_sparse[i]);
+	}
+	lambda = eigenvalues_sym(quad_form(W, diag_matrix(invsqrtD)));
+    }
+}
+parameters {
+    vector[nt] temporal;
+    vector[numRegions] v; // Spatial smoothing component
+    vector[numRegions] lmbda; 
+    real<lower = 0> sigma_v; // Variance of spatial component, v
+    real<lower = 0> sigma_temporal; // Variance of temporal component
+    real<lower = 0> sigma_l;
+    //real constant;
+    //real<lower = 0, upper = 1> alpha; // The degree of spatial dependence - implicitly given flat prior
+
+    vector<lower = 0, upper = 1>[numRegions] indicator; // Mixture component
+    matrix[numRegions, nt] xi; // Space-time inseperable component
+
+    real<lower = 0> tau_1;
+    real<lower = 0> k;
+    
+
+}
+transformed parameters {
+    real<lower = 0> tau_2;
+    matrix[numRegions, nt] mu;
+
+    tau_2 = tau_1 + k;
+
+    //mu = rep_matrix(constant, numRegions, nt) + rep_matrix(temporal, numRegions)' + rep_matrix(lmbda, nt) + rep_matrix(log_expected, nt) + xi
+    mu = rep_matrix(temporal, numRegions)' + rep_matrix(lmbda, nt) + rep_matrix(log_expected, nt) + xi;
+
+}
+model {
+    sigma_temporal ~ normal(0, 1);
+    sigma_v ~ normal(0, 1);
+    sigma_l ~ normal(0, 1);
+    
+    temporal[1] ~ normal(0, sigma_temporal); // 1d random walk prior on temporal component
+    for (t in 2:nt) {
+	temporal[t] ~ normal(temporal[t - 1], sigma_temporal);
+    }
+    
+    //constant ~ normal(0, 30);
+
+    v ~ sparse_car(sigma_v, alpha, W_sparse, D_sparse, lambda, numRegions, W_n);
+    lmbda ~ normal(v, sigma_l);
+
+    indicator ~ beta(0.3, 0.6);
+
+    tau_1 ~ normal(0, 0.1);
+    k ~ normal(0, 10);
+
+    for (i in 1:numRegions){
+	target += log_sum_exp(log1m(indicator[i]) + normal_lpdf(xi[i,] | 0, tau_1),
+			      log(indicator[i]) + normal_lpdf(xi[i,] | 0, tau_2));
+	
+    }
+
+    for (i in 1:numRegions){
+	observed[i,] ~ poisson(exp(mu[i,]));
+    }
+
+}
+
+\end{minted}
+
+\begin{minted}{python}
+
+import pandas as pd
+import numpy as np
+import math
+from cusum import cusum as cs
+import logging
+from matplotlib import pyplot as plt
+
+def load_data():
+    temp_expected = pd.read_csv('../../data/csv/expected.csv')
+    E = np.array(temp_expected['x'])
+    
+    temp_sim = pd.read_csv('../../data/csv/simulated.csv')
+    temp_times = temp_sim[['Time1', 'Time2', 'Time3', 'Time4', 'Time5', 'Time6', 'Time7', 'Time8', 'Time9', 'Time10', 'Time11', 'Time12', 'Time13', 'Time14', 'Time15']]
+    observed_values = np.array(temp_times, dtype=np.int)
+    
+    numRegions = observed_values.shape[0] #number of regions
+    nt = observed_values.shape[1] #number of time points
+    
+    return numRegions, nt, E, observed_values
+
+numRegions, nt, E, observed_values = load_data()
+
+logger = logging.getLogger("cusum")
+logging.basicConfig(level=logging.DEBUG)
+
+class cusum:
+
+    def __init__(self, observed, expected, seed=None):
+        self.observed = np.array(observed)
+        self.expected = np.array(expected)
+
+        np.random.seed(seed=seed)
+
+        self.numRegions = self.observed.shape[0]
+        self.nt = self.observed.shape[1]
+
+        self._calc_expected_trends()
+
+        #default alpha (ratio of in-control to out-of-control rates)
+        self.alpha = 1.5
+        #default size (number of times to simulated trend to find h value)
+        self.size = 4000
+        
+    def _norm_by_expectation(self):
+        """
+        Return the observed values divided by their expected values
+        """
+        return np.array([obs/self.expected[i] for i, obs in enumerate(self.observed)])
+
+    def _general_trend(self):
+        """
+        Return the mean temporal trend for a process of unit expectation
+        """
+        return self._norm_by_expectation().mean(axis=0)
+
+    def _calc_expected_trends(self):
+        """
+        Calculate the temporally adjusted expectations for each region
+        """
+        general_trend = self._general_trend()
+        self.expected_trend = np.zeros(shape=(self.numRegions, self.nt))
+        for i in range(self.numRegions):
+            self.expected_trend[i, :] = self.expected[i] * general_trend 
+
+    def control_chart(self, time_series, expectation, alpha):
+        """
+        Calls Fortran subroutine to return the CUSUM control chart for the a given time series
+        which is assumed to be a Poisson distributed with given rate parameters.
+
+        Inputs
+        ------
+        time_series : array (len_series)
+            Time series which generates the control chart
+        
+        expectation : array (len_series)
+            In-control rate parameter at each time step 
+
+        alpha : real > 1
+            Ratio of in-control rate to out-of-control rate
+
+        Output
+        ------
+        control_chart : array (len_series)
+            The desired control chart.
+        """
+        control_chart = cs.control_chart(time_series, expectation, alpha)
+        return control_chart
+
+    def simulate_trend(self, expectation, size):
+        """
+        Simulate a Poisson r.v., for a given temporal expectation, (size) times.
+        """
+        trends = np.zeros(shape=(size, len(expectation)))
+        for i in range(len(expectation)):
+            trends[:, i] = np.random.poisson(expectation[i], size=size)
+        return trends
+
+    def find_h(self, expectation, size, alpha, h_values, p_value):
+        simulated_series = self.simulate_trend(expectation, size)
+        false_positive_rates = cs.false_positive(simulated_series, expectation, alpha, h_values)
+        try:
+            my_h = next(h for h, rate in zip(h_values, false_positive_rates) if rate < p_value)
+        except StopIteration:
+            logger.warning("Unable to find suitable h value. False positive rates were as follows:")
+            logger.warning(np.array2string(false_positive_rates))
+            my_h = 0
+            
+        return my_h
+        
+    def generate_h(self, h_values, p_value):
+        temp = []
+        for regional_expectation in self.expected_trend:
+            new_value = self.find_h(regional_expectation, self.size, self.alpha, h_values, p_value=p_value)
+            temp.append(new_value)
+        self.h_array = np.array(temp)
+
+    def test(self):
+        flags = np.zeros(shape=self.numRegions)
+        for i in range(self.numRegions):
+            c_chart = cs.control_chart(self.observed[i, :], self.expected_trend[i, :], alpha=self.alpha)
+            flags[i] = cs.flag(c_chart, self.h_array[i])
+        return flags
+
+    def test_regions(self):
+        flags = self.test()
+        return np.where(flags == 1)[0]
+        
+
+
+csum = cusum(observed_values, E)
+csum.generate_h(np.linspace(0, 10, 250), p_value=0.01)
+unusual_predicted = csum.test_regions() + 1
+
+\end{minted}
+
+\begin{minted}{fortran}
+module cusum
+
+contains
+
+    function log_likelihood(x, lmbda)
+        !! Poisson log-likelihood up to a constant
+        implicit none
+        real(kind=8), intent(in) :: x, lmbda
+        real(kind=8) :: log_likelihood
+
+        log_likelihood = -lmbda + x*log(lmbda)
+        
+    end function log_likelihood
+
+    function log_likelihood_ratio(x, in_control, out_control)
+      !! Difference between the log-likelihoods of the in-control and out-of-control rate models  
+      implicit none
+      real(kind=8), intent(in) :: x, in_control, out_control
+      real(kind=8) :: numerator, denominator, log_likelihood_ratio
+      numerator = log_likelihood(x, out_control)
+      denominator = log_likelihood(x, in_control)
+
+      log_likelihood_ratio = numerator - denominator
+      
+    end function log_likelihood_ratio
+
+    subroutine control_chart(time_series, expectation, alpha, S)
+      implicit none
+      real(kind=8), intent(in) :: alpha
+      real(kind=8), dimension(:), intent(in) :: time_series, expectation
+      !f2py depend(time_series) S
+      real(kind=8), intent(out), dimension(size(time_series)) :: S
+      integer :: i, series_len
+
+      series_len = size(time_series)
+
+      S(1) = log_likelihood_ratio(time_series(1), expectation(1), expectation(1)*alpha)
+      do i=2,series_len
+         S(i) = max(0d0, log_likelihood_ratio(time_series(i), expectation(i), expectation(i)*alpha))
+      end do
+      
+    end subroutine control_chart
+
+    function flag(chart, h)
+      implicit none
+      real(kind=8), intent(in), dimension(:) :: chart
+      real(kind=8), intent(in) :: h
+      logical :: flag
+
+      flag = maxval(chart) > h
+
+    end function flag
+
+    subroutine false_positive(simulated_series, expectation, alpha, h_values, fp_rate)
+      implicit none
+      real(kind=8), intent(in) :: alpha
+      real(kind=8), intent(in), dimension(:) :: expectation, h_values
+      real(kind=8), intent(in), dimension(:, :) :: simulated_series
+      !f2py depend(h_values) fp_rate
+      real(kind=8), intent(out), dimension(size(h_values)) :: fp_rate
+      integer :: i, j, h_values_len, series_len, num_series
+      real(kind=8) :: h
+      real(kind=8), dimension(:), allocatable :: chart, ones_list, zeros_list
+      logical, dimension(:), allocatable :: flag_list
+
+      h_values_len = size(h_values)
+      series_len = size(simulated_series, 2)
+      num_series = size(simulated_series, 1)
+
+      allocate(flag_list(num_series))
+      allocate(chart(series_len))
+
+      allocate(ones_list(num_series))
+      allocate(zeros_list(num_series))
+      ones_list = 1.0d0
+      zeros_list = 0.0d0
+
+      do i=1,h_values_len
+         h = h_values(i)
+         do j=1,num_series
+            call control_chart(simulated_series(j, :), expectation, alpha, chart)
+            flag_list(j) = flag(chart, h)
+         end do
+         fp_rate(i) = sum(merge(ones_list, zeros_list, flag_list))/num_series
+      end do
+
+    end subroutine false_positive
+    
+end module cusum
+\end{minted}
+
+\begin{minted}{python}
+import pystan
+import pandas as pd
+import numpy as np
+import time
+import pickle
+import seaborn as sns
+from matplotlib import pyplot as plt
+
+def load_data():
+    temp_expected = pd.read_csv('../../data/csv/expected.csv')
+    E = np.array(temp_expected['x'])
+    
+    temp_sim = pd.read_csv('../../data/csv/simulated.csv')
+    temp_times = temp_sim[['Time1', 'Time2', 'Time3', 'Time4', 'Time5', 'Time6', 'Time7', 'Time8', 'Time9', 'Time10', 'Time11', 'Time12', 'Time13', 'Time14', 'Time15']]
+    observed_values = np.matrix(temp_times, dtype=np.int)
+    
+    adj = pd.read_csv('../../data/csv/adjacency.csv', index_col=0)
+    W = np.matrix(adj)
+    
+    numRegions = observed_values.shape[0] #number of regions
+    nt = observed_values.shape[1] #number of time points
+    
+    alpha = 0.9 #this was 1 in the model but that makes the covariance matrix singular
+
+    return numRegions, nt, E, W, alpha, observed_values
+
+numRegions, nt, E, W, alpha, observed_values = load_data()
+
+model_data = {'numRegions': numRegions,
+              'nt': nt,
+              'observed': observed_values,
+              'log_expected': np.log(E),
+              'W_n': int(W.sum()/2.0),
+              'W': W,
+              'alpha': alpha}
+
+print('Starting fit at: ', time.ctime())
+
+iter_num = 2000
+
+fit = pystan.stan(file='var.stan', data=model_data, iter=iter_num, chains=4)
+
+print('Finished fit at: ', time.ctime())
+
+trace = fit.extract()
+
+ts = time.localtime()
+file_name = "trace/model_{}-{}-{}__{}-{}.pkl".format(ts[2], ts[1], ts[0], ts[3], ts[4])
+
+with open('summary.txt', 'w') as f:
+    print(fit, file=f)
+
+with open(file_name, 'wb') as f:
+    pickle.dump(trace, f)
+
+true_unusual = pd.read_csv('../../data/csv/unusual.csv')
+unusual_regions = np.array(true_unusual['x'])
+
+indicator = trace['indicator']
+indicator_av = pd.DataFrame(indicator.mean(axis=0))
+
+indicator_av.index = range(1, 211)
+predictor = indicator_av.sort(0)
+regions = np.array(predictor.index)
+
+np.savetxt('predicted.csv', regions, delimiter=',', fmt='%i')
+
+fifteen = regions[-15:]
+
+regions_identified = set(unusual_regions).intersection(fifteen)
+
+num_regions_identified = len(regions_identified)
+\end{minted}
+
+\begin{minted}{r}
+library(maptools)
+library(CARBayesdata)
+library(rgdal)
+library(spdep)
+library(MASS)
+library(classInt)
+library(RColorBrewer)
+setwd("~/4th Year/project/data/shapefiles")
+shape.basic <- readOGR('.', 'CCG_BSC Feb2013  (clipcoast 200m)')
+shape_deathtowales <- shape.basic[shape.basic@data$CCGname != 'Wales',]
+shape <- shape_deathtowales[shape_deathtowales@data$CCGname != 'NHS Isle of Wight CCG',]
+load("~/4th Year/project/data/rdata/expected_data.Rda")
+asthma <- asthma_expected_i[asthma_expected_i$CCG != '10L',]
+expected = as.vector(asthma['E']$E)
+
+unusual_temp <- read.csv('~/4th Year/project/data/csv/prefUnusual.csv', header=FALSE)
+unusual <- sort(unusual_temp$V1) + 1 #add one as python had zero index
+
+numRegions <- length(shape@data$SP_ID)
+cols <- rep('white', numRegions)
+cols[unusual] <- rep('yellow', length(unusual))
+
+plot(shape, col=cols)
+
+random_walk <- function(len, sigma) {
+  walk <- rep(0, len)
+  walk[1] <- rnorm(1, sd=sigma)
+  for(i in 2:len) {
+    walk[i] <- walk[i-1] + rnorm(1, sd=sigma)
+  }
+  return(walk)
+}
+
+set.seed(314)
+
+rwalk <- random_walk(len=15, sigma=0.1)
+rwalk <- rwalk - mean(rwalk)
+
+rwalk_unusual <- rwalk
+rwalk_unusual[10:15] <- rwalk_unusual[10:15] + abs(rnorm(n=6, sd = 0.3))
+
+plot(rwalk_unusual, type='l', col='red', ylab = 'Temporal trend', xlab = 't')
+lines(rwalk, type='l', col='blue')
+
+neib <- poly2nb(shape)
+adj <- nb2mat(neib, style="B") 
+num.neib <- colSums(adj)
+alpha <- 0.9
+prec.matrix <- diag(num.neib) - alpha*adj
+cov.matrix <- solve(prec.matrix)
+spatial.sd <- 0.02
+
+CAR <- mvrnorm(mu=rep(0, length(num.neib)), Sigma=cov.matrix*spatial.sd)
+
+class <- classIntervals(CAR, 9, style="quantile")
+display.brewer.pal(name = "YlOrRd", n=9)
+plotclr <- brewer.pal(9,"YlOrRd")
+colcode <- findColours(class, plotclr)
+plot(shape, col=colcode)
+
+mu <- matrix(data=0, nrow=210, ncol=15)
+for(i in 1:210) {
+  mu[i, ] <- mu[i, ] + rwalk
+}
+for(i in unusual) {
+  mu[i, ] <- rwalk_unusual
+}
+for(i in 1:15) {
+  mu[, i] <- mu[, i] + CAR + log(expected)
+}
+rate.matrix <- exp(mu)
+
+pois <- function(lambda) {rpois(n=1, lambda)}
+simulated <- apply(rate.matrix, MARGIN=c(1, 2), FUN=pois)
+write.csv(simulated, '~/4th Year/project/data/csv/simulated_spatial_corr.csv')
+
+for(i in 1:15) {
+  class2 <- classIntervals(simulated[,i], 9, style="quantile")
+  plotclr2 <- brewer.pal(9,"YlOrRd")
+  colcode2 <- findColours(class2, plotclr2)
+  plot(shape, col=colcode2)
+}
+
+
+
+
+\end{minted}
+
+
+\begin{minted}{python}
+import numpy as np
+import pandas as pd
+
+np.random.seed(21)
+
+adj = pd.read_csv('../data/csv/adjacency.csv', index_col=0)
+W = np.matrix(adj)
+
+class generate_unusual:
+    """
+    Iterative selector for regions from an adjacency matrix with preferential attatchment
+    """
+    
+    def __init__(self, adj, pref_weight=1):
+
+        self.adj = adj
+        self.num_regions = adj.shape[0]
+        self.pref_weight = pref_weight
+
+        self.nodes = np.array(range(self.num_regions))
+        self.weights = np.ones(self.num_regions)
+        self.unusual = []
+
+        self.form_probabilities()
+
+    def form_probabilities(self):
+        """
+        Calculate the vector of probabilities corresponding to each region being picked as the next regions to be selected
+        """
+        total_weight = self.weights.sum()
+        self.prob = np.array([weight/total_weight for weight in self.weights])
+
+    def select_node(self):
+        new_node = np.random.choice(self.nodes, p = self.prob)
+        return new_node
+
+    def remove_node(self, new_node):
+        index = np.where(self.nodes == new_node)[0][0]
+        self.nodes = np.delete(self.nodes, index)
+        self.weights = np.delete(self.weights, index)
+
+    def update_weights(self, new_node):
+        new_node_adj = np.array(self.adj[new_node])[0]
+        neib = np.where(new_node_adj == 1)[0]
+        #get the indicies of each neighbour in the remaining list of nodes
+        indicies = np.concatenate([np.where(self.nodes == node)[0] for node in neib]) 
+        self.weights[indicies] = self.weights[indicies] + self.pref_weight
+
+    def sample(self, sample_size):
+        for i in range(sample_size):
+            new_node = self.select_node()
+            self.remove_node(new_node)
+            self.update_weights(new_node)
+            self.form_probabilities()
+            self.unusual.append(new_node)
+
+gen = generate_unusual(W, pref_weight=20)
+gen.sample(15)
+
+unusual = gen.unusual
+np.savetxt('../data/csv/prefUnusual.csv', unusual)
+
+\end{minted}
 
 \printbibliography
 

@@ -1,0 +1,40 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+data \PYGdefault{p}{\PYGdefaultZob{}}
+    int\PYGdefault{o}{\PYGdefaultZlt{}}lower \PYGdefault{o}{=} \PYGdefault{l+m}{1}\PYGdefault{o}{\PYGdefaultZgt{}} numRegions\PYGdefault{p}{;} \PYGdefault{o}{//} The number of regions
+    int\PYGdefault{o}{\PYGdefaultZlt{}}lower \PYGdefault{o}{=} \PYGdefault{l+m}{1}\PYGdefault{o}{\PYGdefaultZgt{}} nt\PYGdefault{p}{;} \PYGdefault{o}{//} The number of time points
+    int observed\PYGdefault{p}{[}numRegions\PYGdefault{p}{,} nt\PYGdefault{p}{];}
+    \PYGdefault{k+kt}{vector}\PYGdefault{p}{[}numRegions\PYGdefault{p}{]} log\PYGdefaultZus{}expected\PYGdefault{p}{;} \PYGdefault{o}{//} The expected number of counts based on demographics etc
+\PYGdefault{p}{\PYGdefaultZcb{}}
+parameters \PYGdefault{p}{\PYGdefaultZob{}}
+    real\PYGdefault{o}{\PYGdefaultZlt{}}lower \PYGdefault{o}{=} \PYGdefault{l+m}{0}\PYGdefault{o}{\PYGdefaultZgt{}} var\PYGdefaultZus{}ind\PYGdefaultZus{}temporal\PYGdefault{p}{[}numRegions\PYGdefault{p}{];} \PYGdefault{o}{//} The variance of the individual temporal trends
+
+    \PYGdefault{k+kt}{matrix}\PYGdefault{p}{[}numRegions\PYGdefault{p}{,} nt\PYGdefault{p}{]} ind\PYGdefaultZus{}temporal\PYGdefault{p}{;} \PYGdefault{o}{//} The temporal trend of an individual region
+    \PYGdefault{k+kt}{vector}\PYGdefault{p}{[}numRegions\PYGdefault{p}{]} ind\PYGdefaultZus{}constant\PYGdefault{p}{;}
+
+    real a\PYGdefault{p}{;}
+    real\PYGdefault{o}{\PYGdefaultZlt{}}lower \PYGdefault{o}{=} \PYGdefault{l+m}{0}\PYGdefault{o}{\PYGdefaultZgt{}} b\PYGdefault{p}{;}
+\PYGdefault{p}{\PYGdefaultZcb{}}
+transformed parameters \PYGdefault{p}{\PYGdefaultZob{}}
+    \PYGdefault{k+kt}{matrix}\PYGdefault{p}{[}numRegions\PYGdefault{p}{,} nt\PYGdefault{p}{]} mu\PYGdefaultZus{}specific\PYGdefault{p}{;}
+
+    mu\PYGdefaultZus{}specific \PYGdefault{o}{=} ind\PYGdefaultZus{}temporal \PYGdefault{o}{+} rep\PYGdefaultZus{}matrix\PYGdefault{p}{(}ind\PYGdefaultZus{}constant\PYGdefault{p}{,} nt\PYGdefault{p}{)} \PYGdefault{o}{+} rep\PYGdefaultZus{}matrix\PYGdefault{p}{(}log\PYGdefaultZus{}expected\PYGdefault{p}{,} nt\PYGdefault{p}{);}
+\PYGdefault{p}{\PYGdefaultZcb{}}
+model \PYGdefault{p}{\PYGdefaultZob{}}
+
+    ind\PYGdefaultZus{}temporal\PYGdefault{p}{[,}\PYGdefault{l+m}{1}\PYGdefault{p}{]} \PYGdefault{o}{\PYGdefaultZti{}} normal\PYGdefault{p}{(}\PYGdefault{l+m}{0}\PYGdefault{p}{,} \PYGdefault{k+kp}{sqrt}\PYGdefault{p}{(}var\PYGdefaultZus{}ind\PYGdefaultZus{}temporal\PYGdefault{p}{));}
+    \PYGdefault{k+kr}{for} \PYGdefault{p}{(}t \PYGdefault{k+kr}{in} \PYGdefault{l+m}{2}\PYGdefault{o}{:}nt\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+	ind\PYGdefaultZus{}temporal\PYGdefault{p}{[,}\PYGdefault{k+kp}{t}\PYGdefault{p}{]} \PYGdefault{o}{\PYGdefaultZti{}} normal\PYGdefault{p}{(}ind\PYGdefaultZus{}temporal\PYGdefault{p}{[,} t \PYGdefault{o}{\PYGdefaultZhy{}} \PYGdefault{l+m}{1}\PYGdefault{p}{],} \PYGdefault{k+kp}{sqrt}\PYGdefault{p}{(}var\PYGdefaultZus{}ind\PYGdefaultZus{}temporal\PYGdefault{p}{));}
+    \PYGdefault{p}{\PYGdefaultZcb{}}
+
+    ind\PYGdefaultZus{}constant \PYGdefault{o}{\PYGdefaultZti{}} normal\PYGdefault{p}{(}\PYGdefault{l+m}{0}\PYGdefault{p}{,} \PYGdefault{l+m}{30}\PYGdefault{p}{);} \PYGdefault{o}{//} non\PYGdefault{o}{\PYGdefaultZhy{}}informative prior on the constant term per region
+
+    var\PYGdefaultZus{}ind\PYGdefaultZus{}temporal \PYGdefault{o}{\PYGdefaultZti{}} lognormal\PYGdefault{p}{(}a\PYGdefault{p}{,} b\PYGdefault{p}{);}
+    a \PYGdefault{o}{\PYGdefaultZti{}} normal\PYGdefault{p}{(}\PYGdefault{l+m}{0}\PYGdefault{p}{,} \PYGdefault{l+m}{30}\PYGdefault{p}{);}
+    b \PYGdefault{o}{\PYGdefaultZti{}} normal\PYGdefault{p}{(}\PYGdefault{l+m}{0}\PYGdefault{p}{,} \PYGdefault{l+m}{2.5}\PYGdefault{p}{);}
+
+    \PYGdefault{k+kr}{for} \PYGdefault{p}{(}t \PYGdefault{k+kr}{in} \PYGdefault{l+m}{1}\PYGdefault{o}{:}nt\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+	observed\PYGdefault{p}{[,}\PYGdefault{k+kp}{t}\PYGdefault{p}{]} \PYGdefault{o}{\PYGdefaultZti{}} poisson\PYGdefaultZus{}log\PYGdefault{p}{(}mu\PYGdefaultZus{}specific\PYGdefault{p}{[,}\PYGdefault{k+kp}{t}\PYGdefault{p}{]);}
+    \PYGdefault{p}{\PYGdefaultZcb{}}
+
+\PYGdefault{p}{\PYGdefaultZcb{}}
+\end{Verbatim}

@@ -1,0 +1,91 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{k}{module }\PYGdefault{n}{cusum}
+
+\PYGdefault{k}{contains}
+
+\PYGdefault{k}{    function }\PYGdefault{n}{log\PYGdefaultZus{}likelihood}\PYGdefault{p}{(}\PYGdefault{n}{x}\PYGdefault{p}{,} \PYGdefault{n}{lmbda}\PYGdefault{p}{)}
+        \PYGdefault{c}{!! Poisson log\PYGdefaultZhy{}likelihood up to a constant}
+        \PYGdefault{k}{implicit none}
+\PYGdefault{k}{        }\PYGdefault{k+kt}{real}\PYGdefault{p}{(}\PYGdefault{n+nb}{kind}\PYGdefault{o}{=}\PYGdefault{l+m+mi}{8}\PYGdefault{p}{),} \PYGdefault{k}{intent}\PYGdefault{p}{(}\PYGdefault{n}{in}\PYGdefault{p}{)} \PYGdefault{k+kd}{::} \PYGdefault{n}{x}\PYGdefault{p}{,} \PYGdefault{n}{lmbda}
+        \PYGdefault{k+kt}{real}\PYGdefault{p}{(}\PYGdefault{n+nb}{kind}\PYGdefault{o}{=}\PYGdefault{l+m+mi}{8}\PYGdefault{p}{)} \PYGdefault{k+kd}{::} \PYGdefault{n}{log\PYGdefaultZus{}likelihood}
+
+        \PYGdefault{n}{log\PYGdefaultZus{}likelihood} \PYGdefault{o}{=} \PYGdefault{o}{\PYGdefaultZhy{}}\PYGdefault{n}{lmbda} \PYGdefault{o}{+} \PYGdefault{n}{x}\PYGdefault{o}{*}\PYGdefault{n+nb}{log}\PYGdefault{p}{(}\PYGdefault{n}{lmbda}\PYGdefault{p}{)}
+
+    \PYGdefault{k}{end function }\PYGdefault{n}{log\PYGdefaultZus{}likelihood}
+
+    \PYGdefault{k}{function }\PYGdefault{n}{log\PYGdefaultZus{}likelihood\PYGdefaultZus{}ratio}\PYGdefault{p}{(}\PYGdefault{n}{x}\PYGdefault{p}{,} \PYGdefault{n}{in\PYGdefaultZus{}control}\PYGdefault{p}{,} \PYGdefault{n}{out\PYGdefaultZus{}control}\PYGdefault{p}{)}
+      \PYGdefault{c}{!! Difference between the log\PYGdefaultZhy{}likelihoods of the in\PYGdefaultZhy{}control and out\PYGdefaultZhy{}of\PYGdefaultZhy{}control rate models}
+      \PYGdefault{k}{implicit none}
+\PYGdefault{k}{      }\PYGdefault{k+kt}{real}\PYGdefault{p}{(}\PYGdefault{n+nb}{kind}\PYGdefault{o}{=}\PYGdefault{l+m+mi}{8}\PYGdefault{p}{),} \PYGdefault{k}{intent}\PYGdefault{p}{(}\PYGdefault{n}{in}\PYGdefault{p}{)} \PYGdefault{k+kd}{::} \PYGdefault{n}{x}\PYGdefault{p}{,} \PYGdefault{n}{in\PYGdefaultZus{}control}\PYGdefault{p}{,} \PYGdefault{n}{out\PYGdefaultZus{}control}
+      \PYGdefault{k+kt}{real}\PYGdefault{p}{(}\PYGdefault{n+nb}{kind}\PYGdefault{o}{=}\PYGdefault{l+m+mi}{8}\PYGdefault{p}{)} \PYGdefault{k+kd}{::} \PYGdefault{n}{numerator}\PYGdefault{p}{,} \PYGdefault{n}{denominator}\PYGdefault{p}{,} \PYGdefault{n}{log\PYGdefaultZus{}likelihood\PYGdefaultZus{}ratio}
+      \PYGdefault{n}{numerator} \PYGdefault{o}{=} \PYGdefault{n}{log\PYGdefaultZus{}likelihood}\PYGdefault{p}{(}\PYGdefault{n}{x}\PYGdefault{p}{,} \PYGdefault{n}{out\PYGdefaultZus{}control}\PYGdefault{p}{)}
+      \PYGdefault{n}{denominator} \PYGdefault{o}{=} \PYGdefault{n}{log\PYGdefaultZus{}likelihood}\PYGdefault{p}{(}\PYGdefault{n}{x}\PYGdefault{p}{,} \PYGdefault{n}{in\PYGdefaultZus{}control}\PYGdefault{p}{)}
+
+      \PYGdefault{n}{log\PYGdefaultZus{}likelihood\PYGdefaultZus{}ratio} \PYGdefault{o}{=} \PYGdefault{n}{numerator} \PYGdefault{o}{\PYGdefaultZhy{}} \PYGdefault{n}{denominator}
+
+    \PYGdefault{k}{end function }\PYGdefault{n}{log\PYGdefaultZus{}likelihood\PYGdefaultZus{}ratio}
+
+    \PYGdefault{k}{subroutine }\PYGdefault{n}{control\PYGdefaultZus{}chart}\PYGdefault{p}{(}\PYGdefault{n}{time\PYGdefaultZus{}series}\PYGdefault{p}{,} \PYGdefault{n}{expectation}\PYGdefault{p}{,} \PYGdefault{n}{alpha}\PYGdefault{p}{,} \PYGdefault{n}{S}\PYGdefault{p}{)}
+      \PYGdefault{k}{implicit none}
+\PYGdefault{k}{      }\PYGdefault{k+kt}{real}\PYGdefault{p}{(}\PYGdefault{n+nb}{kind}\PYGdefault{o}{=}\PYGdefault{l+m+mi}{8}\PYGdefault{p}{),} \PYGdefault{k}{intent}\PYGdefault{p}{(}\PYGdefault{n}{in}\PYGdefault{p}{)} \PYGdefault{k+kd}{::} \PYGdefault{n}{alpha}
+      \PYGdefault{k+kt}{real}\PYGdefault{p}{(}\PYGdefault{n+nb}{kind}\PYGdefault{o}{=}\PYGdefault{l+m+mi}{8}\PYGdefault{p}{),} \PYGdefault{k}{dimension}\PYGdefault{p}{(:),} \PYGdefault{k}{intent}\PYGdefault{p}{(}\PYGdefault{n}{in}\PYGdefault{p}{)} \PYGdefault{k+kd}{::} \PYGdefault{n}{time\PYGdefaultZus{}series}\PYGdefault{p}{,} \PYGdefault{n}{expectation}
+      \PYGdefault{c}{!f2py depend(time\PYGdefaultZus{}series) S}
+      \PYGdefault{k+kt}{real}\PYGdefault{p}{(}\PYGdefault{n+nb}{kind}\PYGdefault{o}{=}\PYGdefault{l+m+mi}{8}\PYGdefault{p}{),} \PYGdefault{k}{intent}\PYGdefault{p}{(}\PYGdefault{n}{out}\PYGdefault{p}{),} \PYGdefault{k}{dimension}\PYGdefault{p}{(}\PYGdefault{n}{size}\PYGdefault{p}{(}\PYGdefault{n}{time\PYGdefaultZus{}series}\PYGdefault{p}{))} \PYGdefault{k+kd}{::} \PYGdefault{n}{S}
+      \PYGdefault{k+kt}{integer} \PYGdefault{k+kd}{::} \PYGdefault{n}{i}\PYGdefault{p}{,} \PYGdefault{n}{series\PYGdefaultZus{}len}
+
+      \PYGdefault{n}{series\PYGdefaultZus{}len} \PYGdefault{o}{=} \PYGdefault{n}{size}\PYGdefault{p}{(}\PYGdefault{n}{time\PYGdefaultZus{}series}\PYGdefault{p}{)}
+
+      \PYGdefault{n}{S}\PYGdefault{p}{(}\PYGdefault{l+m+mi}{1}\PYGdefault{p}{)} \PYGdefault{o}{=} \PYGdefault{n}{log\PYGdefaultZus{}likelihood\PYGdefaultZus{}ratio}\PYGdefault{p}{(}\PYGdefault{n}{time\PYGdefaultZus{}series}\PYGdefault{p}{(}\PYGdefault{l+m+mi}{1}\PYGdefault{p}{),} \PYGdefault{n}{expectation}\PYGdefault{p}{(}\PYGdefault{l+m+mi}{1}\PYGdefault{p}{),} \PYGdefault{n}{expectation}\PYGdefault{p}{(}\PYGdefault{l+m+mi}{1}\PYGdefault{p}{)}\PYGdefault{o}{*}\PYGdefault{n}{alpha}\PYGdefault{p}{)}
+      \PYGdefault{k}{do }\PYGdefault{n}{i}\PYGdefault{o}{=}\PYGdefault{l+m+mi}{2}\PYGdefault{p}{,}\PYGdefault{n}{series\PYGdefaultZus{}len}
+         \PYGdefault{n}{S}\PYGdefault{p}{(}\PYGdefault{n}{i}\PYGdefault{p}{)} \PYGdefault{o}{=} \PYGdefault{n+nb}{max}\PYGdefault{p}{(}\PYGdefault{l+m+mi}{0}\PYGdefault{n}{d0}\PYGdefault{p}{,} \PYGdefault{n}{log\PYGdefaultZus{}likelihood\PYGdefaultZus{}ratio}\PYGdefault{p}{(}\PYGdefault{n}{time\PYGdefaultZus{}series}\PYGdefault{p}{(}\PYGdefault{n}{i}\PYGdefault{p}{),} \PYGdefault{n}{expectation}\PYGdefault{p}{(}\PYGdefault{n}{i}\PYGdefault{p}{),} \PYGdefault{n}{expectation}\PYGdefault{p}{(}\PYGdefault{n}{i}\PYGdefault{p}{)}\PYGdefault{o}{*}\PYGdefault{n}{alpha}\PYGdefault{p}{))}
+      \PYGdefault{k}{end do}
+
+\PYGdefault{k}{    end subroutine }\PYGdefault{n}{control\PYGdefaultZus{}chart}
+
+    \PYGdefault{k}{function }\PYGdefault{n}{flag}\PYGdefault{p}{(}\PYGdefault{n}{chart}\PYGdefault{p}{,} \PYGdefault{n}{h}\PYGdefault{p}{)}
+      \PYGdefault{k}{implicit none}
+\PYGdefault{k}{      }\PYGdefault{k+kt}{real}\PYGdefault{p}{(}\PYGdefault{n+nb}{kind}\PYGdefault{o}{=}\PYGdefault{l+m+mi}{8}\PYGdefault{p}{),} \PYGdefault{k}{intent}\PYGdefault{p}{(}\PYGdefault{n}{in}\PYGdefault{p}{),} \PYGdefault{k}{dimension}\PYGdefault{p}{(:)} \PYGdefault{k+kd}{::} \PYGdefault{n}{chart}
+      \PYGdefault{k+kt}{real}\PYGdefault{p}{(}\PYGdefault{n+nb}{kind}\PYGdefault{o}{=}\PYGdefault{l+m+mi}{8}\PYGdefault{p}{),} \PYGdefault{k}{intent}\PYGdefault{p}{(}\PYGdefault{n}{in}\PYGdefault{p}{)} \PYGdefault{k+kd}{::} \PYGdefault{n}{h}
+      \PYGdefault{k+kt}{logical} \PYGdefault{k+kd}{::} \PYGdefault{n}{flag}
+
+      \PYGdefault{n}{flag} \PYGdefault{o}{=} \PYGdefault{n+nb}{maxval}\PYGdefault{p}{(}\PYGdefault{n}{chart}\PYGdefault{p}{)} \PYGdefault{o}{\PYGdefaultZgt{}} \PYGdefault{n}{h}
+
+    \PYGdefault{k}{end function }\PYGdefault{n}{flag}
+
+    \PYGdefault{k}{subroutine }\PYGdefault{n}{false\PYGdefaultZus{}positive}\PYGdefault{p}{(}\PYGdefault{n}{simulated\PYGdefaultZus{}series}\PYGdefault{p}{,} \PYGdefault{n}{expectation}\PYGdefault{p}{,} \PYGdefault{n}{alpha}\PYGdefault{p}{,} \PYGdefault{n}{h\PYGdefaultZus{}values}\PYGdefault{p}{,} \PYGdefault{n}{fp\PYGdefaultZus{}rate}\PYGdefault{p}{)}
+      \PYGdefault{k}{implicit none}
+\PYGdefault{k}{      }\PYGdefault{k+kt}{real}\PYGdefault{p}{(}\PYGdefault{n+nb}{kind}\PYGdefault{o}{=}\PYGdefault{l+m+mi}{8}\PYGdefault{p}{),} \PYGdefault{k}{intent}\PYGdefault{p}{(}\PYGdefault{n}{in}\PYGdefault{p}{)} \PYGdefault{k+kd}{::} \PYGdefault{n}{alpha}
+      \PYGdefault{k+kt}{real}\PYGdefault{p}{(}\PYGdefault{n+nb}{kind}\PYGdefault{o}{=}\PYGdefault{l+m+mi}{8}\PYGdefault{p}{),} \PYGdefault{k}{intent}\PYGdefault{p}{(}\PYGdefault{n}{in}\PYGdefault{p}{),} \PYGdefault{k}{dimension}\PYGdefault{p}{(:)} \PYGdefault{k+kd}{::} \PYGdefault{n}{expectation}\PYGdefault{p}{,} \PYGdefault{n}{h\PYGdefaultZus{}values}
+      \PYGdefault{k+kt}{real}\PYGdefault{p}{(}\PYGdefault{n+nb}{kind}\PYGdefault{o}{=}\PYGdefault{l+m+mi}{8}\PYGdefault{p}{),} \PYGdefault{k}{intent}\PYGdefault{p}{(}\PYGdefault{n}{in}\PYGdefault{p}{),} \PYGdefault{k}{dimension}\PYGdefault{p}{(:,} \PYGdefault{p}{:)} \PYGdefault{k+kd}{::} \PYGdefault{n}{simulated\PYGdefaultZus{}series}
+      \PYGdefault{c}{!f2py depend(h\PYGdefaultZus{}values) fp\PYGdefaultZus{}rate}
+      \PYGdefault{k+kt}{real}\PYGdefault{p}{(}\PYGdefault{n+nb}{kind}\PYGdefault{o}{=}\PYGdefault{l+m+mi}{8}\PYGdefault{p}{),} \PYGdefault{k}{intent}\PYGdefault{p}{(}\PYGdefault{n}{out}\PYGdefault{p}{),} \PYGdefault{k}{dimension}\PYGdefault{p}{(}\PYGdefault{n}{size}\PYGdefault{p}{(}\PYGdefault{n}{h\PYGdefaultZus{}values}\PYGdefault{p}{))} \PYGdefault{k+kd}{::} \PYGdefault{n}{fp\PYGdefaultZus{}rate}
+      \PYGdefault{k+kt}{integer} \PYGdefault{k+kd}{::} \PYGdefault{n}{i}\PYGdefault{p}{,} \PYGdefault{n}{j}\PYGdefault{p}{,} \PYGdefault{n}{h\PYGdefaultZus{}values\PYGdefaultZus{}len}\PYGdefault{p}{,} \PYGdefault{n}{series\PYGdefaultZus{}len}\PYGdefault{p}{,} \PYGdefault{n}{num\PYGdefaultZus{}series}
+      \PYGdefault{k+kt}{real}\PYGdefault{p}{(}\PYGdefault{n+nb}{kind}\PYGdefault{o}{=}\PYGdefault{l+m+mi}{8}\PYGdefault{p}{)} \PYGdefault{k+kd}{::} \PYGdefault{n}{h}
+      \PYGdefault{k+kt}{real}\PYGdefault{p}{(}\PYGdefault{n+nb}{kind}\PYGdefault{o}{=}\PYGdefault{l+m+mi}{8}\PYGdefault{p}{),} \PYGdefault{k}{dimension}\PYGdefault{p}{(:),} \PYGdefault{k}{allocatable} \PYGdefault{k+kd}{::} \PYGdefault{n}{chart}\PYGdefault{p}{,} \PYGdefault{n}{ones\PYGdefaultZus{}list}\PYGdefault{p}{,} \PYGdefault{n}{zeros\PYGdefaultZus{}list}
+      \PYGdefault{k+kt}{logical}\PYGdefault{p}{,} \PYGdefault{k}{dimension}\PYGdefault{p}{(:),} \PYGdefault{k}{allocatable} \PYGdefault{k+kd}{::} \PYGdefault{n}{flag\PYGdefaultZus{}list}
+
+      \PYGdefault{n}{h\PYGdefaultZus{}values\PYGdefaultZus{}len} \PYGdefault{o}{=} \PYGdefault{n}{size}\PYGdefault{p}{(}\PYGdefault{n}{h\PYGdefaultZus{}values}\PYGdefault{p}{)}
+      \PYGdefault{n}{series\PYGdefaultZus{}len} \PYGdefault{o}{=} \PYGdefault{n}{size}\PYGdefault{p}{(}\PYGdefault{n}{simulated\PYGdefaultZus{}series}\PYGdefault{p}{,} \PYGdefault{l+m+mi}{2}\PYGdefault{p}{)}
+      \PYGdefault{n}{num\PYGdefaultZus{}series} \PYGdefault{o}{=} \PYGdefault{n}{size}\PYGdefault{p}{(}\PYGdefault{n}{simulated\PYGdefaultZus{}series}\PYGdefault{p}{,} \PYGdefault{l+m+mi}{1}\PYGdefault{p}{)}
+
+      \PYGdefault{k}{allocate}\PYGdefault{p}{(}\PYGdefault{n}{flag\PYGdefaultZus{}list}\PYGdefault{p}{(}\PYGdefault{n}{num\PYGdefaultZus{}series}\PYGdefault{p}{))}
+      \PYGdefault{k}{allocate}\PYGdefault{p}{(}\PYGdefault{n}{chart}\PYGdefault{p}{(}\PYGdefault{n}{series\PYGdefaultZus{}len}\PYGdefault{p}{))}
+
+      \PYGdefault{k}{allocate}\PYGdefault{p}{(}\PYGdefault{n}{ones\PYGdefaultZus{}list}\PYGdefault{p}{(}\PYGdefault{n}{num\PYGdefaultZus{}series}\PYGdefault{p}{))}
+      \PYGdefault{k}{allocate}\PYGdefault{p}{(}\PYGdefault{n}{zeros\PYGdefaultZus{}list}\PYGdefault{p}{(}\PYGdefault{n}{num\PYGdefaultZus{}series}\PYGdefault{p}{))}
+      \PYGdefault{n}{ones\PYGdefaultZus{}list} \PYGdefault{o}{=} \PYGdefault{l+m+mf}{1.0}\PYGdefault{n}{d0}
+      \PYGdefault{n}{zeros\PYGdefaultZus{}list} \PYGdefault{o}{=} \PYGdefault{l+m+mf}{0.0}\PYGdefault{n}{d0}
+
+      \PYGdefault{k}{do }\PYGdefault{n}{i}\PYGdefault{o}{=}\PYGdefault{l+m+mi}{1}\PYGdefault{p}{,}\PYGdefault{n}{h\PYGdefaultZus{}values\PYGdefaultZus{}len}
+         \PYGdefault{n}{h} \PYGdefault{o}{=} \PYGdefault{n}{h\PYGdefaultZus{}values}\PYGdefault{p}{(}\PYGdefault{n}{i}\PYGdefault{p}{)}
+         \PYGdefault{k}{do }\PYGdefault{n}{j}\PYGdefault{o}{=}\PYGdefault{l+m+mi}{1}\PYGdefault{p}{,}\PYGdefault{n}{num\PYGdefaultZus{}series}
+            \PYGdefault{k}{call }\PYGdefault{n}{control\PYGdefaultZus{}chart}\PYGdefault{p}{(}\PYGdefault{n}{simulated\PYGdefaultZus{}series}\PYGdefault{p}{(}\PYGdefault{n}{j}\PYGdefault{p}{,} \PYGdefault{p}{:),} \PYGdefault{n}{expectation}\PYGdefault{p}{,} \PYGdefault{n}{alpha}\PYGdefault{p}{,} \PYGdefault{n}{chart}\PYGdefault{p}{)}
+            \PYGdefault{n}{flag\PYGdefaultZus{}list}\PYGdefault{p}{(}\PYGdefault{n}{j}\PYGdefault{p}{)} \PYGdefault{o}{=} \PYGdefault{n}{flag}\PYGdefault{p}{(}\PYGdefault{n}{chart}\PYGdefault{p}{,} \PYGdefault{n}{h}\PYGdefault{p}{)}
+         \PYGdefault{k}{end do}
+\PYGdefault{k}{         }\PYGdefault{n}{fp\PYGdefaultZus{}rate}\PYGdefault{p}{(}\PYGdefault{n}{i}\PYGdefault{p}{)} \PYGdefault{o}{=} \PYGdefault{n+nb}{sum}\PYGdefault{p}{(}\PYGdefault{n+nb}{merge}\PYGdefault{p}{(}\PYGdefault{n}{ones\PYGdefaultZus{}list}\PYGdefault{p}{,} \PYGdefault{n}{zeros\PYGdefaultZus{}list}\PYGdefault{p}{,} \PYGdefault{n}{flag\PYGdefaultZus{}list}\PYGdefault{p}{))}\PYGdefault{o}{/}\PYGdefault{n}{num\PYGdefaultZus{}series}
+      \PYGdefault{k}{end do}
+
+\PYGdefault{k}{    end subroutine }\PYGdefault{n}{false\PYGdefaultZus{}positive}
+
+\PYGdefault{k}{end module }\PYGdefault{n}{cusum}
+\end{Verbatim}

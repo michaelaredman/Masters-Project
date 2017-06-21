@@ -1,0 +1,134 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{k+kn}{import} \PYGdefault{n+nn}{pandas} \PYGdefault{k+kn}{as} \PYGdefault{n+nn}{pd}
+\PYGdefault{k+kn}{import} \PYGdefault{n+nn}{numpy} \PYGdefault{k+kn}{as} \PYGdefault{n+nn}{np}
+\PYGdefault{k+kn}{import} \PYGdefault{n+nn}{math}
+\PYGdefault{k+kn}{from} \PYGdefault{n+nn}{cusum} \PYGdefault{k+kn}{import} \PYGdefault{n}{cusum} \PYGdefault{k}{as} \PYGdefault{n}{cs}
+\PYGdefault{k+kn}{import} \PYGdefault{n+nn}{logging}
+\PYGdefault{k+kn}{from} \PYGdefault{n+nn}{matplotlib} \PYGdefault{k+kn}{import} \PYGdefault{n}{pyplot} \PYGdefault{k}{as} \PYGdefault{n}{plt}
+
+\PYGdefault{k}{def} \PYGdefault{n+nf}{load\PYGdefaultZus{}data}\PYGdefault{p}{():}
+    \PYGdefault{n}{temp\PYGdefaultZus{}expected} \PYGdefault{o}{=} \PYGdefault{n}{pd}\PYGdefault{o}{.}\PYGdefault{n}{read\PYGdefaultZus{}csv}\PYGdefault{p}{(}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}../../data/csv/expected.csv\PYGdefaultZsq{}}\PYGdefault{p}{)}
+    \PYGdefault{n}{E} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{array}\PYGdefault{p}{(}\PYGdefault{n}{temp\PYGdefaultZus{}expected}\PYGdefault{p}{[}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}x\PYGdefaultZsq{}}\PYGdefault{p}{])}
+
+    \PYGdefault{n}{temp\PYGdefaultZus{}sim} \PYGdefault{o}{=} \PYGdefault{n}{pd}\PYGdefault{o}{.}\PYGdefault{n}{read\PYGdefaultZus{}csv}\PYGdefault{p}{(}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}../../data/csv/simulated.csv\PYGdefaultZsq{}}\PYGdefault{p}{)}
+    \PYGdefault{n}{temp\PYGdefaultZus{}times} \PYGdefault{o}{=} \PYGdefault{n}{temp\PYGdefaultZus{}sim}\PYGdefault{p}{[[}\PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time1\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time2\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time3\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time4\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time5\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time6\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time7\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time8\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time9\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time10\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time11\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time12\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time13\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time14\PYGdefaultZsq{}}\PYGdefault{p}{,} \PYGdefault{l+s+s1}{\PYGdefaultZsq{}Time15\PYGdefaultZsq{}}\PYGdefault{p}{]]}
+    \PYGdefault{n}{observed\PYGdefaultZus{}values} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{array}\PYGdefault{p}{(}\PYGdefault{n}{temp\PYGdefaultZus{}times}\PYGdefault{p}{,} \PYGdefault{n}{dtype}\PYGdefault{o}{=}\PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{int}\PYGdefault{p}{)}
+
+    \PYGdefault{n}{numRegions} \PYGdefault{o}{=} \PYGdefault{n}{observed\PYGdefaultZus{}values}\PYGdefault{o}{.}\PYGdefault{n}{shape}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{0}\PYGdefault{p}{]} \PYGdefault{c+c1}{\PYGdefaultZsh{}number of regions}
+    \PYGdefault{n}{nt} \PYGdefault{o}{=} \PYGdefault{n}{observed\PYGdefaultZus{}values}\PYGdefault{o}{.}\PYGdefault{n}{shape}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{1}\PYGdefault{p}{]} \PYGdefault{c+c1}{\PYGdefaultZsh{}number of time points}
+
+    \PYGdefault{k}{return} \PYGdefault{n}{numRegions}\PYGdefault{p}{,} \PYGdefault{n}{nt}\PYGdefault{p}{,} \PYGdefault{n}{E}\PYGdefault{p}{,} \PYGdefault{n}{observed\PYGdefaultZus{}values}
+
+\PYGdefault{n}{numRegions}\PYGdefault{p}{,} \PYGdefault{n}{nt}\PYGdefault{p}{,} \PYGdefault{n}{E}\PYGdefault{p}{,} \PYGdefault{n}{observed\PYGdefaultZus{}values} \PYGdefault{o}{=} \PYGdefault{n}{load\PYGdefaultZus{}data}\PYGdefault{p}{()}
+
+\PYGdefault{n}{logger} \PYGdefault{o}{=} \PYGdefault{n}{logging}\PYGdefault{o}{.}\PYGdefault{n}{getLogger}\PYGdefault{p}{(}\PYGdefault{l+s+s2}{\PYGdefaultZdq{}cusum\PYGdefaultZdq{}}\PYGdefault{p}{)}
+\PYGdefault{n}{logging}\PYGdefault{o}{.}\PYGdefault{n}{basicConfig}\PYGdefault{p}{(}\PYGdefault{n}{level}\PYGdefault{o}{=}\PYGdefault{n}{logging}\PYGdefault{o}{.}\PYGdefault{n}{DEBUG}\PYGdefault{p}{)}
+
+\PYGdefault{k}{class} \PYGdefault{n+nc}{cusum}\PYGdefault{p}{:}
+
+    \PYGdefault{k}{def} \PYGdefault{n+nf}{\PYGdefaultZus{}\PYGdefaultZus{}init\PYGdefaultZus{}\PYGdefaultZus{}}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{p}{,} \PYGdefault{n}{observed}\PYGdefault{p}{,} \PYGdefault{n}{expected}\PYGdefault{p}{,} \PYGdefault{n}{seed}\PYGdefault{o}{=}\PYGdefault{n+nb+bp}{None}\PYGdefault{p}{):}
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{observed} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{array}\PYGdefault{p}{(}\PYGdefault{n}{observed}\PYGdefault{p}{)}
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{expected} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{array}\PYGdefault{p}{(}\PYGdefault{n}{expected}\PYGdefault{p}{)}
+
+        \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{random}\PYGdefault{o}{.}\PYGdefault{n}{seed}\PYGdefault{p}{(}\PYGdefault{n}{seed}\PYGdefault{o}{=}\PYGdefault{n}{seed}\PYGdefault{p}{)}
+
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{numRegions} \PYGdefault{o}{=} \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{observed}\PYGdefault{o}{.}\PYGdefault{n}{shape}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{0}\PYGdefault{p}{]}
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{nt} \PYGdefault{o}{=} \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{observed}\PYGdefault{o}{.}\PYGdefault{n}{shape}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{1}\PYGdefault{p}{]}
+
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{\PYGdefaultZus{}calc\PYGdefaultZus{}expected\PYGdefaultZus{}trends}\PYGdefault{p}{()}
+
+        \PYGdefault{c+c1}{\PYGdefaultZsh{}default alpha (ratio of in\PYGdefaultZhy{}control to out\PYGdefaultZhy{}of\PYGdefaultZhy{}control rates)}
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{alpha} \PYGdefault{o}{=} \PYGdefault{l+m+mf}{1.5}
+        \PYGdefault{c+c1}{\PYGdefaultZsh{}default size (number of times to simulated trend to find h value)}
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{size} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{4000}
+
+    \PYGdefault{k}{def} \PYGdefault{n+nf}{\PYGdefaultZus{}norm\PYGdefaultZus{}by\PYGdefaultZus{}expectation}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{p}{):}
+        \PYGdefault{l+s+sd}{\PYGdefaultZdq{}\PYGdefaultZdq{}\PYGdefaultZdq{}}
+\PYGdefault{l+s+sd}{        Return the observed values divided by their expected values}
+\PYGdefault{l+s+sd}{        \PYGdefaultZdq{}\PYGdefaultZdq{}\PYGdefaultZdq{}}
+        \PYGdefault{k}{return} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{array}\PYGdefault{p}{([}\PYGdefault{n}{obs}\PYGdefault{o}{/}\PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{expected}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]} \PYGdefault{k}{for} \PYGdefault{n}{i}\PYGdefault{p}{,} \PYGdefault{n}{obs} \PYGdefault{o+ow}{in} \PYGdefault{n+nb}{enumerate}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{observed}\PYGdefault{p}{)])}
+
+    \PYGdefault{k}{def} \PYGdefault{n+nf}{\PYGdefaultZus{}general\PYGdefaultZus{}trend}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{p}{):}
+        \PYGdefault{l+s+sd}{\PYGdefaultZdq{}\PYGdefaultZdq{}\PYGdefaultZdq{}}
+\PYGdefault{l+s+sd}{        Return the mean temporal trend for a process of unit expectation}
+\PYGdefault{l+s+sd}{        \PYGdefaultZdq{}\PYGdefaultZdq{}\PYGdefaultZdq{}}
+        \PYGdefault{k}{return} \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{\PYGdefaultZus{}norm\PYGdefaultZus{}by\PYGdefaultZus{}expectation}\PYGdefault{p}{()}\PYGdefault{o}{.}\PYGdefault{n}{mean}\PYGdefault{p}{(}\PYGdefault{n}{axis}\PYGdefault{o}{=}\PYGdefault{l+m+mi}{0}\PYGdefault{p}{)}
+
+    \PYGdefault{k}{def} \PYGdefault{n+nf}{\PYGdefaultZus{}calc\PYGdefaultZus{}expected\PYGdefaultZus{}trends}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{p}{):}
+        \PYGdefault{l+s+sd}{\PYGdefaultZdq{}\PYGdefaultZdq{}\PYGdefaultZdq{}}
+\PYGdefault{l+s+sd}{        Calculate the temporally adjusted expectations for each region}
+\PYGdefault{l+s+sd}{        \PYGdefaultZdq{}\PYGdefaultZdq{}\PYGdefaultZdq{}}
+        \PYGdefault{n}{general\PYGdefaultZus{}trend} \PYGdefault{o}{=} \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{\PYGdefaultZus{}general\PYGdefaultZus{}trend}\PYGdefault{p}{()}
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{expected\PYGdefaultZus{}trend} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{zeros}\PYGdefault{p}{(}\PYGdefault{n}{shape}\PYGdefault{o}{=}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{numRegions}\PYGdefault{p}{,} \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{nt}\PYGdefault{p}{))}
+        \PYGdefault{k}{for} \PYGdefault{n}{i} \PYGdefault{o+ow}{in} \PYGdefault{n+nb}{range}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{numRegions}\PYGdefault{p}{):}
+            \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{expected\PYGdefaultZus{}trend}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{,} \PYGdefault{p}{:]} \PYGdefault{o}{=} \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{expected}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]} \PYGdefault{o}{*} \PYGdefault{n}{general\PYGdefaultZus{}trend}
+
+    \PYGdefault{k}{def} \PYGdefault{n+nf}{control\PYGdefaultZus{}chart}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{p}{,} \PYGdefault{n}{time\PYGdefaultZus{}series}\PYGdefault{p}{,} \PYGdefault{n}{expectation}\PYGdefault{p}{,} \PYGdefault{n}{alpha}\PYGdefault{p}{):}
+        \PYGdefault{l+s+sd}{\PYGdefaultZdq{}\PYGdefaultZdq{}\PYGdefaultZdq{}}
+\PYGdefault{l+s+sd}{        Calls Fortran subroutine to return the CUSUM control chart for the a given time series}
+\PYGdefault{l+s+sd}{        which is assumed to be a Poisson distributed with given rate parameters.}
+
+\PYGdefault{l+s+sd}{        Inputs}
+\PYGdefault{l+s+sd}{        \PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}}
+\PYGdefault{l+s+sd}{        time\PYGdefaultZus{}series : array (len\PYGdefaultZus{}series)}
+\PYGdefault{l+s+sd}{            Time series which generates the control chart}
+
+\PYGdefault{l+s+sd}{        expectation : array (len\PYGdefaultZus{}series)}
+\PYGdefault{l+s+sd}{            In\PYGdefaultZhy{}control rate parameter at each time step}
+
+\PYGdefault{l+s+sd}{        alpha : real \PYGdefaultZgt{} 1}
+\PYGdefault{l+s+sd}{            Ratio of in\PYGdefaultZhy{}control rate to out\PYGdefaultZhy{}of\PYGdefaultZhy{}control rate}
+
+\PYGdefault{l+s+sd}{        Output}
+\PYGdefault{l+s+sd}{        \PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}}
+\PYGdefault{l+s+sd}{        control\PYGdefaultZus{}chart : array (len\PYGdefaultZus{}series)}
+\PYGdefault{l+s+sd}{            The desired control chart.}
+\PYGdefault{l+s+sd}{        \PYGdefaultZdq{}\PYGdefaultZdq{}\PYGdefaultZdq{}}
+        \PYGdefault{n}{control\PYGdefaultZus{}chart} \PYGdefault{o}{=} \PYGdefault{n}{cs}\PYGdefault{o}{.}\PYGdefault{n}{control\PYGdefaultZus{}chart}\PYGdefault{p}{(}\PYGdefault{n}{time\PYGdefaultZus{}series}\PYGdefault{p}{,} \PYGdefault{n}{expectation}\PYGdefault{p}{,} \PYGdefault{n}{alpha}\PYGdefault{p}{)}
+        \PYGdefault{k}{return} \PYGdefault{n}{control\PYGdefaultZus{}chart}
+
+    \PYGdefault{k}{def} \PYGdefault{n+nf}{simulate\PYGdefaultZus{}trend}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{p}{,} \PYGdefault{n}{expectation}\PYGdefault{p}{,} \PYGdefault{n}{size}\PYGdefault{p}{):}
+        \PYGdefault{l+s+sd}{\PYGdefaultZdq{}\PYGdefaultZdq{}\PYGdefaultZdq{}}
+\PYGdefault{l+s+sd}{        Simulate a Poisson r.v., for a given temporal expectation, (size) times.}
+\PYGdefault{l+s+sd}{        \PYGdefaultZdq{}\PYGdefaultZdq{}\PYGdefaultZdq{}}
+        \PYGdefault{n}{trends} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{zeros}\PYGdefault{p}{(}\PYGdefault{n}{shape}\PYGdefault{o}{=}\PYGdefault{p}{(}\PYGdefault{n}{size}\PYGdefault{p}{,} \PYGdefault{n+nb}{len}\PYGdefault{p}{(}\PYGdefault{n}{expectation}\PYGdefault{p}{)))}
+        \PYGdefault{k}{for} \PYGdefault{n}{i} \PYGdefault{o+ow}{in} \PYGdefault{n+nb}{range}\PYGdefault{p}{(}\PYGdefault{n+nb}{len}\PYGdefault{p}{(}\PYGdefault{n}{expectation}\PYGdefault{p}{)):}
+            \PYGdefault{n}{trends}\PYGdefault{p}{[:,} \PYGdefault{n}{i}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{random}\PYGdefault{o}{.}\PYGdefault{n}{poisson}\PYGdefault{p}{(}\PYGdefault{n}{expectation}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{],} \PYGdefault{n}{size}\PYGdefault{o}{=}\PYGdefault{n}{size}\PYGdefault{p}{)}
+        \PYGdefault{k}{return} \PYGdefault{n}{trends}
+
+    \PYGdefault{k}{def} \PYGdefault{n+nf}{find\PYGdefaultZus{}h}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{p}{,} \PYGdefault{n}{expectation}\PYGdefault{p}{,} \PYGdefault{n}{size}\PYGdefault{p}{,} \PYGdefault{n}{alpha}\PYGdefault{p}{,} \PYGdefault{n}{h\PYGdefaultZus{}values}\PYGdefault{p}{,} \PYGdefault{n}{p\PYGdefaultZus{}value}\PYGdefault{p}{):}
+        \PYGdefault{n}{simulated\PYGdefaultZus{}series} \PYGdefault{o}{=} \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{simulate\PYGdefaultZus{}trend}\PYGdefault{p}{(}\PYGdefault{n}{expectation}\PYGdefault{p}{,} \PYGdefault{n}{size}\PYGdefault{p}{)}
+        \PYGdefault{n}{false\PYGdefaultZus{}positive\PYGdefaultZus{}rates} \PYGdefault{o}{=} \PYGdefault{n}{cs}\PYGdefault{o}{.}\PYGdefault{n}{false\PYGdefaultZus{}positive}\PYGdefault{p}{(}\PYGdefault{n}{simulated\PYGdefaultZus{}series}\PYGdefault{p}{,} \PYGdefault{n}{expectation}\PYGdefault{p}{,} \PYGdefault{n}{alpha}\PYGdefault{p}{,} \PYGdefault{n}{h\PYGdefaultZus{}values}\PYGdefault{p}{)}
+        \PYGdefault{k}{try}\PYGdefault{p}{:}
+            \PYGdefault{n}{my\PYGdefaultZus{}h} \PYGdefault{o}{=} \PYGdefault{n+nb}{next}\PYGdefault{p}{(}\PYGdefault{n}{h} \PYGdefault{k}{for} \PYGdefault{n}{h}\PYGdefault{p}{,} \PYGdefault{n}{rate} \PYGdefault{o+ow}{in} \PYGdefault{n+nb}{zip}\PYGdefault{p}{(}\PYGdefault{n}{h\PYGdefaultZus{}values}\PYGdefault{p}{,} \PYGdefault{n}{false\PYGdefaultZus{}positive\PYGdefaultZus{}rates}\PYGdefault{p}{)} \PYGdefault{k}{if} \PYGdefault{n}{rate} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{p\PYGdefaultZus{}value}\PYGdefault{p}{)}
+        \PYGdefault{k}{except} \PYGdefault{n+ne}{StopIteration}\PYGdefault{p}{:}
+            \PYGdefault{n}{logger}\PYGdefault{o}{.}\PYGdefault{n}{warning}\PYGdefault{p}{(}\PYGdefault{l+s+s2}{\PYGdefaultZdq{}Unable to find suitable h value. False positive rates were as follows:\PYGdefaultZdq{}}\PYGdefault{p}{)}
+            \PYGdefault{n}{logger}\PYGdefault{o}{.}\PYGdefault{n}{warning}\PYGdefault{p}{(}\PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{array2string}\PYGdefault{p}{(}\PYGdefault{n}{false\PYGdefaultZus{}positive\PYGdefaultZus{}rates}\PYGdefault{p}{))}
+            \PYGdefault{n}{my\PYGdefaultZus{}h} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}
+
+        \PYGdefault{k}{return} \PYGdefault{n}{my\PYGdefaultZus{}h}
+
+    \PYGdefault{k}{def} \PYGdefault{n+nf}{generate\PYGdefaultZus{}h}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{p}{,} \PYGdefault{n}{h\PYGdefaultZus{}values}\PYGdefault{p}{,} \PYGdefault{n}{p\PYGdefaultZus{}value}\PYGdefault{p}{):}
+        \PYGdefault{n}{temp} \PYGdefault{o}{=} \PYGdefault{p}{[]}
+        \PYGdefault{k}{for} \PYGdefault{n}{regional\PYGdefaultZus{}expectation} \PYGdefault{o+ow}{in} \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{expected\PYGdefaultZus{}trend}\PYGdefault{p}{:}
+            \PYGdefault{n}{new\PYGdefaultZus{}value} \PYGdefault{o}{=} \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{find\PYGdefaultZus{}h}\PYGdefault{p}{(}\PYGdefault{n}{regional\PYGdefaultZus{}expectation}\PYGdefault{p}{,} \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{size}\PYGdefault{p}{,} \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{alpha}\PYGdefault{p}{,} \PYGdefault{n}{h\PYGdefaultZus{}values}\PYGdefault{p}{,} \PYGdefault{n}{p\PYGdefaultZus{}value}\PYGdefault{o}{=}\PYGdefault{n}{p\PYGdefaultZus{}value}\PYGdefault{p}{)}
+            \PYGdefault{n}{temp}\PYGdefault{o}{.}\PYGdefault{n}{append}\PYGdefault{p}{(}\PYGdefault{n}{new\PYGdefaultZus{}value}\PYGdefault{p}{)}
+        \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{h\PYGdefaultZus{}array} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{array}\PYGdefault{p}{(}\PYGdefault{n}{temp}\PYGdefault{p}{)}
+
+    \PYGdefault{k}{def} \PYGdefault{n+nf}{test}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{p}{):}
+        \PYGdefault{n}{flags} \PYGdefault{o}{=} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{zeros}\PYGdefault{p}{(}\PYGdefault{n}{shape}\PYGdefault{o}{=}\PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{numRegions}\PYGdefault{p}{)}
+        \PYGdefault{k}{for} \PYGdefault{n}{i} \PYGdefault{o+ow}{in} \PYGdefault{n+nb}{range}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{numRegions}\PYGdefault{p}{):}
+            \PYGdefault{n}{c\PYGdefaultZus{}chart} \PYGdefault{o}{=} \PYGdefault{n}{cs}\PYGdefault{o}{.}\PYGdefault{n}{control\PYGdefaultZus{}chart}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{observed}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{,} \PYGdefault{p}{:],} \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{expected\PYGdefaultZus{}trend}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{,} \PYGdefault{p}{:],} \PYGdefault{n}{alpha}\PYGdefault{o}{=}\PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{alpha}\PYGdefault{p}{)}
+            \PYGdefault{n}{flags}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{n}{cs}\PYGdefault{o}{.}\PYGdefault{n}{flag}\PYGdefault{p}{(}\PYGdefault{n}{c\PYGdefaultZus{}chart}\PYGdefault{p}{,} \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{h\PYGdefaultZus{}array}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{])}
+        \PYGdefault{k}{return} \PYGdefault{n}{flags}
+
+    \PYGdefault{k}{def} \PYGdefault{n+nf}{test\PYGdefaultZus{}regions}\PYGdefault{p}{(}\PYGdefault{n+nb+bp}{self}\PYGdefault{p}{):}
+        \PYGdefault{n}{flags} \PYGdefault{o}{=} \PYGdefault{n+nb+bp}{self}\PYGdefault{o}{.}\PYGdefault{n}{test}\PYGdefault{p}{()}
+        \PYGdefault{k}{return} \PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{where}\PYGdefault{p}{(}\PYGdefault{n}{flags} \PYGdefault{o}{==} \PYGdefault{l+m+mi}{1}\PYGdefault{p}{)[}\PYGdefault{l+m+mi}{0}\PYGdefault{p}{]}
+
+
+
+\PYGdefault{n}{csum} \PYGdefault{o}{=} \PYGdefault{n}{cusum}\PYGdefault{p}{(}\PYGdefault{n}{observed\PYGdefaultZus{}values}\PYGdefault{p}{,} \PYGdefault{n}{E}\PYGdefault{p}{)}
+\PYGdefault{n}{csum}\PYGdefault{o}{.}\PYGdefault{n}{generate\PYGdefaultZus{}h}\PYGdefault{p}{(}\PYGdefault{n}{np}\PYGdefault{o}{.}\PYGdefault{n}{linspace}\PYGdefault{p}{(}\PYGdefault{l+m+mi}{0}\PYGdefault{p}{,} \PYGdefault{l+m+mi}{10}\PYGdefault{p}{,} \PYGdefault{l+m+mi}{250}\PYGdefault{p}{),} \PYGdefault{n}{p\PYGdefaultZus{}value}\PYGdefault{o}{=}\PYGdefault{l+m+mf}{0.01}\PYGdefault{p}{)}
+\PYGdefault{n}{unusual\PYGdefaultZus{}predicted} \PYGdefault{o}{=} \PYGdefault{n}{csum}\PYGdefault{o}{.}\PYGdefault{n}{test\PYGdefaultZus{}regions}\PYGdefault{p}{()} \PYGdefault{o}{+} \PYGdefault{l+m+mi}{1}
+\end{Verbatim}
